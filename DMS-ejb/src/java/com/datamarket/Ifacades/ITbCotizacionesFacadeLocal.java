@@ -14,6 +14,7 @@ import javax.ejb.Local;
  * @author Andrés
  */
 @Local
+/*Prueba para realizar el commit en  la rama de desarrollo*/
 public interface ITbCotizacionesFacadeLocal {
 
     Integer retornarCodCotizacion();
