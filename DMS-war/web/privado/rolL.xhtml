@@ -1,0 +1,120 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Administración de Roles</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+                
+            </div>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <!-- Creacion de un formulario  de 'id=amdRolesId' el cual contiene la tabla de gestion de roles-->
+        <h:form id="amdRolesId">
+
+            <!-- Creacion de una de una tabla de tipo 'dataTable' con 'id=tablaRolesId' que contiene la informacion de
+            todos los campos de los roles de la tabla 'Tb_Adm_Roles' de la base de datos 'dmsgestion'
+            
+            !! ATRIBUTOS DE LA TABLA !!
+            
+            Value : Indica que la tabla tendrá los datos de la lista 'listaTbAdmRoles' del bean de vista 'tbAdmRolesVista'
+            
+            var: de nombre 'tb_amd_roles_var' de tipo de objeto 'TbAdmRoles' hace referencia a cada row o 
+            registro de la tabla que son usados en cada una de las columnas-->
+
+            <p:dataTable id="tablaRolesId" value="#{tbAdmRolesVista.listaTbAdmRoles}" rowIndexVar="rowVarIndex" var="tb_amd_roles_var" paginator="true" 
+                         paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                         rowsPerPageTemplate="5,10,15">
+
+                <!-- Creacion de una columna que por medio del objeto 'tb_amd_roles_var' de tipo 'var' y de tipo Objeto
+                'TbAdmRoles' por medio de la funcion 'getRoCodigo' obtiene el  atributo 'ro_codigo' del objeto 
+                -->
+                <p:column headerText="Código del Rol" style="color: darkorange" filterBy="#{tb_amd_roles_var.roCodigo}">
+                    <h:outputText value="#{tb_amd_roles_var.roCodigo}" style="color:  #417cab"/>
+                </p:column>
+
+                <!-- Creacion de una columna que por medio del objeto 'tb_amd_roles_var' de tipo 'var' y de tipo Objeto
+                'TbAdmRoles' por medio de la funcion 'getRoDescripcion' obtiene el  atributo 'ro_descripcion del objeto 
+                -->
+
+                <p:column headerText="Descripción del Rol" style="color: darkorange" filterBy="#{tb_amd_roles_var.roDescripcion}">
+                    <h:outputText value="#{tb_amd_roles_var.roDescripcion}" style="color:  #417cab"/>
+                </p:column>
+
+                <!-- Columna de la tabla que contiene un botón que redirecciona  a la vista de modificar-->
+
+                <p:column headerText="Modificar" style="color: darkorange">
+
+                    <!-- Botón de 'id=btntablaRolesModificarId' que contiene los siguientes atributos
+                    value : Texto que muestra "Modificar"
+                    setPropertyActionListener: le asigna por medio del value 'tb_amd_roles_var' el valor del row o 
+                                               registro de la tabla al objeto 'rolSeleccionado' de la bean 'tbAdmRolesVista'
+                    action: Se ejectuta la funcion  'asignarInformacionRegistroTbAdmRolesVista' del bean 'tbAdmRolesVista'
+                            al ser clickeado redirigiendo a la vista 'Tb_Adm_Roles_M.xhtml'
+                    -->    
+                    <p:commandButton value="Modificar" 
+                                     action="#{tbAdmRolesVista.asignarInformacionRegistroTbAdmRolesVista()}"  
+                                     icon="ui-icon-pencil"
+                                     id='btntablaRolesModificarId'>
+                        <f:setPropertyActionListener value="#{tb_amd_roles_var}" target="#{tbAdmRolesVista.rolSeleccionado}" />
+                    </p:commandButton>
+                </p:column>
+
+                <!-- Botón de 'id=btntablaRolesModificarId' que contiene los siguientes atributos
+                value : Texto que muestra "Eliminar"
+                setPropertyActionListener: le asigna por medio del value 'tb_amd_roles_var' el valor del row o 
+                                           registro de la tabla al objeto 'rolSeleccionado' de la bean 'tbAdmRolesVista'
+                
+                action: Se ejectuta el Dialog  de 'widgetVar="dlg"' al ser clickeado
+                -->
+
+                <p:column headerText="Eliminar" style="color: darkorange">
+                    <p:commandButton value="Eliminar" icon="ui-icon-trash" onclick="PF('dlg').show();" id='btnTbAdmRolesEliminarRolId'>                        
+                        <f:setPropertyActionListener value="#{tb_amd_roles_var}" target="#{tbAdmRolesVista.rolSeleccionado}"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <!--Dialog  que contiene un panelgrid que es ejecutado cuando se clickea el boton 
+        con 'id="btnTbAdmRolesEliminarRolId"'-->
+        <p:dialog header="¿ Desea eliminar el rol?" widgetVar="dlg" resizable="false">
+            <h:form>
+                <p:growl id="growl" sticky="true" showDetail="true" life="3000" />          
+                <h:panelGrid columns="2" cellpadding="5">
+                    <f:facet name="footer">
+                        <p:commandButton value="Si " update="growl :amdRolesId:tablaRolesId" actionListener="#{tbAdmRolesVista.eliminarTbAdmRolesVista()}" 
+                                         oncomplete="PF('dlg').hide()" 
+                                         icon="ui-icon-trash"
+                                         />
+                        <p:commandButton value="No" update="growl" actionListener="#{tbAdmRolesVista.noEliminadoTbAdmRolesVista()}" oncomplete="PF('dlg').hide()" icon="ui-icon-circle-close"/>
+                    </f:facet>  
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+        <br></br>
+        <br></br>
+    </ui:define>
+</ui:composition>
+

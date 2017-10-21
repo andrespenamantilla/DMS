@@ -1,0 +1,158 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">Buscar Productos</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="buscarProducto">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>BÚSQUEDA Y LISTADO DE PRODUCTOS</h1>
+                            </div>
+
+                            <p:tooltip/>
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+
+                                <p:column>
+                                    <p:outputLabel value="Ingrese el Código" class="labelsFormulario"/>
+                                    <p:inputText value="#{buscarProductos.prCodigo}"
+                                                 placeholder="Ejemplo: 1"
+                                                 />
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Ingrese el Nombre" class="labelsFormulario"/>
+                                    <p:autoComplete id="nombre"
+                                                    value="#{buscarProductos.prNombre}"
+                                                    completeMethod="#{buscarProductos.buscarProductosPorNombre()}"
+                                                    title="Realize su búsqueda por el nombre del Producto, 
+                                                    mientras escribe el autocompletar le ayudará."
+                                                    placeholder="Ejemplo: Guía de Soluciones TIC"
+                                                    maxlength="100">
+                                        <p:ajax event="keyup"/>
+                                    </p:autoComplete>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Ingrese el Precio" class="labelsFormulario"/>
+                                    <p:inputText placeholder="Ejemplo: 175000"
+                                                 value="#{buscarProductos.prPrecio}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ingrese el Stock" class="labelsFormulario"/>
+                                    <p:inputText placeholder="Ejemplo: 50"
+                                                 value="#{buscarProductos.prStock}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ingrese la Categoría" class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{buscarProductos.prCategoria}">
+                                        <f:selectItem itemLabel="Seleccione una Categoría" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="Categoría 1" itemValue="C1"/>
+                                        <f:selectItem itemLabel="Categoría 2" itemValue="C2"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+
+                                <p:commandButton value="Vaciar Campos"
+                                                 icon="fa fa-circle-o-notch"
+                                                 styleClass="pink-btn raised-btn"
+                                                 actionListener="#{buscarProductos.limpiarCampos()}"
+                                                 process="@this"
+                                                 update="buscarProducto"/>
+
+                                <p:commandButton value="Buscar Productos"
+                                                 icon="fa fa-search"
+                                                 styleClass="orange-btn raised-btn"
+                                                 actionListener="#{buscarProductos.buscarProductosPorParametros()}"
+                                                 update="buscarProducto"/>
+                            </p:panelGrid>
+
+                            <div align="center" style="padding: 5px;font-size: 1.2em">
+                                <p:message for="messageId" id="messId" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId"></h:inputHidden>
+                            </div>
+
+                            <p:dataTable
+                                var="producto"
+                                value="#{buscarProductos.productos}"
+                                reflow="true"
+                                scrollable="true"
+                                paginator="true"
+                                rows="5"
+                                emptyMessage="Su búsqueda no ha arrojado ningun resultado.">
+                                <p:column  headerText="Código del Producto" 
+                                           filterBy="#{producto.prCodigo}">
+                                    <p:outputLabel value="#{producto.prCodigo}"/>
+                                </p:column>
+                                <p:column headerText="Nombre del Producto" 
+                                          filterBy="#{producto.prNombre}">
+                                    <p:outputLabel value="#{producto.prNombre}"/>
+                                </p:column>
+                                <p:column headerText="Precio del Producto" 
+                                          filterBy="#{producto.prPrecio}">
+                                    <p:outputLabel value="#{producto.prPrecio}"/>
+                                </p:column>
+                                <p:column headerText="Cantidad en Stock" 
+                                          filterBy="#{producto.prStock}">
+                                    <p:outputLabel value="#{producto.prStock}"/>
+                                </p:column>
+                                <p:column headerText="Categoría" 
+                                          filterBy="#{producto.prCategoria}">
+                                    <p:outputLabel value="#{producto.prCategoria}"/>
+                                </p:column>
+                                <p:column headerText="Editar">
+                                    <p:commandButton value="Editar"
+                                                     icon="fa fa-edit"
+                                                     styleClass="orange-btn raised-btn"/>
+                                </p:column>
+                                <p:column headerText="Eliminar">
+                                    <p:commandButton value="Eliminar"
+                                                     icon="fa fa-trash"
+                                                     styleClass="orange-btn raised-btn"
+                                                     onclick="PF('dialogEliminar').show()"
+                                                     action="#{buscarProductos.asignarProductoAEliminar(producto)}"
+                                                     >
+                                        <p:confirm header="¿Desea eliminar el producto?" message="La acción no se podrá deshacer" icon="ui-icon-alert" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <h:form id="eliminar">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center">
+                                <p:confirmDialog widgetVar="dialogEliminar" global="true" showEffect="fade" hideEffect="fade">
+                                    <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+                                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                                </p:confirmDialog>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+
+    </ui:define>
+</ui:composition>

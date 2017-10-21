@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Menú de Administración</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="listaTareasEmpresaId">
+
+            <div align="center">
+                <h:panelGrid >
+                    <p:outputLabel value="#{nuevaTareaVista.casoEmpresa.ceEmpresa.tbEmpresas.emNombre}" 
+                                   style="font-size: 3em;width: 100%;color: grey"/>
+                </h:panelGrid>
+            </div>
+            <br></br>
+
+            <br></br>
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Lista de Tareas Comerciales </h1>
+            </div>
+            <p:dataTable id="tablaTareasEmpresaComercial"  
+                         value="#{nuevaTareaVista.casosPorEmpresa}" 
+                         rowIndexVar="rowVarIndex" 
+                         var="tarea_por_caso"
+                         rendered="false">
+                <p:column headerText="ESTADO">
+                    <p:outputLabel value="#{tarea_por_caso.teEstado}"/>
+                </p:column>
+                <p:column headerText="EVENTO">
+                    <p:outputLabel value="#{tarea_por_caso.teEvento}"/>
+                </p:column>
+            </p:dataTable>
+            <br></br>
+
+            <p:message for="messageId" id="messId"></p:message>
+            <h:inputHidden id="messageId"></h:inputHidden>
+            <br></br>
+            <p:dataTable id="tablaTareasEmpresaItem"  
+                         value="#{nuevaTareaVista.tareasItems}" 
+                         rowIndexVar="rowVarIndex" 
+                         var="tarea_row"
+                         rows="10"
+                         paginator="true"
+                         emptyMessage="EN EL MOMENTO NO SE REGISTRAN TAREAS A SU CARGO.">
+                <p:column headerText="ESTADO">
+                    <p:outputLabel value="#{tarea_row.te_estado}"/>
+                </p:column>
+                <p:column headerText="EVENTO">
+                    <p:outputLabel value="#{tarea_row.te_evento}"/>
+                </p:column>
+                <p:column headerText="MODIFICAR" >
+                    <p:commandLink action="#{nuevaTareaVista.irDetalleTarea(tarea_row)}">
+                        <img style="width: 30px; height: 30px; margin-left: 5em" src="../resources/images/edit.png"/>
+                    </p:commandLink>
+
+                </p:column>
+                <p:column headerText="ELIMINAR">
+                    <p:commandLink onclick="PF('dlg').show()">
+                        <img style="width: 30px; height: 30px; margin-left: 5em" src="../resources/images/Recycle.png"></img>
+                        <p:ajax listener="#{nuevaTareaVista.setSelectedItem(tarea_row)}" event="click">
+                        </p:ajax>
+                    </p:commandLink>
+
+                </p:column>
+                <p:column headerText="Descripción">
+                    <p:outputLabel value="#{tarea_row.te_descripcion}"/>                    
+                </p:column> 
+            </p:dataTable>
+        </h:form>
+        <br></br>
+        <br></br>
+        <h:form id="nuevaTareaId">
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Nuevo Tarea Comercial</h1>
+            </div>
+            <div align="center" id="divNuevaTarea">
+                <p:message for="messageId2" id="messId2"></p:message>
+                <h:inputHidden id="messageId2"></h:inputHidden>
+                <p:panelGrid id="panelNuevaTarea" style="width: 100%">
+                    <p:row>
+                        <p:column style="border-color: #FFFFFF;width:10px">
+                            <p:outputLabel value="ESTADO" style="color:#1c94c4;font-weight: bold"> </p:outputLabel>
+                        </p:column>
+                        <p:column style="border-color: #FFFFFF">
+                            <p:selectOneMenu value="#{nuevaTareaVista.tareaComponente.te_estado}" 
+                                             style="width: 85%"
+                                             id="selectEstadoTareaId"
+                                             required="true"
+                                             requiredMessage="Seleccione un estado de la tarea.">
+                                <f:selectItem itemLabel="Seleccione estado" noSelectionOption="true"></f:selectItem>
+                                <f:selectItems value="#{nuevaTareaVista.estadoMap}"></f:selectItems>
+                            </p:selectOneMenu>
+                            <br></br>
+                            <br><p:message for="selectEstadoTareaId"
+                                           class="ocultar"></p:message></br> 
+                        </p:column>
+                        <p:column style="border-color: #FFFFFF;width:10px">
+                            <p:outputLabel value="EVENTO" style="color:#1c94c4;font-weight: bold"> </p:outputLabel>
+                        </p:column>
+                        <p:column style="border-color: #FFFFFF">
+                            <p:selectOneMenu value="#{nuevaTareaVista.tareaComponente.te_evento}" 
+                                             style="width: 85%"
+                                             id="selectEventoTareaId"
+                                             required="true"
+                                             requiredMessage="Seleccione un evento de la tarea.">
+                                <f:selectItem itemLabel="Seleccione Evento" noSelectionOption="true"></f:selectItem>
+                                <f:selectItems value="#{nuevaTareaVista.eventosMap}"></f:selectItems>
+                            </p:selectOneMenu>
+                            <br></br>
+                            <br><p:message for="selectEventoTareaId"
+                                           class="ocultar"/>
+                            </br>
+                        </p:column>
+                    </p:row>
+                    <p:row>
+                        <p:column style="border-color: #FFFFFF">
+                            <p:outputLabel value="DESCRIPCION" style="color:#1c94c4;font-weight: bold"> </p:outputLabel>
+                        </p:column>
+                        <p:column style="border-color: #FFFFFF">
+                            <p:inputTextarea value="#{nuevaTareaVista.tareaComponente.te_descripcion}" maxlength="200"
+                                             style="width: 95%"
+                                             counterTemplate="{0} Caracteres Restantes."
+                                             id="txtDescripcionTareaId"
+                                             counter="txtProductosServiciosIdDisplay"
+                                             placeholder="Ej: LLamar a Santos salazar a las 3PM para concretar cita."
+                                             requiredMessage="La descripción de la tarde es requerida."
+                                             required="true">
+
+                            </p:inputTextarea>
+                            <br></br>
+                            <br><h:outputText id="txtProductosServiciosIdDisplay" style="color: red"/></br>
+                            <br><p:message for="txtDescripcionTareaId"
+                                           class="ocultar"/></br>
+                        </p:column>
+                        <p:column style="border-color: #FFFFFF">
+                            <p:outputLabel value="FECHA DE INICIO" 
+                                           style="color:#1c94c4;font-weight: bold"> </p:outputLabel>
+                        </p:column>
+                        <p:column style="border-color: #FFFFFF">
+                            <p:calendar value="#{nuevaTareaVista.tareaComponente.te_fecha_inicial}"
+                                        id="fechaTareaId"
+                                        style="width: 95%"
+                                        locale="es"
+                                        pattern="MM/dd/yyyy HH:mm:ss"
+                                        required="true"
+                                        requiredMessage="La fecha de la tarea es requerida"
+                                        placeholder="Ej: 04/08/2017 14:30:59"
+                                        >
+                            </p:calendar>
+                            <br></br>
+                            <br><p:message for="fechaTareaId"
+                                           class="ocultar"/></br>
+                        </p:column>
+                    </p:row>
+                </p:panelGrid>
+                <br></br>
+                <p:commandButton  value="Guardar Tarea" actionListener="#{nuevaTareaVista.insertarNuevaTarea()}" 
+                                  update="nuevaTareaId,:listaTareasEmpresaId:tablaTareasEmpresaComercial, :listaTareasEmpresaId:tablaTareasEmpresaItem "></p:commandButton>
+            </div>
+        </h:form>
+        <h:form>
+            <p:dialog header="¿Esta seguro que desea SU tarea?" widgetVar="dlg" resizable="false">
+
+                <h:panelGrid columns="2" cellpadding="5">
+                    <f:facet name="footer">
+                        <div align="center">
+                            <p:commandButton value="Si " 
+                                             update="listaTareasEmpresaId,nuevaTareaId " 
+                                             actionListener="#{nuevaTareaVista.eliminarTarea}" oncomplete="PF('dlg').hide()" icon="ui-icon-trash"/>
+                            <p:commandButton value="No" oncomplete="PF('dlg').hide()" icon="ui-icon-circle-close"/>
+                        </div>
+                    </f:facet>  
+                </h:panelGrid>
+            </p:dialog>
+        </h:form>
+        <script>
+
+
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText: 'Todo el día'
+            };
+        </script>
+    </ui:define>
+</ui:composition>
+

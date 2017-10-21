@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <title><ui:insert name="title">Default title</ui:insert>
+        </title>
+        <h:outputStylesheet library="css" name="layout.css" />
+        <h:outputStylesheet library="css" name="menu.css" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <style type="text/css">
+            .state1 .fc-event-inner
+            {
+                background: #006600;  
+            }
+
+            .state2 .fc-event-inner
+            {
+                background: #FF9966; 
+            }
+        </style>
+
+    </h:head>
+
+    <body>
+
+        <h:outputScript library="js" name="showDivFormNuevoCaso.js"/>
+
+        <div class="main">
+
+            <!-- The header is included -->
+            <div id="header">
+                <ui:insert name="header">
+                    <ui:include src="/WEB-INF/template/header.xhtml"></ui:include>
+                </ui:insert>
+            </div>
+
+            <!-- The top menu is included -->
+            <div id="menu-top">
+                <h:form>
+                    <p:notificationBar position="top" effect="slide" styleClass="top" widgetVar="bar">
+                        <h:outputText value="#{loginBean.rolUsuario}" style="font-size:36px;"/>
+                        <br></br>
+                        <h:outputText value="Usuario:" style="font-size:30px;"/>
+                        <h:outputText value="#{loginBean.usuarioEnSesion.usNombre}" style="font-size:30px;"/>
+
+                    </p:notificationBar>
+                    <ul id="nav">
+
+                        <li><p:outputLabel value="EMPRESAS" style="color: #fff; font-weight: bold" />
+                            <ul>
+                                <p:commandLink action="/privado/empcC.xhtml?faces-redirect=true" value="Asignación de Empresas" rendered="#{loginBean.tipoDeUsuario == 1}" />
+                                <p:commandLink action="#{navegacion.irListaHistoriales()}" value="Lista de Historiales" rendered="#{loginBean.tipoDeUsuario == 1}" />
+                                <p:commandLink action="#{navegacion.irNuevoEmpresaProspecto()}" value="Prospectar Empresa"/>
+                                <p:commandLink action="#{navegacion.irBuscarEmpresa()}" value="Buscar Empresa" />
+                                <p:commandLink action="/comun/crearEmpresa.xhtml?faces-redirect=true" value="Creación de Empresas" rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 2}" />
+                                <p:commandLink action="/privado/empPorEjec.xhtml?faces-redirect=true" value="Buscar por Ejecutivo" rendered="#{loginBean.tipoDeUsuario == 1}"/>
+                                <p:commandLink action="#{navegacion.irEmpresasDelComercial()}" value="Empresas del Comercial" rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}"/>
+                                <p:commandLink action="#{navegacion.irListaEmpresasProspectadas()}" value="Empresas Prospectadas" rendered="#{loginBean.tipoDeUsuario == 2 or loginBean.tipoDeUsuario == 1 }"></p:commandLink>
+                            </ul>
+                        </li>
+                        <li><p:outputLabel value="CALENDARIO" style="color: #fff; font-weight: bold" rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}" />
+                            <ul>
+                                <p:commandLink action="#{navegacion.irEventos()}" value="Calendario de Eventos" rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}"/>
+                            </ul>
+                        </li>
+                        <li style="width: 150px"><p:outputLabel value="CASOS Y TAREAS" 
+                                                                rendered="#{loginBean.tipoDeUsuario == 1}"
+                                                                style="color: #fff; font-weight: bold;width: 130px" />
+                            <ul>
+                                <p:commandLink action="/privado/consultarCasos.xhtml?faces-redirect=true" value="Consulta de Casos" rendered="#{loginBean.tipoDeUsuario == 1}"/>
+                                <p:commandLink action="/privado/consultarTareas.xhtml?faces-redirect=true" value="Consulta de Tareas" rendered="#{loginBean.tipoDeUsuario == 1}"/>
+                            </ul>
+                        </li>
+                        <li><p:outputLabel value="USUARIOS" style="color: #fff; font-weight: bold;" rendered="#{loginBean.tipoDeUsuario == 1}"/>
+                            <ul>
+                                <p:commandLink action="/privado/usuarioCrear.xhtml?faces-redirect=true" value="Nuevo Usuario" rendered="#{loginBean.tipoDeUsuario == 1}"/>
+                                <p:commandLink action="/privado/usuarioCrear.xhtml?faces-redirect=true" value="Lista de Usuarios" rendered="#{loginBean.tipoDeUsuario == 1}"/>
+                            </ul>
+                        </li>
+                    </ul>
+                </h:form>
+            </div>
+            <div class="links">
+                <h:form>
+
+                    <div id="menu-links">
+                        <ui:insert name="menu-links"></ui:insert>
+                    </div>
+
+                </h:form>
+
+            </div>
+            <div class="completo">
+
+
+                <!-- The left menu is included -->
+                <div id="menu-left">
+                    <ui:insert name="menu-left"></ui:insert>
+                </div>
+
+                <div id="link ">
+                    <ui:insert name="link"></ui:insert>
+                </div>
+
+                <!-- The main content is included -->
+                <div id="content">
+                    <ui:insert name="content"></ui:insert>
+                </div>
+            </div>
+            <!-- The footer is included -->
+            <div id="footer">
+                <ui:insert name="footer">
+                    <ui:include src="/WEB-INF/template/footer.xhtml"></ui:include>
+                </ui:insert>
+            </div>
+
+        </div>
+
+    </body>
+
+</html>

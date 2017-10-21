@@ -1,0 +1,96 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Sample</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formEmpresasProspectadasId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+
+                        <div class="card card-w-title">
+                            <h1>DataTable</h1>
+                            <p:dataTable id="tablaEmpresasProspectadasId"
+                                         value="#{listaEmpresasProspecto.empresasProspectadasComponente}" 
+                                         var="empresa_prospecto_row"
+                                         rows="10"
+                                         paginator="true"
+                                         emptyMessage="No hay empresas prospectadas o su criterio de busqueda no arrojó ningun resultado."
+                                         reflow="true"
+                                         >
+                                <p:column headerText="Nombre de la Empresa" filterBy="#{empresa_prospecto_row.pe_nombre}" 
+
+                                          style="text-align: center">
+                                    <p:outputLabel value="#{empresa_prospecto_row.pe_nombre}"
+
+                                                   ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Ejecutivo" filterBy="#{empresa_prospecto_row.pe_ejecutivo}">
+                                    <p:outputLabel value="#{empresa_prospecto_row.pe_ejecutivo}"
+
+                                                   ></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Fecha de Creación" >
+                                    <p:outputLabel value="#{empresa_prospecto_row.pe_fecha_creacion}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Eliminación">
+                                    <p:commandButton onclick="PF('dialogEliminar').show()"
+                                                     icon="ui-icon-trash"
+                                                     styleClass="orange-btn raised-btn"
+                                                     value="Eliminar">
+                                        <f:setPropertyActionListener 
+                                            value="#{empresa_prospecto_row}"
+                                            target="#{listaEmpresasProspecto.empresasProspectoComponenteEliminar}">
+                                        </f:setPropertyActionListener>
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column headerText="Editar Empresa">
+                                    <p:commandButton action="#{listaEmpresasProspecto.editarEmpresaProspecto(empresa_prospecto_row)}"
+                                                     value="Eliminar"
+                                                     icon="ui-icon-pencil"
+                                                     styleClass="orange-btn raised-btn"/>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+        </h:form>
+        <h:form id="formEliminarEmpresaProspectoId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+
+                        <div class="card card-w-title">
+
+                            <p:dialog header="¿Esta seguro que desea eliminar la empresa prospectada?" widgetVar="dialogEliminar" resizable="false"
+                                      style="border: 1px solid transparent;">
+                                <p:panelGrid columns="2" style="width: 100%;">
+                                            <p:commandButton value="Si " 
+                                                             update="formEmpresasProspectadasId" 
+                                                             actionListener="#{listaEmpresasProspecto.eliminarEmpresaProspecto}" 
+                                                             oncomplete="PF('dialogEliminar').hide()" icon="ui-icon-trash"/>
+                                            <p:commandButton value="No" 
+                                                             oncomplete="PF('dialogEliminar').hide()" 
+                                                             icon="ui-icon-circle-close"/>
+
+                                </p:panelGrid>
+                            </p:dialog>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

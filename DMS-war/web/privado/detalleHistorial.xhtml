@@ -1,0 +1,91 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Detalle Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="detalleHistorialId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>DETALLE DEL HISTORIAL</h1>
+                            </div>
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:column>
+                                    <p:outputLabel value="Nombre del Usuario" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_usuario.usNombre}"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Nombre de la Empresa" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_cod_empresa.emNombre}"
+                                                 readonly="true"/>
+                                </p:column>
+
+
+                                <p:column >
+                                    <p:outputLabel value="Etapa" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_cod_etapa}"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Estado del Caso" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_estado_caso}"
+                                                 readonly="true"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Evento" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_evento}"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Estado de la Tarea" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_estado_caso}"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Fecha" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_fecha}"
+                                                 readonly="true">
+                                        <f:convertDateTime pattern="MM/dd/yyyy"/>
+                                    </p:inputText>
+                                </p:column>
+                                
+                                <p:column >
+                                    <p:outputLabel value="Secuencial" class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_sec_historial}" readonly="true"/>
+                                </p:column>
+
+                                    <p:column >
+                                        <p:outputLabel value="Secuencial del Caso" class="labelsFormulario"/>
+                                        <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_estado_caso}" readonly="true"/>
+                                    </p:column>
+                                
+                                    <p:column>
+                                        <p:outputLabel value="Secuencial del Historial" class="labelsFormulario"/>
+                                        <p:inputText value="#{detalleHistorialEjecutivo.historialDetalleComponente.hc_sec_historial}" readonly="true"/>
+                                    </p:column>
+                            </p:panelGrid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

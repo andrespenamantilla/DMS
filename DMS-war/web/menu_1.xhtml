@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Bienvenido</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:notificationBar position="top" effect="slide" styleClass="top" widgetVar="bar">
+                <h:outputText value="Barra de notificaciones!" style="font-size:36px;" />
+                <br></br>
+                <br></br>
+                <p:commandButton value="Hide" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n"/>
+                <p:commandButton value="Validar creacion empresas"/> <p:commandButton value="Validar creacion empresas"/>
+
+            </p:notificationBar>
+            <p:commandButton value="Show" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s"/>
+        </h:form>
+    </h:body>
+</html>

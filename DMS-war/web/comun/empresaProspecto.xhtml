@@ -1,0 +1,297 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Crear nueva Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="nuevaEmpresaProspectoId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>NUEVA EMPRESA A PROSPECTAR</h1>
+                            </div>
+                            <div align="center">
+                                <p class="sugerenciasFormulario">Los campos marcados con * son de carácter obligatorio.</p>
+
+                            </div>
+                            <p:panelGrid columns="3" layout="grid" styleClass="ui-panelgrid-blank form-group">
+
+                                <p:column>
+                                    <p:outputLabel value="Llave Primaria" 
+                                                   for="txtLlaveId"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_empresa}"
+                                                 id="txtLlaveId"
+                                                 validatorMessage="Error esa llave esta duplicada."
+                                                 required="true"
+                                                 requiredMessage="La llave no puede ser nula"
+                                                 placeholder="Ejemplo: 1"
+                                                 maxlength="11"
+                                                 >
+                                        <p:ajax listener="#{prospectarEmpresa.validaKey}" event="keyup" update="nuevaEmpresaProspectoId"></p:ajax>
+                                    </p:inputText>
+                                    <p:message for="txtLlaveId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Nombre de la empresa"
+                                                    for="txtNombreEmpresaId"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_nombre}"
+                                                 id="txtNombreEmpresaId"
+                                                 validator="#{prospectarEmpresa.validarNombreEmpresa}"
+                                                 validatorMessage="Ese nombre ya existe."
+                                                 required="true"
+                                                 requiredMessage="El nombre de la empresa no puede ser nulo."
+                                                 placeholder="Ejemplo: Datamarket Solutions S.A.S"
+                                                 maxlength="200"
+                                                 ></p:inputText>
+                                    <p:message for="txtNombreEmpresaId" class="ocultar" style="width: 90%"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Nit" 
+                                                   for="txtNitId"
+                                                   class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_numero_id}"
+                                                 id="txtNitId"
+                                                 required="true"
+                                                 requiredMessage="El Nit de la empresa no puede estar vacío."
+                                                 validator="#{prospectarEmpresa.validarNit}"
+                                                 validatorMessage="Ese Nit ya existe."
+                                                 placeholder="Ejemplo: 900435250 - 7"
+                                                 maxlength="20"></p:inputText>
+                                    <p:message for="txtNitId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Dirección de la Empresa"
+                                                   for="txtDireccionId"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_direccion}"
+                                                 id="txtDireccionId"
+                                                 placeholder="Ejemplo: CL. 15 No. 56 - 47 Sur"
+                                                 maxlength="150"></p:inputText>
+                                    <p:message for="txtDireccionId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="País" for="listaPaisesId"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_pais}" 
+                                                     id="listaPaisesId">
+                                        <f:selectItem itemLabel="SELECCIONE UN PAÍS" noSelectionOption="true"/>
+                                        <f:selectItems value="#{prospectarEmpresa.paisesSistemaMap}"/>
+                                        <p:ajax event="change"
+                                                listener="#{prospectarEmpresa.buscarDepartamentosPorPais}"
+                                                update="nuevaEmpresaProspectoId:listaDepartamentosId, nuevaEmpresaProspectoId:listaCiudadesId "/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaPaisesId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Departamento" 
+                                                   for="listaDepartamentosId"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_departamento}" 
+                                                     id="listaDepartamentosId">
+                                        <f:selectItem itemLabel="SELECCIONE UN DEPARTAMENTO" noSelectionOption="true"/>
+                                        <f:selectItems value="#{prospectarEmpresa.departamentosSistemaMap}"/>
+                                        <p:ajax event="change"
+                                                listener="#{prospectarEmpresa.buscarCiudadesPorDepartamento()}"
+                                                update="nuevaEmpresaProspectoId:listaCiudadesId"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaDepartamentosId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel  value="Ciudad" 
+                                                    for="listaCiudadesId"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_ciudad}" 
+                                                     id="listaCiudadesId">
+                                        <f:selectItem itemLabel="SELECCIONE UNA CIUDAD" noSelectionOption="true"/>
+                                        <f:selectItems value="#{prospectarEmpresa.ciudadesSistemaMap}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaCiudadesId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Teléfono" 
+                                                   for="txtTelefonoId"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_telefono}"
+                                                 id="txtTelefonoId"
+                                                 placeholder="Ejemplo: 2617191 ó 3158130645"
+                                                 maxlength="25"></p:inputText>
+                                    <p:message for="txtTelefonoId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Referencia" 
+                                                    for="selectReferenciaId"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_referencia}"
+                                                     id="selectReferenciaId">
+                                        <f:selectItem itemLabel="SELECCIONE UNA REFERENCIA" noSelectionOption="true"/>
+                                        <f:selectItems value="#{prospectarEmpresa.referenciaProspecto}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="selectReferenciaId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Productos y/o Servicios" 
+                                                   for="txtProductosServiciosId"
+                                                   class="labelsFormulario"/>
+                                    <p:inputTextarea id="txtProductosServiciosId"
+                                                     counterTemplate="{0} Caracteres Restantes."
+                                                     maxlength="200"
+                                                     counter="txtProductosServiciosIdDisplay"
+                                                     value="#{prospectarEmpresa.empresaProspectoComponente.pe_productos}"
+                                                     placeholder="Ejemplo: Guía de soluciones Tic.">
+                                    </p:inputTextarea>
+                                    <br><h:outputText id="txtProductosServiciosIdDisplay" style="color: red"/></br>
+                                    <p:message for="txtProductosServiciosId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Sector" 
+                                                   for="selectSectorId"
+                                                   class="labelsFormulario"/>
+                                    <p:column>
+                                        <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_sector}" 
+                                                         requiredMessage="El sector es requerido"
+                                                         required="true"
+                                                         id="selectSectorId">
+                                            <f:selectItem itemLabel="SELECCIONE UN SECTOR" noSelectionOption="true"/>
+                                            <f:selectItems value="#{prospectarEmpresa.sectorCatalogo}"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="selectSectorId" class="ocultar"/>
+                                    </p:column>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Cargo" 
+                                                    for="selectCargoId"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_cargo}"
+                                                     id="selectCargoId"
+                                                     required="true"
+                                                     style="width: 100%"
+                                                     requiredMessage="Seleccione un cargo">
+                                        <f:selectItem itemLabel="SELECCIONE UN CARGO" noSelectionOption="true"/>
+                                        <f:selectItems value="#{prospectarEmpresa.cargosCatalogo}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="selectCargoId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Área"  
+                                                    for="selectAreaId"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{prospectarEmpresa.empresaProspectoComponente.pe_area}"
+                                                     id="selectAreaId"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un área">
+                                        <f:selectItem itemLabel="SELECCIONE UN ÁREA" noSelectionOption="true"/>
+                                        <f:selectItems value="#{prospectarEmpresa.areasCatalogo}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="selectAreaId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Email"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_email}"
+                                                 id="txtEmailId"
+                                                 placeholder="Ejemplo:comercial@dmssas.com"
+                                                 maxlength="100"></p:inputText>
+                                    <p:message for="txtEmailId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Sitio Web"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_sitio_web}"
+                                                 id="txtSitioWebId"
+                                                 placeholder="Ejemplo: www.datamarketsolutions.com"
+                                                 maxlength="50"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="txtSitioWebId" class="ocultar"/>
+                                </p:column>
+
+
+
+                                <p:column>
+                                    <p:outputLabel value="Nombre del Contacto"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_nombre_contacto}"
+                                                 id="txtNombreContactoId"
+                                                 placeholder="Ejemplo: Santos"
+                                                 maxlength="60"></p:inputText>
+                                    <p:message for="txtNombreContactoId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Apellido del Contacto"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{prospectarEmpresa.empresaProspectoComponente.pe_apellido_contacto}"
+                                                 id="txtApellidoContactoId"
+                                                 placeholder="Ejemplo: Salazar"
+                                                 maxlength="60"></p:inputText>
+                                    <p:message for="txtApellidoContactoId" class="ocultar"/>
+                                </p:column>
+
+
+
+
+                                <p:column>
+                                    <p:outputLabel value="Descripción Función"
+                                                   class="labelsFormulario"/>
+                                    <p:inputTextarea value="#{prospectarEmpresa.empresaProspectoComponente.pe_descripcion_funcion}"
+                                                     counterTemplate="{0} Caracteres Restantes."
+                                                     maxlength="255"
+                                                     counter="txtDescripcionFucionIdDisplay"
+                                                     id="txtDescripcionFucionId"
+                                                     placeholder="Ejemplo: Gerente Comercial y Fundador."
+                                                     >                           
+                                    </p:inputTextarea>
+                                    <br><h:outputText id="txtDescripcionFucionIdDisplay" style="color: red"/></br>
+                                    <p:message for="txtDescripcionFucionId" class="ocultar"/>
+                                </p:column>
+
+
+                            </p:panelGrid>
+                            <p:commandButton value="GENERAR SOLICITUD DE CREACIÓN" icon="ui-icon-disk" 
+                                             update="nuevaEmpresaProspectoId"
+                                             actionListener="#{prospectarEmpresa.insertarEmpresaProspecto}"></p:commandButton>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,116 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:define name="title">Nuevo Producto</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="nuevoProducto">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>NUEVO PRODUCTO</h1>
+                            </div>
+                            <div align="center">
+                                <p class="sugerenciasFormulario">Los campos marcados con * son de carácter obligatorio.</p>
+                                <p:message for="messageId" id="messId" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId"></h:inputHidden>
+                            </div>
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:column>
+                                    <p:outputLabel value="Nombre del Producto" 
+                                                   class="labelsFormulario"
+                                                   for="nombre"/>
+                                    <p:inputText value="#{productoNuevo.productoComponenteNuevo.pr_nombre}"
+                                                 id="nombre"
+                                                 placeholder="Ejemplo: Guía  de soluciones TIC"
+                                                 disabled="#{productoNuevo.habilitarCampos}"
+                                                 />
+                                    <p:message for="nombre" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Precio del Producto" 
+                                                   class="labelsFormulario"
+                                                   for="precio"/>
+                                    <p:inputText value="#{productoNuevo.productoComponenteNuevo.pr_precio}"
+                                                 id="precio"
+                                                 placeholder="Ejemplo: 135000"
+                                                 disabled="#{productoNuevo.habilitarCampos}"/>
+                                    <p:message for="precio" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column >
+                                    <p:outputLabel value="Cantidad en Stock" 
+                                                   class="labelsFormulario"
+                                                   for="stock"/>
+                                    <p:inputText value="#{productoNuevo.productoComponenteNuevo.pr_stock}"
+                                                 id="stock"
+                                                 placeholder="Ejemplo: 50"
+                                                 disabled="#{productoNuevo.habilitarCampos}"
+                                                 />
+                                    <p:message for="stock" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Categoría" 
+                                                   class="labelsFormulario"
+                                                   for="categoria"/>
+                                    <p:selectOneMenu value="#{productoNuevo.productoComponenteNuevo.pr_categoria}"
+                                                     id="categoria"
+                                                     disabled="#{productoNuevo.habilitarCampos}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccione una Categoría"/>
+                                        <f:selectItem itemValue="C1" itemLabel="Categoría 1"/>
+                                        <f:selectItem itemValue="C2" itemLabel="Categoría 2"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="categoria" class="ocultar"/>
+                                </p:column>                           
+                            </p:panelGrid>
+                            <p:panelGrid columns="4"
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton icon=" fa fa-save"
+                                                 value="Guardar Producto"
+                                                 update="nuevoProducto" 
+                                                 actionListener="#{productoNuevo.insertarProducto()}"
+                                                 styleClass="orange-btn raised-btn"
+                                                 disabled="#{productoNuevo.habilitarCampos}"
+                                                 />
+                                <p:commandButton value="Habilitar Campos"
+                                                 icon="fa fa-lock"
+                                                 update="nuevoProducto"
+                                                 styleClass="blue-btn raised-btn"
+                                                 immediate="true"
+                                                 actionListener="#{productoNuevo.habilitarCamposFormulario()}"/>
+
+                                <p:commandButton value="Deshabilitar Campos"
+                                                 icon="fa fa-unlock"
+                                                 update="nuevoProducto"
+                                                 styleClass="pink-btn raised-btn"
+                                                 immediate="true"
+                                                 actionListener="#{productoNuevo.deshabilitarCamposFormulario()}"/>
+
+                                <p:commandButton value="Lista de Productos"
+                                                 icon="fa fa-th-list"
+                                                 styleClass="red-btn raised-btn"
+                                                 immediate="true"
+                                                 action="#{navegacion}"/>
+                            </p:panelGrid>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

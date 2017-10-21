@@ -1,0 +1,886 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Detalle Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="detalleEmpresa">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>DETALLE DE LA EMPRESA</h1>
+                            </div>
+
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Habilitar Campos" 
+                                                 styleClass="blue-btn" 
+                                                 style="margin-bottom:10px;"
+                                                 icon="fa fa-paint-brush"
+                                                 action="#{detalleEmpresaComercial.habilitarCampos()}"
+                                                 update="detalleEmpresa:informacionGeneralEmpresa, detalleEmpresa:enviar" 
+                                                 />
+                                <p:commandButton value="Deshabilitar Campos"
+                                                 icon="fa fa-lock"
+                                                 actionListener="#{detalleEmpresaComercial.deshabilitarCampos()}"
+                                                 update="detalleEmpresa:informacionGeneralEmpresa" 
+                                                 styleClass="pink-btn raised-btn"
+                                                 />
+
+                            </p:panelGrid>
+                            <div align="center">
+                                <p class="sugerenciasFormulario">Los campos marcados con * son de carácter obligatorio.</p>
+                                <p:message for="messageId" id="messId" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId"></h:inputHidden>
+                            </div>
+
+                            <p:panelGrid columns="3" layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="informacionGeneralEmpresa">
+
+                                <p:column>
+                                    <p:outputLabel value="Nombre de la Empresa" 
+                                                   for="nombre"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_nombre}" 
+                                                 id="nombre"
+                                                 required="true"
+                                                 requiredMessage="El nombre es requerido"
+                                                 placeholder="Ejemplo: Datamarket Solutions S.A.S"
+                                                 maxlength="200"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="nombre" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Nit" 
+                                                   for="nit"
+                                                   class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_nit}" 
+                                                 id="nit"
+                                                 required="true"
+                                                 requiredMessage="El Nit de la empresa no puede estar vacío."
+                                                 placeholder="Ejemplo: 900435250 - 7"
+                                                 maxlength="20"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"/>
+                                    <p:message for="nit" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Dirección de la Empresa"
+                                                   for="direccion"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_direccion}"
+                                                 id="direccion"
+                                                 placeholder="Ejemplo: CL. 15 No. 56 - 47 Sur"
+                                                 maxlength="150"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"/>
+                                    <p:message for="direccion" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="País" for="listaPaisesId"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{detalleEmpresaComercial.empresaComponente.em_pais}"
+                                                     id="listaPaisesId"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un País"
+                                                     disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                        <f:selectItem itemLabel="SELECCIONE UN PAÍS" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleEmpresaComercial.paisesMap}"/>
+                                        <p:ajax event="change"
+                                                listener="#{detalleEmpresaComercial.buscarDepartamentosPorPais()}"
+                                                update="detalleEmpresa:listaDepartamentosId, detalleEmpresa:listaCiudadesId "/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaPaisesId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Departamento" 
+                                                   for="listaDepartamentosId"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{detalleEmpresaComercial.empresaComponente.em_depto}" 
+                                                     id="listaDepartamentosId"
+                                                     required="true"
+                                                     requiredMessage="seleccione un departamento"
+                                                     disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                        <f:selectItem itemLabel="SELECCIONE UN DEPARTAMENTO" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleEmpresaComercial.departamentosMap}"/>
+                                        <p:ajax event="change"
+                                                listener="#{detalleEmpresaComercial.buscarCiudadesPorDepartamento()}"
+                                                update="detalleEmpresa:listaCiudadesId"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaDepartamentosId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel  value="Ciudad" 
+                                                    for="listaCiudadesId"
+                                                    class="labelsFormulario"
+                                                    />
+                                    <p:selectOneMenu value="#{detalleEmpresaComercial.empresaComponente.em_ciudad}" 
+                                                     id="listaCiudadesId"
+                                                     required="true"
+                                                     requiredMessage="Seleccione una ciudad"
+                                                     disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                        <f:selectItem itemLabel="SELECCIONE UNA CIUDAD" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleEmpresaComercial.ciudadesMap}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="listaCiudadesId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Teléfono" 
+                                                   for="txtTelefonoId"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_telefono1}"
+                                                 id="txtTelefonoId"
+                                                 required="true"
+                                                 requiredMessage="El teléfono principal es requerido"
+                                                 placeholder="Ejemplo: 2617191 ó 3158130645"
+                                                 maxlength="25"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"></p:inputText>
+                                    <p:message for="txtTelefonoId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Teléfono 2" 
+                                                   for="txtTelefonoId2"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_telefono2}"
+                                                 id="txtTelefonoId2"
+                                                 placeholder="Ejemplo: 2617191 ó 3158130645"
+                                                 maxlength="25"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"></p:inputText>
+                                    <p:message for="txtTelefonoId2" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Teléfono 3" 
+                                                   for="txtTelefonoId3"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_telefono3}"
+                                                 id="txtTelefonoId3"
+                                                 placeholder="Ejemplo: 2617191 ó 3158130645"
+                                                 maxlength="25"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"></p:inputText>
+                                    <p:message for="txtTelefonoId3" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Teléfono Móvil" 
+                                                   for="movil"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_celular}"
+                                                 id="movil"
+                                                 placeholder="Ejemplo: 2617191 ó 3158130645"
+                                                 maxlength="25"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"></p:inputText>
+                                    <p:message for="movil" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Fax" 
+                                                   for="fax"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_celular}"
+                                                 id="fax"
+                                                 placeholder="Ejemplo: 2617191"
+                                                 maxlength="25"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"></p:inputText>
+                                    <p:message for="fax" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Sector" 
+                                                   for="selectSectorId"
+                                                   class="labelsFormulario"/>
+                                    <p:column>
+                                        <p:selectOneMenu value="#{detalleEmpresaComercial.empresa.emSector}" 
+                                                         requiredMessage="El sector es requerido"
+                                                         required="true"
+                                                         id="selectSectorId"
+                                                         disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                            <f:selectItem itemLabel="SELECCIONE UN SECTOR" noSelectionOption="true"/>
+                                            <f:selectItems value="#{listasComunes.sectores}"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="selectSectorId" class="ocultar"/>
+                                    </p:column>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Subsector" 
+                                                   for="subsector"
+                                                   class="labelsFormulario"/>
+                                    <p:column>
+                                        <p:selectOneMenu value="#{detalleEmpresaComercial.empresaComponente.em_sector_index}" 
+                                                         id="subsector">
+                                            <f:selectItem itemLabel="NO IMPLEMENTADO" noSelectionOption="true"/>
+                                        </p:selectOneMenu>
+                                        <p:message for="subsector" class="ocultar"/>
+                                    </p:column>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Email"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_email}"
+                                                 id="txtEmailId"
+                                                 placeholder="Ejemplo:comercial@dmssas.com"
+                                                 maxlength="100"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"></p:inputText>
+                                    <p:message for="txtEmailId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Sitio Web"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_web}"
+                                                 id="txtSitioWebId"
+                                                 placeholder="Ejemplo: www.datamarketsolutions.com"
+                                                 maxlength="50"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="txtSitioWebId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Año de Fundación"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_anio_fundacion}"
+                                                 id="anio"
+                                                 placeholder="Ejemplo: 2011."
+                                                 maxlength="50"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="anio" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Número de Empleados"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_num_empleados}"
+                                                 id="num"
+                                                 placeholder="Ejemplo: 2011."
+                                                 maxlength="50"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="num" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Estado"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu 
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        id="est">
+                                        <f:selectItem noSelectionOption="true" 
+                                                      itemLabel="SELECCIONE UN ESTADO"/>
+                                        <f:selectItems value="#{listasComunes.estadoEmpresa}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Actividad Principal"
+                                                   class="labelsFormulario" />
+                                    <p:inputTextarea value="#{detalleEmpresaComercial.empresaComponente.em_actividad_principal}"
+                                                     counterTemplate="{0} Caracteres Restantes."
+                                                     maxlength="255"
+                                                     counter="txtDescripcionFucionIdDisplay"
+                                                     id="txtDescripcionFucionId"
+                                                     placeholder="Ejemplo: MailMarketing, Publicidad Web."
+                                                     disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                     >                           
+                                    </p:inputTextarea>
+                                    <br><h:outputText id="txtDescripcionFucionIdDisplay" style="color: red"/></br>
+                                    <p:message for="txtDescripcionFucionId" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Observaciones"
+                                                   class="labelsFormulario" />
+                                    <p:inputTextarea value="#{detalleEmpresaComercial.empresaComponente.em_observaciones}"
+                                                     counterTemplate="{0} Caracteres Restantes."
+                                                     maxlength="255"
+                                                     counter="observacionesDisplay"
+                                                     id="observaciones"
+                                                     placeholder="Ejemplo: MailMarketing, Publicidad Web."
+                                                     disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                     >                           
+                                    </p:inputTextarea>
+                                    <br><h:outputText id="observacionesDisplay" style="color: red"/></br>
+                                    <p:message for="observaciones" class="ocultar"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Ciiu1"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_ciiu1}"
+                                                 id="em_ciiu1"
+                                                 placeholder="Ejemplo: Preguntar que es."
+                                                 maxlength="50"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="em_ciiu1" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ciiu2"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_ciiu1}"
+                                                 id="em_ciiu2"
+                                                 placeholder="Ejemplo: Preguntar que es."
+                                                 maxlength="50"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="em_ciiu2" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ciiu3"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_ciiu1}"
+                                                 id="em_ciiu3"
+                                                 placeholder="Ejemplo: Preguntar que es."
+                                                 maxlength="50"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="em_ciiu3" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Numero Comp"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleEmpresaComercial.empresaComponente.em_nro_comp}"
+                                                 id="nroComp"
+                                                 placeholder="Ejemplo: Preguntar que es."
+                                                 maxlength="11"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 >
+                                    </p:inputText>
+                                    <p:message for="em_ciiu3" class="ocultar"/>
+                                </p:column>
+                            </p:panelGrid>
+
+                            <p:commandButton value="Guardar Información General" 
+                                             icon="fa fa-save"
+                                             id="enviar"
+                                             update="detalleEmpresa"
+                                             disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                             styleClass="orange-btn raised-btn"
+                                             actionListener="#{detalleEmpresaComercial.actualizarEmpresa()}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+
+        <h:form id="detalleEmpresaComercial">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>INFORMACIÓN COMERCIAL DE LA EMPRESA</h1>
+                            </div>
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Habilitar Campos" 
+                                                 styleClass="blue-btn" 
+                                                 style="margin-bottom:10px;"
+                                                 icon="fa fa-paint-brush"
+                                                 action="#{detalleEmpresaComercial.habilitarCampos()}"
+                                                 update="detalleEmpresaComercial:informacionComercialEmpresa, detalleEmpresaComercial:enviar" 
+
+                                                 />
+                                <p:commandButton value="Deshabilitar Campos"
+                                                 styleClass="pink-btn raised-btn"
+                                                 icon="fa fa-lock"
+                                                 actionListener="#{detalleEmpresaComercial.deshabilitarCampos()}"
+                                                 update="detalleEmpresaComercial:informacionComercialEmpresa, detalleEmpresaComercial:enviar" 
+                                                 immediate="true"
+                                                 />
+
+                            </p:panelGrid>
+
+                            <div align="center">
+                                <p class="sugerenciasFormulario">Los campos marcados con * son de carácter obligatorio.</p>
+                                <p:message for="messageId2" id="messId2" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId2"></h:inputHidden>
+                            </div>
+
+
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="informacionComercialEmpresa"
+                                         >
+                                <p:column>
+                                    <p:outputLabel value="Línea de Negocio"
+                                                   class="labelsFormulario"
+                                                   for="linea"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.empresaComercialComponente.ec_lineaNegocio}"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        id="linea"
+                                        required="true"
+                                        requiredMessage="La linea de negocio es requerida"
+                                        >                                        >
+                                        <f:selectItem itemLabel="Seleccione una linea" noSelectionOption="true"
+                                                      />
+                                        <f:selectItems value="#{listasComunes.lineaNegocio}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="linea" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Clasificación *"
+                                                   class="labelsFormulario"
+                                                   for="clasificacion"
+                                                   />
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.empresaComercialComponente.ec_clasificacion}"
+                                        id="clasificacion"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        >
+                                        <f:selectItem itemLabel="Seleccione una opción" noSelectionOption="true"/>
+
+                                        <f:selectItems value="#{listasComunes.clasificacionClientes}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="clasificacion" class="ocultar"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel value="Proveedor de Tecnología"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.empresaComercialComponente.ec_prov_tecn}"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        >
+
+                                        <f:selectItem itemLabel="Seleccione una opción" 
+                                                      />
+                                        <f:selectItems value="#{listasComunes.proveedorTecnología}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                                <p:column >
+                                    <p:outputLabel value="Ejecutivo"
+                                                   class="labelsFormulario"
+                                                   for="ejecutivo"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.empresaComercialComponente.ec_ejecutivo}"
+                                        id="ejecutivo"                                       
+                                        required="true"
+                                        requiredMessage="El Ejecutivo es requerido"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        >
+                                        <f:selectItem itemLabel="Seleccione un Ejecutivo" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleEmpresaComercial.ejecutivos}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="ejecutivo" 
+                                               class="ocultar"/>
+                                </p:column>
+                            </p:panelGrid>
+                            <p:commandButton value="Guardar Información Comercial"
+                                             icon=" fa fa-save"
+                                             id="enviar"
+                                             update="detalleEmpresaComercial"
+                                             styleClass="orange-btn raised-btn"
+                                             disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                             actionListener="#{detalleEmpresaComercial.actualizarEmpresaComercial()}"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <h:form id="listaContactos">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>LISTA DE CONTACTOS DE LA EMPRESA</h1>
+
+                            </div>
+                            <div align="center" style="padding: 5px">
+                                <p:message for="messageId4" id="messId4"  
+                                           class="ocultar"
+                                           style="font-size: 1.5em"></p:message>
+                                <h:inputHidden id="messageId4"></h:inputHidden>
+
+                            </div>
+
+                            <p:dataTable value="#{detalleEmpresaComercial.contactosComponente}"
+                                         var="contacto_comp_row"
+                                         paginator="true"
+                                         rows="5"
+                                         emptyMessage="La empresa actualmente no tiene contactos, o su criterio de búsqueda no arrojó
+                                         ningun resultado"
+                                         id="tablaContactos"
+                                         reflow="true">
+                                <p:column headerText="Nombres" filterBy="#{contacto_comp_row.ce_nombres}">
+                                    <p:outputLabel value="#{contacto_comp_row.ce_nombres}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Apellidos" filterBy="#{contacto_comp_row.ce_apellidos}">
+                                    <p:outputLabel value="#{contacto_comp_row.ce_apellidos}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Cargo" filterBy="#{contacto_comp_row.ce_cargo}">
+                                    <p:outputLabel value="#{contacto_comp_row.ce_cargo}"></p:outputLabel>
+                                </p:column>  
+                                <p:column headerText="Area" filterBy="#{contacto_comp_row.ce_area}">
+                                    <p:outputLabel value="#{contacto_comp_row.ce_area}"></p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Editar">
+                                    <p:commandButton 
+                                        disabled="#{detalleEmpresaComercial.habilitarFuncion}"
+                                        action="#{detalleEmpresaComercial.irDetalleContactoEmpresa(contacto_comp_row)}"
+                                        immediate="true"
+                                        icon="fa fa-book"
+                                        value="Editar"
+                                        styleClass="orange-btn raised-btn"
+                                        >
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column headerText="ELIMINAR">
+                                    <p:commandButton 
+                                        disabled="#{detalleEmpresaComercial.habilitarFuncion}"
+                                        action="#{detalleEmpresaComercial.asignarContactoEliminar(contacto_comp_row)}"
+                                        immediate="true"
+                                        onclick="PF('dialogEliminar').show()"
+                                        icon="fa fa-bitbucket"
+                                        value="Eliminar"
+                                        styleClass="orange-btn raised-btn"
+                                        >
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+
+                            <div align="center" class="titulo">
+                                <h1>CREACIÓN DE UN NUEVO CONTACTO</h1>
+                            </div>
+
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Habilitar Campos" 
+                                                 styleClass="blue-btn" 
+                                                 style="margin-bottom:10px;"
+                                                 icon="fa fa-paint-brush"
+                                                 action="#{detalleEmpresaComercial.habilitarCampos()}"
+                                                 update="listaContactos:nuevoContacto, listaContactos:enviar, listaContactos:limpiar" 
+                                                 />
+                                <p:commandButton value="Deshabilitar Campos"
+                                                 icon="fa fa-lock"
+                                                 actionListener="#{detalleEmpresaComercial.deshabilitarCampos()}"
+                                                 update="listaContactos:nuevoContacto, listaContactos:enviar, listaContactos:limpiar" 
+                                                 styleClass="pink-btn raised-btn"
+                                                 immediate="true"
+                                                 />
+
+                            </p:panelGrid>
+
+                            <div align="center">
+                                <p class="sugerenciasFormulario">Los campos marcados con * son de carácter obligatorio.</p>
+                                <p:message for="messageId3" id="messId3" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId3"></h:inputHidden>
+                            </div>
+
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="nuevoContacto">
+                                <p:column>
+                                    <p:outputLabel value="Nombres"
+                                                   class="labelsFormulario"
+                                                   for="txtNombresContacto"/>
+                                    <p:inputText placeholder="Ej: Santos" 
+                                                 id="txtNombresContacto"
+                                                 required="true"
+                                                 requiredMessage="El/Los nombres del contacto son requeridos."
+                                                 maxlength="60"
+
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_nombres}"/>                     
+                                    <p:message for="txtNombresContacto" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Apellidos"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText placeholder="Ej: Salazar López" 
+                                                 maxlength="60"                                         
+                                                 id="txtApellidosContacto"
+                                                 required="true"
+                                                 requiredMessage="El/los Apellidos del contacto son requeridos."
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_apellidos}"/>
+                                    <p:message for="txtApellidosContacto" class="ocultar"/>
+
+                                </p:column>
+
+                                <p:column >
+                                    <p:outputLabel  value="Cargo"
+                                                    class="labelsFormulario"
+                                                    for="cargo"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_cargo}"
+                                        id="cargo"
+                                        required="true"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        requiredMessage="Cargo requerido, si no lo conoce 'DESCONOCIDO'">
+                                        <f:selectItem itemLabel="Seleccione un cargo" noSelectionOption="true"/>
+                                        <f:selectItems value="#{listasComunes.cargos}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="cargo" class="ocultar"/>                       
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Área"
+                                                   class="labelsFormulario"
+                                                   for="area"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_area}"
+                                        id="area"
+                                        style="width: 100%"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        required="true"
+                                        requiredMessage="Área requerida, si no la conoce 'DESCONOCIDA'">
+                                        <f:selectItem itemLabel="Seleccione un área" noSelectionOption="true"/>
+                                        <f:selectItems value="#{listasComunes.areas}" class="ocultar"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="area"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Descripción Función"
+                                                   class="labelsFormulario"
+                                                   for="txtDescripcionFuncionId"/>
+                                    <p:inputTextarea counterTemplate="{0} Caracteres Restantes."
+                                                     maxlength="255"
+                                                     counter="txtDescripcionContactoDisplay"
+                                                     placeholder="Ej: Encargado de la Gerencia General"
+                                                     id="txtDescripcionFuncionId"
+                                                     required="true"
+                                                     disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                     requiredMessage="La descripcion función es requerida."
+                                                     value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_descripcion_funcion}"
+                                                     />
+                                    <h:outputText id="txtDescripcionContactoDisplay" style="color: red"/>
+                                    <p:message for="txtDescripcionFuncionId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Teléfono"/>
+                                    <p:inputText placeholder="Ej: 2617191"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_telefono}"
+                                                 id="tel"/>
+                                    <p:message for="tel" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Extensión Telefónica"/>
+                                    <p:inputText placeholder="Ej: 128"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 maxlength="5"
+                                                 id="ext"
+                                                 value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_ext_tel}"/>
+                                    <p:message for="ext" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Dirección"/>
+                                    <p:inputText placeholder="Ej: CL. 15 No. 56 - 47 Sur"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_direccion}"/>
+                                </p:column>
+
+                                <p:column >
+                                    <p:outputLabel value="País"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_pais}"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        >
+
+                                        <f:selectItem itemLabel="Seleccione un país" noSelectionOption="true"/>
+                                        <f:selectItems  value="#{detalleEmpresaComercial.paisesMap}"/>
+                                        <p:ajax event="change"
+                                                listener="#{detalleEmpresaComercial.buscarDepartamentosPorPais()}"
+                                                update="listaContactos:departamentos, listaContactos:ciudades">
+
+                                        </p:ajax>
+                                    </p:selectOneMenu>                        
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Departamento"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_depto}"
+                                        id="departamentos"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        >
+                                        <f:selectItem itemLabel="Seleccione un departamento" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleEmpresaComercial.departamentosMap}"/>
+                                        <p:ajax event="change"
+                                                listener="#{detalleEmpresaComercial.buscarCiudadesPorDepartamento()}"
+                                                update="listaContactos:ciudades">                                 
+                                        </p:ajax>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Ciudad"/>
+                                    <p:selectOneMenu 
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_ciudad}"
+                                        id="ciudades"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                        <f:selectItem itemLabel="Seleccione una ciudad" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleEmpresaComercial.ciudadesMap}"/>
+                                    </p:selectOneMenu>                        
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Email Corporativo"/>
+                                    <p:inputText 
+                                        placeholder="Ej: comercial@dmssas.com"
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_email_corp}"
+                                        id="emailCoporativo"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        >
+                                    </p:inputText>
+                                    <p:message for="emailCoporativo" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel  value="Email Personal"/>
+                                    <p:inputText  
+                                        placeholder="Ej: sasalo77@gmail.com"
+                                        id="emailPersonal"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_email_personal}"/>
+                                    <p:message for="emailPersonal" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel  value="Estado"/>
+                                    <p:selectOneMenu
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_estado}"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                        <f:selectItem itemLabel="Seleccione un estado" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="ACTIVO" itemValue="A"/>
+                                        <f:selectItem itemLabel="INACTIVO" itemValue="I"/>
+                                    </p:selectOneMenu>                        
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Celular"/>
+                                    <p:inputText
+                                        placeholder="Ej: 3158130645"
+                                        id="celular"
+                                        value="#{detalleEmpresaComercial.nuevoContactoComponente.ce_celular}"
+                                        disabled="#{detalleEmpresaComercial.habilitarCampos}"/>
+                                    <p:message for="celular" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Contacto Sw"/>
+                                    <p:selectOneMenu disabled="#{detalleEmpresaComercial.habilitarCampos}">
+                                        <f:selectItem itemLabel="NO IMPLEMENTADO" noSelectionOption="true"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+                            </p:panelGrid>
+                            <p:panelGrid columns="2"
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Guardar Información de Contacto"
+                                                 icon="fa fa-book"
+                                                 update="listaContactos"
+                                                 disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                                 id="enviar"
+                                                 actionListener="#{detalleEmpresaComercial.guardarContacto()}"
+                                                 styleClass="orange-btn raised-btn"/>
+                                <p:commandButton
+                                    value="Limpiar Campos"
+                                    icon="fa fa-circle-o"
+                                    id="limpiar"
+                                    actionListener="#{detalleEmpresaComercial.limpiarDatosFormularioContacto()}"
+                                    update="listaContactos"
+                                    process="@this"
+                                    disabled="#{detalleEmpresaComercial.habilitarCampos}"
+                                    />
+
+
+                            </p:panelGrid>
+                             <p:commandButton value="Ingresar Nuevo Caso Comercial de la Empresa" 
+                                 action="#{detalleEmpresaComercial.agregarNuevoCasoEmpresa}"
+                                 iconPos="center"
+                                 icon="ui-icon-pencil"
+                                 />     
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <p:dialog header="¿ESTA SEGURO QUE DESEA ELIMINAR EL CONTACTO?" widgetVar="dialogEliminar" resizable="false">
+            <h:form id="formEliminar">
+                <div class="ui-fluid">
+                    <div class="ui-g">
+                        <div class="ui-g-12">
+                            <div class="card card-w-title">
+                                <div align="center">
+                                    <h:panelGrid columns="2" cellpadding="5">
+                                        <f:facet name="footer">
+                                            <div align="center">
+                                                <p style="font-weight: bold">
+                                                    RECUERDE QUE SI ELIMINA EL CONTACTO, Y NO ESTA ASOCIADO
+                                                    <BR></BR>
+                                                    A UN CASO COMERCIAL ESTA ACCIÓN NO SE PODRA DESHACER.
+                                                </p>
+                                                <p:commandButton value="Si " 
+                                                                 update=":listaContactos" 
+                                                                 actionListener="#{detalleEmpresaComercial.eliminarContacto()}" 
+                                                                 oncomplete="PF('dialogEliminar').hide()" 
+                                                                 icon="ui-icon-trash" 
+                                                                 />
+
+                                                <p:commandButton value="No" 
+                                                                 oncomplete="PF('dialogEliminar').hide()" 
+                                                                 icon="ui-icon-circle-close"
+                                                                 
+                                                                 />
+                                            </div>
+                                        </f:facet>  
+                                    </h:panelGrid>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:b="http://bootsfaces.net/ui">
+
+    <title><ui:define name="title">Menú de Administración</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="consultarTareaId">
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Consulta General de casos</h1>
+            </div>
+            <br></br>
+            <div align="center">
+                <p:message for="messageId" id="messId" style="font-size: 2em"
+                           class="ocultar"></p:message>
+                <h:inputHidden id="messageId"></h:inputHidden>
+            </div>
+            <br></br>
+            <p:panelGrid id="panelConsultaTareaId" style="width: 100%">
+                <p:row>
+                    <p:column style="width:10px; border-color: #FFFFFF" >
+                        <p:outputLabel value="EVENTO"  
+                                       style="color:#1c94c4;font-weight: bold"
+                                       />
+                    </p:column>
+                    <p:column style="width:10px; border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{consultarTareas.teEvento}"
+                                         style="width: 85%">
+                            <f:selectItem itemLabel="Selccione un tipo de evento"/>
+                            <f:selectItems value="#{listasComunes.eventos}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="ESTADO"  style="color:#1c94c4;font-weight: bold;"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu style="width: 90%"
+                                         value="#{consultarTareas.teEstado}">
+                            <f:selectItem itemLabel="Selccione un estado"/>
+                            <f:selectItems value="#{listasComunes.estadoTarea}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SELECCIONE UN EJECUTIVO"  style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu style="width: 85%"
+                                         value="#{consultarTareas.teResponsable}">
+                            <f:selectItem itemLabel="Selccione un ejecutivo"/>
+                            <f:selectItems value="#{consultarTareas.ejecutivos}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="FECHA INICIAL"  style="color:#1c94c4;font-weight: bold"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:calendar value="#{consultarTareas.teFechaInicial}"
+                                    style="width: 95%"
+                                    locale="es"
+                                    pattern="MM/dd/yyyy HH:mm:ss"
+                                    placeholder="Ej: 04/08/2017 14:30:59"
+                                    >
+                            <p:ajax event="dateSelect" listener="#{consultarTareas.busquedaDeTareasPorFiltros()}"
+                                    update="consultarTareaId"/>
+                        </p:calendar>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel  value="FECHA FINAL" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:calendar value="#{consultarTareas.teFechaFin}"
+                                    style="width: 95%"
+                                    locale="es"
+                                    pattern="MM/dd/yyyy HH:mm:ss"
+                                    placeholder="Ej: 04/09/2017 14:30:59"
+                                    >
+                            <p:ajax event="dateSelect" listener="#{consultarTareas.busquedaDeTareasPorFiltros()}"
+                                    update="consultarTareaId"/>
+                        </p:calendar>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <br></br>
+            <div align="center">
+                <p:commandButton actionListener="#{consultarTareas.test}" 
+                                 value="BUSCAR TAREAS"
+                                 update="consultarTareaId"
+                                 icon="ui-icon-search"
+                                 iconPos="center"/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+                <p:commandButton actionListener="#{consultarTareas.limpiarCampos()}" 
+                                 value="LIMPIAR CAMPOS" update="consultarTareaId"
+                                 icon="ui-icon-battery-0"
+                                 iconPos="center"/>  
+            </div>
+            <br></br>
+            <p:dataTable id="tablaTareasEmpresaItem"  
+                         value="#{consultarTareas.tareasItems}" 
+                         rowIndexVar="rowVarIndex" 
+                         var="tarea_row"
+                         rowsPerPageTemplate="5,10,15"
+                         paginator="true"
+                         emptyMessage="EN EL MOMENTO NO SE REGISTRAN TAREAS SEGÚN SU CONSULTA."
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters} {RowsPerPageDropdown}"
+                         >
+                <f:facet name="{Exporters}">
+                    <h:commandLink>
+                        <img src="../resources/images/xls.png" 
+                             width="15px" 
+                             style="margin-left:10px;"/>
+                        <p:dataExporter type="xls" 
+                                        target="tablaTareasEmpresaItem" 
+                                        fileName="Consulta de Tareas" />
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <img src="../resources/images/pdf.png" 
+                             width="15px" 
+                             style="margin-left:5px"/>
+                        <p:dataExporter type="pdf" 
+                                        target="tablaTareasEmpresaItem" 
+                                        fileName="Consulta de Tareas"/>
+                    </h:commandLink>
+                </f:facet>
+                <p:column headerText="EJECUTIVO">
+                    <p:outputLabel value="#{tarea_row.nombreResponsable}"/>
+                </p:column>
+                <p:column headerText="ESTADO">
+                    <p:outputLabel value="#{tarea_row.te_estado}"/>
+                </p:column>
+                <p:column headerText="EVENTO">
+                    <p:outputLabel value="#{tarea_row.te_evento}"/>
+                </p:column>
+                <p:column headerText="INFORMACION GENERAL" 
+                          exportable="false">
+                    <p:commandButton value="Información General" icon="ui-icon-notice" iconPos="center">
+                        <p:ajax  
+                            listener="#{consultarTareas.tareaSeleccionada(tarea_row)}"
+                            update="consultarTareaId"
+                            oncomplete="PF('cajaDetalleTareaCasoId').show();"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+            <BR></BR>
+            <p:dialog resizable="false" 
+                      widgetVar="cajaDetalleTareaCasoId" 
+                      header="CARACTERÍSTICAS DE LA TAREA"
+                      modal="true"
+                      showEffect="clip">
+                <p:outputPanel id="tareaCasoDetalleId" >
+                    <p:separator/>
+                    <div align="center">
+                        <h1 style="font-size: 20px;color: #FF9966;">Detalles del Caso</h1>
+                    </div>
+                    <p:panelGrid style="width: 100%" >
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="EMPRESA"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel  value="#{consultarTareas.tarea.teCaso.ceEmpresa.tbEmpresas.emNombre.toUpperCase()}"
+                                                />
+                            </p:column> 
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="ESTADO DEL CASO" 
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column> 
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.casoEmpresaComponente.ce_estado}"
+                                               />
+                            </p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="LINEA DE NEGOCIO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.casoEmpresaComponente.ce_linea_negocio}" 
+                                               />
+                            </p:column> 
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="CONTACTO DE LA EMPRESA" 
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column> 
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.casoEmpresaComponente.ce_contacto}"
+                                               />
+                            </p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="CAUSAL DEL CASO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.casoEmpresaComponente.ce_causal}" 
+                                               />
+                            </p:column> 
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="TIPO DE CONTACTO" 
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column> 
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.casoEmpresaComponente.ce_tipo_cont}"
+                                               />
+                            </p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="ETAPA DEL CASO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.casoEmpresaComponente.ce_etapa}" 
+                                               />
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                    <p:separator/>
+                    <div align="center">
+                        <h1 style="font-size: 20px;color: #FF9966;">Detalles de la tarea</h1>
+                    </div>
+                    <p:panelGrid style="width: 90%">
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF;">
+                                <p:outputLabel value="ESTADO DE LA TAREA" style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.tareaComponente.te_estado}"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="EVENTO DE LA TAREA"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.tareaComponente.te_evento}" />
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="FECHA DE INICIO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:calendar value="#{consultarTareas.tareaComponente.te_fecha_inicial}" 
+                                            pattern="dd/MM/yyyy HH:mm:ss"
+                                            disabled="true"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="FECHA FINAL"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:calendar value="#{consultarTareas.tareaComponente.te_fecha_fin}" 
+                                            pattern="dd/MM/yyyy HH:mm:ss"
+                                            disabled="true"/>                            
+                            </p:column>
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="DESCRIPCIÓN DE LA TAREA" style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarTareas.tareaComponente.te_descripcion}"/>
+                            </p:column>
+                        </p:row>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>      
+            <script>
+                PrimeFaces.locales['es'] = {
+                    closeText: 'Cerrar',
+                    prevText: 'Anterior',
+                    nextText: 'Siguiente',
+                    monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                    monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                    dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                    dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                    weekHeader: 'Semana',
+                    firstDay: 1,
+                    isRTL: false,
+                    showMonthAfterYear: false,
+                    yearSuffix: '',
+                    timeOnlyTitle: 'Sólo hora',
+                    timeText: 'Tiempo',
+                    hourText: 'Hora',
+                    minuteText: 'Minuto',
+                    secondText: 'Segundo',
+                    currentText: 'Fecha actual',
+                    ampm: false,
+                    month: 'Mes',
+                    week: 'Semana',
+                    day: 'Día',
+                    allDayText: 'Todo el día'
+                };
+
+            </script>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

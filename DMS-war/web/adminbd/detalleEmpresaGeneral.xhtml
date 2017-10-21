@@ -1,0 +1,211 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:b="http://bootsfaces.net/ui">
+
+    <title><ui:define name="title">Prospecto de Empresa</ui:define>
+    </title>
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista para crear una nueva empresa -->
+                <p:commandButton style="height:30px; width:100%;" value="Nueva Empresa" icon="ui-icon-search"
+                                 action="/adminbd/empC.xhtml?faces-redirect=true"
+                                 rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 2}">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista de busqueda de empresas -->
+                <p:commandButton style="height:30px; width:100%;" value="Buscar Empresa" icon="ui-icon-search"
+                                 action="/faces/empB.xhtml?faces-redirect=true">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista de buscar por empleados asignados -->
+                <p:commandButton style="height:60px; width:100%;" value="Buscar por empleados Asignados" icon="ui-icon-search"
+                                 action="/faces/privado/empPorEjec.xhtml?faces-redirect=true"
+                                 rendered="#{loginBean.tipoDeUsuario == 1}">
+                </p:commandButton>
+
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <!--Este es el formulario que recibe los datos para la creación de un nuevo prospecto de Empresa en el sistema-->
+        <h:form id="formDetalleEmpresaId">
+
+            <div align="center">
+                <h:panelGrid >
+                    <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_nombre}" 
+                                   style="font-size: 3em;width: 100%;color: grey"/>
+                </h:panelGrid>
+            </div>
+            <br></br>
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Información General de la Empresa. </h1>
+
+            </div>
+
+            <br></br>
+            <p:panelGrid style="width: 100%">
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NOMBRE DE LA EMPRESA:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_nombre}" />
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NIT:"  style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_nit}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SECTOR ECONÓMICO:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_sector}" />
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SUBSECTOR ECONÓMICO:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_subsector}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="PAÍS:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_pais}" />
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DEPARTAMENTO:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_depto}" />
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CIUDAD" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_ciudad}" />
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DIRECCIÓN:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_direccion}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="TELÉFONO 1:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_telefono1}" />
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="TELÉFONO 2:" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComponente.em_telefono2}" />
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <br></br>
+            <div align="center">
+                <h1 style="font-size: 18px;color: #FF9966;">Informacion Comercial de la Empresa. </h1>
+            </div>
+            <br></br>
+            <p:panelGrid style="width: 100%">
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="LINEA DE NEGOCIO" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComercialComponenteVista.ec_linea_negocio}"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CLASIFICACIÓN" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column  style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComercialComponenteVista.ec_clasificacion}" />
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="PROVEEDOR DE TECNOLOGÍA" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComercialComponenteVista.ec_prov_tecn}"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="EJECUTIVO A CARGO" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresa.empresaComercialComponenteVista.ec_ejecutivo}"/>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <br></br>
+            <div align="center">
+                <p:commandButton value="Actualizar Información de la Empresa" 
+                                 iconPos="center"
+                                 icon="ui-icon-pencil"
+                                 action="#{detalleEmpresa.irActualizarEmpresa()}"/>          
+            </div>
+            <br></br>
+            <div align="center">
+                <h1 style="font-size: 18px;color: #FF9966;">Lista de contactos de la Empresa.</h1>
+            </div>
+            <br>
+                <br>
+                    <p:dataTable value="#{detalleEmpresa.contactosComponente}"
+                                 var="contacto_comp_row"
+                                 paginator="true"
+                                 rows="10"
+                                 emptyMessage="La empresa actualmente no tiene contactos, o su criterio de búsqueda no arrojó
+                                 ningun resultado">
+                        <p:column headerText="NOMBRES" filterBy="#{contacto_comp_row.ce_nombres}">
+                            <p:outputLabel value="#{contacto_comp_row.ce_nombres}"></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="APELLIDOS" filterBy="#{contacto_comp_row.ce_apellidos}">
+                            <p:outputLabel value="#{contacto_comp_row.ce_apellidos}"></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="CARGO" filterBy="#{contacto_comp_row.ce_cargo}">
+                            <p:outputLabel value="#{contacto_comp_row.ce_cargo}"></p:outputLabel>
+                        </p:column>  
+                        <p:column headerText="ÁREA" filterBy="#{contacto_comp_row.ce_area}">
+                            <p:outputLabel value="#{contacto_comp_row.ce_area}"></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Editar">
+                            <p:commandLink action="#{detalleEmpresa.irDetalleContactoEmpresa(contacto_comp_row)}">
+                                <img style="width: 30px; height: 30px; margin-left: 5em" src="../resources/images/edit.png"/>
+                            </p:commandLink>
+                        </p:column>
+                    </p:dataTable>
+                </br>
+            </br>
+        </h:form>
+    </ui:define>
+</ui:composition>

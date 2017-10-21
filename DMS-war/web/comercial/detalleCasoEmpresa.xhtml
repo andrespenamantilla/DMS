@@ -1,0 +1,215 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Detalle Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="detalleCasoEmpresaId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>DETALLE DEL CASO COMERCIAL <p:outputLabel value="#{detalleCasoEmpresa.casosEmpresaDetalle.ceEmpresa.tbEmpresas.emNombre}"/></h1>
+                            </div>
+                            <div align="center" >
+                                <p:message for="messageId" id="messId" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId"></h:inputHidden>
+                            </div>
+
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+
+                                <p:column>
+                                    <p:outputLabel value="Secuencial"  
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{detalleCasoEmpresa.casosEmpresaDetalle.ceSecCaso}"
+                                                 id="txtSecuencialCaso"
+                                                 placeholder="Secuencial del caso"
+                                                 disabled="true"
+                                                 ></p:inputText>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Seleccione un contacto" 
+                                                   class="labelsFormulario"
+                                                   for="contactosEmpresa"/>
+
+                                    <p:selectOneMenu id="contactosEmpresa"
+                                                     value="#{detalleCasoEmpresa.casoEmpresaComponenteDetalle.ce_contacto}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un contacto por favor."
+                                                     disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar Contacto"/>
+                                        <f:selectItems
+                                            value="#{detalleCasoEmpresa.contactosSelectItem}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="contactosEmpresa"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Línea de Negocio" class="labelsFormulario"
+                                                   for="lineaNegocioEmpresa"/>
+                                    <p:selectOneMenu id="lineaNegocioEmpresa"
+                                                     value="#{detalleCasoEmpresa.casoEmpresaComponenteDetalle.ce_linea_negocio}" 
+                                                     required="true"
+                                                     requiredMessage="Seleccione una línea de negocio."
+                                                     disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar linea"/>
+                                        <f:selectItems
+                                            value="#{nuevoCasoEmpresa.lineasNegocio}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="lineaNegocioEmpresa"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Tipo de Contacto"  
+                                                   class="labelsFormulario"
+                                                   for="tipoContactoEmpresa"/>
+                                    <p:selectOneMenu id="tipoContactoEmpresa"
+                                                     value="#{detalleCasoEmpresa.casoEmpresaComponenteDetalle.ce_tipo_cont}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un tipo de contacto"
+                                                     disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar tipo"
+                                                      />
+                                        <f:selectItems
+                                            value="#{detalleCasoEmpresa.tipoContacto}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="tipoContactoEmpresa"/>
+                                </p:column>
+
+
+
+                                <p:column>
+                                    <p:outputLabel value="Etapa del Proceso"
+                                                   class="labelsFormulario"
+                                                   for="etapasProceso"/>
+                                    <p:selectOneMenu id="etapasProceso"
+                                                     required="true"
+                                                     requiredMessage="Seleccione una etapa."
+                                                     style="width: 100%"
+                                                     value="#{detalleCasoEmpresa.casoEmpresaComponenteDetalle.ce_etapa}"
+                                                     disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar etapa"/>
+                                        <f:selectItems
+                                            value="#{detalleCasoEmpresa.etapasProceso}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="etapasProceso"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Estado" 
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{detalleCasoEmpresa.casoEmpresaComponenteDetalle.ce_estado}" 
+                                                     id="estadoCasoId"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un estado por favor."
+                                                     disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}">
+                                        <f:selectItem itemLabel="Seleccione un estado" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleCasoEmpresa.estadoProceso}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="estadoCasoId"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Descripcion del Caso" 
+                                                   class="labelsFormulario"
+                                                   for="txtDescripcionCasoId"/>
+                                    <p:inputTextarea value="#{detalleCasoEmpresa.casoEmpresaComponenteDetalle.ce_descripcion}"
+                                                     id="txtDescripcionCasoId"
+                                                     placeholder="Escriba aquí los detalles del nuevo proceso comercial"
+                                                     required="true"
+                                                     requiredMessage="Escriba una descripcion del caso."
+                                                     maxlength="200"
+                                                     minQueryLength="15"
+                                                     disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}"
+                                                     ></p:inputTextarea>
+                                    <p:message for="txtDescripcionCasoId"/>
+                                </p:column>
+                            </p:panelGrid>
+                            <p:panelGrid columns="4" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Habilitar Campos" 
+                                                 process="@all"
+                                                 immediate="true"
+                                                 icon="fa fa-paint-brush"
+                                                 styleClass="orange-btn raised-btn"
+                                                 update="detalleCasoEmpresaId"
+                                                 actionListener="#{detalleCasoEmpresa.habilitarCamposFormulario()}"/>
+
+                                <p:commandButton value="Deshabilitar Campos"
+                                                 immediate="true"
+                                                 process="@all"
+                                                 styleClass="pink-btn raised-btn"
+                                                 icon="fa fa-lock"
+                                                 update="detalleCasoEmpresaId"
+                                                 actionListener="#{detalleCasoEmpresa.deshabilitarCamposFormulario()}"/>
+
+                                <p:commandButton value="Actualizar Caso"
+                                                 icon="fa fa-cog"
+                                                 styleClass="blue-btn raised-btn"
+                                                 disabled="#{detalleCasoEmpresa.habilitarCamposFormulario}"
+                                                 update="detalleCasoEmpresaId"
+                                                 actionListener="#{detalleCasoEmpresa.modificarCasoEmpresa}"/>
+                                <p:commandButton icon=" fa fa-plus"
+                                                 value="Generar Nueva Cotización"
+                                                 action="#{detalleCasoEmpresa.irNuevaCotizacion()}"     
+                                                 />
+                            </p:panelGrid>
+                        </div>
+
+
+                        <p:dataTable value="#{detalleCasoEmpresa.listaCotizacionesComponente}"
+                                     var="cotizacion"
+                                     selectionMode="single"
+                                     selection="#{detalleCasoEmpresa.selected}"
+                                     rowKey="#{cotizacion.co_caso}">
+                            <f:facet name="header">
+                                Lista de Cotizaciones por Caso
+                            </f:facet>
+                            <p:ajax event="rowSelect" listener="#{detalleCasoEmpresa.test()}"/>
+                            <p:column headerText="Empresa">
+                                <p:outputLabel value="#{cotizacion.nombre_empresa}"/>
+                            </p:column>
+                            <p:column headerText="Nombre del Ejecutivo">
+                                <p:outputLabel value="#{cotizacion.nombre_ejecutivo}"/>
+                            </p:column>
+                            <p:column headerText="Fecha">
+                                <p:outputLabel value="#{cotizacion.co_fecha}">
+                                    <f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+                                </p:outputLabel>
+                            </p:column>
+
+                            <p:column headerText="Código del Caso">
+                                <p:outputLabel value="#{cotizacion.co_caso}"/>
+                            </p:column>
+
+                            <p:column headerText="Actualizar">
+                                <p:commandButton value="Actualizar Cotización" styleClass="orange-btn"
+                                                 icon="fa fa-fw fa-edit"
+                                                 action="#{detalleCasoEmpresa.irDetalleCotizacion(cotizacion)}"/>                            
+                            </p:column>
+                            <p:column headerText="Eliminar Cotización" >
+                                <p:commandButton styleClass="pink-btn" value="Eliminar Cotización"
+                                                 icon="fa-fa-trash"/>      
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

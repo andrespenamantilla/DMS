@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Inicio de Sesión</title>
+    </h:head>
+    <!-- Este es el formulario que contiene loe elementos para el inicio de la sesión-->
+    <h:form id="formIniciarSesionId">
+        <h:outputLink value="javascript:void(0)" onclick="PF('dlg').show();" title="login">
+            <img  id="login" src="#{request.contextPath}/resources/images/login.png" value="javascript:void(0)" onclick="PF('dlg').show();" title="login" /> 
+        </h:outputLink>
+
+        <p:growl id="growl" sticky="true" showDetail="true" life="3000" />
+        <!-- Este es el formulario que contiene los datos para inicio de sesión -->
+        <p:dialog header="Iniciar Sesión" widgetVar="dlg" resizable="false">
+            <!-- Campo referencia al nombre de usuario-->
+            <h:panelGrid columns="3" cellpadding="5">
+                <h:outputLabel for="username" value="Usuario:" />
+                <p:inputText id="username" value="#{loginBean.userName}" 
+                             required="true" 
+                             label="username" 
+                             requiredMessage="El nombre de usuario es requerido"/>
+                <!-- Campo referencia al password-->
+                <h:outputLabel for="password" value="Contraseña:" />
+                <p:password id="password" value="#{loginBean.password}" 
+                            required="true" 
+                            label="password" 
+                            requiredMessage="El campo contraseña es requerido"/>
+                <f:facet name="footer">
+                    <!-- Con este botón se ejecuta el método de iniciar sesión -->
+                    <p:commandButton value="Iniciar Sesión" update="growl" actionListener="#{loginBean.loginSesion()}"
+                                     oncomplete="handleLoginRequest(xhr, status, args)" />
+                </f:facet>  
+            </h:panelGrid>
+        </p:dialog>
+        <p:watermark for="password,username" value="Campo Requerido*" />
+    </h:form>
+
+    <script type="text/javascript">
+        function handleLoginRequest(xhr, status, args) {
+            if (args.validationFailed || !args.loggedIn) {
+                PF('dlg').jq.effect("shake", {times: 5}, 100);
+            }
+            else {
+                PF('dlg').hide();
+                $('#loginLink').fadeOut();
+            }
+        }
+    </script>
+</html>

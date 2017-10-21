@@ -1,0 +1,222 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Dashboard</ui:define>
+
+    <ui:define name="viewname">Dashboard</ui:define>
+
+    <ui:define name="head">
+        <script type="text/javascript">
+            //<![CDATA[
+            function skinChart() {
+                this.cfg.shadow = false;
+                this.cfg.title = '';
+                this.cfg.seriesColors = ['#00acac', '#3e96e7'];
+                this.cfg.grid = {
+                    background: '#ffffff',
+                    borderColor: '#ffffff',
+                    gridLineColor: '#EEEEEE',
+                    shadow: false
+                };
+                this.cfg.axesDefaults = {
+                    rendererOptions: {
+                        textColor: '#212121'
+                    }
+                };
+                this.cfg.seriesDefaults = {
+                    shadow: false,
+                    lineWidth: 1,
+                    markerOptions: {
+                        shadow: false,
+                        size: 7,
+                        style: 'circle'
+                    }
+                }
+            }
+            //]]>  
+        </script>
+        <style type="text/css">
+            .main-content {
+                padding: 0;
+            }
+        </style>
+    </ui:define>
+
+    <ui:define name="content">
+        <p:schedule value="#{tareasGenerales.tareasPorEjecutivoModel}" 
+                    widgetVar="menuCalendario" 
+                    style="width: 100%"
+                    id="calendarTareasId"
+                    locale="es"
+
+                    >
+            <p:ajax event="eventSelect" 
+                    listener="#{tareasGenerales.tareaSeleccionada}" 
+                    update="tareaCasoDetalleId"
+                    oncomplete="PF('cajaDetalleTareaCasoId').show();"/>
+        </p:schedule>
+        <br/>
+        <p:dialog resizable="false" 
+                  widgetVar="cajaDialogId" 
+                  header="Tarea"
+                  modal="true"
+                  showEffect="clip">
+
+            <p:panelGrid columns="4" 
+                         columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                         layout="grid" 
+                         styleClass="ui-panelgrid-blank form-group" 
+                         style="border:0px none; background-color:transparent;" >
+                <p:outputLabel value="Empresa"/>
+                <p:outputLabel value="#{tareasGenerales.tarea.teCaso.ceEmpresa.tbEmpresas.emNombre}"/>
+
+
+                <p:outputLabel value="Evento"/>
+                <p:outputLabel value="#{tareasGenerales.tareaComponente.te_evento}"/>
+
+                <p:outputLabel value="Inicio"/>
+                <p:calendar value="#{tareasGenerales.tareaComponente.te_fecha_inicial}" 
+                            pattern="dd/MM/yyyy HH:mm:ss"
+                            disabled="true"/>
+
+                <p:outputLabel value="Fin"/>
+                <p:calendar value="#{tareasGenerales.tareaComponente.te_fecha_fin}" 
+                            pattern="dd/MM/yyyy HH:mm:ss"
+                            disabled="true"/>
+
+                <p:outputLabel value="Estado"/>
+                <p:selectBooleanCheckbox value="#{tareasGenerales.tareaComponente.te_estado}"/>
+
+                <p:outputLabel value="Descripción"/>
+                <p:inputTextarea value="#{tareasGenerales.tareaComponente.te_descripcion}"
+                                 disabled="true"/>
+            </p:panelGrid>
+            <p:separator/>
+
+        </p:dialog>
+
+        <p:dialog responsive="true"
+
+                  widgetVar="cajaDetalleTareaCasoId" 
+                  header="CARACTERÍSTICAS DE LA TAREA"
+                  modal="true"
+                  showEffect="clip"
+
+                  >
+            <p:panelGrid 
+                columns="4" 
+                columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" 
+                layout="grid" 
+                styleClass="ui-panelgrid-blank form-group" 
+                style="border:0px none; background-color:transparent;" 
+                id="tareaCasoDetalleId"
+                >
+
+                <p:outputLabel value="EMPRESA"/>
+
+                <p:outputLabel value="#{tareasGenerales.tarea.teCaso.ceEmpresa.tbEmpresas.emNombre}"/>
+
+                <p:outputLabel value="ESTADO DEL CASO"/>
+
+                <p:outputLabel value="#{tareasGenerales.casoEmpresaComponente.ce_estado}"/>
+
+                <p:outputLabel value="LINEA DE NEGOCIO"/>
+
+                <p:outputLabel value="#{tareasGenerales.casoEmpresaComponente.ce_linea_negocio}"/>
+
+                <p:outputLabel value="CONTACTO DE LA EMPRESA"/> 
+
+                <p:outputLabel value="#{tareasGenerales.casoEmpresaComponente.ce_contacto}"/>
+
+                <p:outputLabel value="CAUSAL DEL CASO"/>
+
+                <p:outputLabel value="#{tareasGenerales.casoEmpresaComponente.ce_causal}"/>
+
+                <p:outputLabel value="TIPO DE CONTACTO"/>
+                <p:outputLabel value="#{tareasGenerales.casoEmpresaComponente.ce_tipo_cont}"/>
+
+                <p:outputLabel value="ETAPA DEL CASO"/>
+
+                <p:outputLabel value="#{tareasGenerales.casoEmpresaComponente.ce_etapa}"/>
+
+                <p:outputLabel value="LISTA DE CASOS"/>
+
+                <p:commandButton value="IR A LA LISTA"
+                                 icon="ui-icon-grip-dotted-vertical"
+                                 iconPos="center"
+                                 style="width: 90%"
+                                 action="#{tareasGenerales.irListaCasos}"/>
+
+                        <p:outputLabel value="ESTADO DE LA TAREA"/>
+
+                        <p:outputLabel value="#{tareasGenerales.tareaComponente.te_estado}"/>
+
+                        <p:outputLabel value="EVENTO DE LA TAREA"
+                                       />
+
+                        <p:outputLabel value="#{tareasGenerales.tareaComponente.te_evento}" />
+
+                        <p:outputLabel value="FECHA DE INICIO"/>
+
+                        <p:calendar value="#{tareasGenerales.tareaComponente.te_fecha_inicial}" 
+                                    pattern="dd/MM/yyyy HH:mm:ss"
+                                    disabled="true"/>
+
+                        <p:outputLabel value="FECHA FINAL"/>
+
+                        <p:calendar value="#{tareasGenerales.tareaComponente.te_fecha_fin}" 
+                                    pattern="dd/MM/yyyy HH:mm:ss"
+                                    disabled="true"/>                            
+
+                        <p:outputLabel value="DESCRIPCIÓN DE LA TAREA" />
+
+                        <p:outputLabel value="#{tareasGenerales.tareaComponente.te_descripcion}"/>
+
+                        <p:outputLabel value="LISTA DE TAREAS" />
+
+                        <p:commandButton value="IR A LA LISTA"
+                                         icon="ui-icon-grip-dotted-vertical"
+                                         iconPos="center"
+                                         style="width: 90%"
+                                         action="#{tareasGenerales.irListaTareas}"
+                                         />
+
+            </p:panelGrid>
+        </p:dialog>
+
+        <script>
+            PrimeFaces.locales['es'] = {
+                closeText: 'Cerrar',
+                prevText: 'Anterior',
+                nextText: 'Siguiente',
+                monthNames: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                monthNamesShort: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                dayNames: ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'],
+                dayNamesShort: ['Dom', 'Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab'],
+                dayNamesMin: ['D', 'L', 'M', 'M', 'J', 'V', 'S'],
+                weekHeader: 'Semana',
+                firstDay: 1,
+                isRTL: false,
+                showMonthAfterYear: false,
+                yearSuffix: '',
+                timeOnlyTitle: 'Sólo hora',
+                timeText: 'Tiempo',
+                hourText: 'Hora',
+                minuteText: 'Minuto',
+                secondText: 'Segundo',
+                currentText: 'Fecha actual',
+                ampm: false,
+                month: 'Mes',
+                week: 'Semana',
+                day: 'Día',
+                allDayText: 'Todo el día'
+            };
+
+        </script>
+
+    </ui:define>
+</ui:composition>

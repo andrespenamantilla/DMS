@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Empresas por ejecutivo</ui:define>
+    </title>
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista para crear una nueva empresa -->
+                <p:commandButton style="height:30px; width:100%;" value="Nueva Empresa" icon="ui-icon-search"
+                                 action="/adminbd/empC.xhtml?faces-redirect=true"
+                                 rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 2}"
+                                 >
+                </p:commandButton>
+                <!-- Este redirecciona a la vista de busqueda de empresas -->
+                <p:commandButton style="height:30px; width:100%;" value="Buscar Empresa" icon="ui-icon-search"
+                                 action="/faces/empB.xhtml?faces-redirect=true">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formIdEmpresasEjecutivo">
+            <p:message for="messageId" id="messId"></p:message>
+            <h:inputHidden id="messageId"></h:inputHidden>
+            <p:panel id="panel" header="SELECCCIÓN DE EJECUTIVOS" style="margin-bottom:10px; width: 40%;">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Ejecutivo" style="color:#1c94c4;font-weight: bold" />
+
+                    <p:selectOneMenu  value="#{tbEmpresasComercialVista.comercialIdVista}" 
+                                      style="font-weight: 200 ;color:#1c94c4">
+                        <f:selectItem itemLabel="Seleccione un ejecutivo" itemValue="" noSelectionOption="true" />
+                        <f:selectItems value="#{tbEmpresasComercialVista.allEjecutivos}"  />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </p:panel>
+
+
+            <br></br>
+
+
+            <p:dataTable id="tablaEmpresasEjecutivoId"  
+                         value="#{tbEmpresasComercialVista.empresasSeleccionadasDelComercial}" 
+                         rowIndexVar="rowVarIndex" 
+                         var="tb_empresa_ejecutivo_var"
+                         paginator="true"
+                         emptyMessage="EL comercial no tiene empresas, o su consulta no arrojó ningun resultado.">
+                <p:column headerText="NOMBRE DE LE EMPRESA" filterBy="#{tb_empresa_ejecutivo_var.em_nombre}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.em_nombre}"/>
+                </p:column>
+
+                <p:column headerText="NIT" filterBy="#{tb_empresa_ejecutivo_var.em_nit}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.em_nit}"/>
+                </p:column>
+
+                <p:column headerText="TELEFONO" filterBy="#{tb_empresa_ejecutivo_var.em_telefono1}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.em_telefono1}"/>
+                </p:column>
+
+                <p:column headerText="DIRECCIÓN" filterBy="#{tb_empresa_ejecutivo_var.em_direccion}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.em_direccion}"/>
+                </p:column>
+
+                <p:column headerText="CIUDAD">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.em_ciudad}"/>
+                </p:column>
+
+                <p:column headerText="ACCIÓN">
+                    <p:commandButton value="ACCIÓN" action="#{tbEmpresasComercialVista.asignarInformacionRegistroTbEmpresaComercialVista()}"
+                                     onclick="PF('dlg2').show();"
+                                     update=":formIdEmpresasEjecutivo :formDialogId:panelGridId">                    
+                        <f:setPropertyActionListener value="#{tb_empresa_ejecutivo_var}" target="#{tbEmpresasComercialVista.empresaSeleccionada}"/>
+                    </p:commandButton>
+                    <p:commandLink actionListener="">
+                        <img style="width: 30px; height: 30px; margin-left: 5em" src="../resources/images/edit.png"/>
+                    </p:commandLink>
+                </p:column>
+
+
+            </p:dataTable>
+            <br></br>
+
+            <p:commandButton update="formIdEmpresasEjecutivo" value="Filtar Resultados" actionListener="#{tbEmpresasComercialVista.buscarEmpresasPorComercialVista()}"
+                             icon="ui-icon-circle-check"/>
+
+
+
+
+
+        </h:form>
+
+        <h:form id="formDialogId">
+            <p:dialog id="dialogId" header="Detalle de la Empresa" widgetVar="dlg2" modal="true" width="20%" height="20%">
+                <h:panelGrid id="panelGridId" columns="2" cellpadding="5"  >
+                    <p:outputPanel>
+                        <p:panelGrid columns="2">
+                            <p:outputLabel value="Nombre de la Empresa:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emNombre}" />
+                            <p:outputLabel value="Nit de la la Empresa:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emNit}" />
+                            <p:outputLabel value="País:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emPais}" />
+                            <p:outputLabel value="Departamento:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emDepto}" />
+                            <p:outputLabel value="Ciudad:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emCiudad}" />
+                            <p:outputLabel value="Dirección:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emDireccion}" />
+                            <p:outputLabel value="Primer Teléfono:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emTelefono1}" />
+                            <p:outputLabel value="Segundo Teléfono:"/>
+                            <p:outputLabel value="#{tbEmpresasComercialVista.empresaSeleccionada.tbEmpresas.emTelefono2}" />
+                        </p:panelGrid>
+                    </p:outputPanel>
+                </h:panelGrid>
+            </p:dialog> 
+        </h:form>
+        <br></br>
+        <br></br>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,335 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <head>
+        <title>
+            <ui:define name="title">Prospecto de Empresa</ui:define>
+        </title>
+    </head>
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="actualizarEmpresaId">
+            <br>
+                <div align="center">
+                    <h:panelGrid >
+                        <p:outputLabel value="#{actualizarEmpresaYEmpresaComercial.empresaComponente.em_nombre}" 
+                                       style="font-size: 3em;width: 100%;color: grey"/>
+                    </h:panelGrid>
+                </div>
+            </br>
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Actualizar Información General de la Empresa. </h1>
+            </div>
+            <br></br>
+            <div align="center">
+                <p:message for="messageId" id="messId" 
+                           style="width: 90%" class="ocultar"></p:message>
+                <h:inputHidden id="messageId"></h:inputHidden>
+            </div>
+            <br></br>
+            <p:panelGrid style="width: 100%">
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;width: 15px">
+                        <p:outputLabel value="NOMBRE DE LA EMPRESA"
+                                       style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="#{actualizarEmpresaYEmpresaComercial.empresa.emNombre}"
+                                       rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}"/>
+                        <p:inputText 
+                            id="txtNombreEmpresaId"
+                            required="true"
+                            requiredMessage="El nombre de la empresa es requerido"
+                            value="#{actualizarEmpresaYEmpresaComercial.empresa.emNombre}"
+                            rendered="#{loginBean.tipoDeUsuario == 2}"
+                            style="width: 95%"
+                            />
+                        <br><p:messages for="txtNombreEmpresaId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;width: 15px">
+                        <p:outputLabel value="NIT" style="color:#1c94c4;font-weight: bold"
+                                       />
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="#{actualizarEmpresaYEmpresaComercial.empresa.emNit}"
+                                       rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}"/>
+                        <p:inputText value="#{actualizarEmpresaYEmpresaComercial.empresa.emNit}"
+                                     id="txtNitEmpresaId"
+                                     required="true"
+                                     requiredMessage="El NIT de la empresa es requerido"
+                                     rendered="#{loginBean.tipoDeUsuario == 2}"
+                                     style="width: 90%"/>
+                        <br><p:messages for="txtNitEmpresaId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel 
+                            value="SECTOR"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:selectOneMenu 
+                            style="width: 90%"
+                            value="#{actualizarEmpresaYEmpresaComercial.empresa.emSector}"
+                            required="true"
+                            requiredMessage="Seleccione un sector"
+                            id="sectorId">
+                            <f:selectItems itemLabel="Seleccione un sector" noSelectionValue="true"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.sector}"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="sectorId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel 
+                            value="SUBSECTOR"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:selectOneMenu style="width: 85%">
+                            <f:selectItem noSelectionOption="true" itemLabel="NO IMPLEMENTADO"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel 
+                            value="PAÍS"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel/>
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.empresa.emPais}"
+                                         required="true"
+                                         requiredMessage="El país de la empresa es requerido"
+                                         id="paisId"
+                                         style="width: 90%">
+                            <f:selectItem itemLabel="Seleccione un país" noSelectionOption="true"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.paisesMap}"/>
+                            <p:ajax event="change"
+                                    listener="#{actualizarEmpresaYEmpresaComercial.buscarDepartamentosPorPais}"
+                                    update="actualizarEmpresaId:deptoId, actualizarEmpresaId:ciudadId"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="paisId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel 
+                            value="DEPARTAMENTO"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.empresa.emDepto}"
+                                         style="width: 85%"
+                                         required="true"
+                                         requiredMessage="El Departamento es requerido"
+                                         id="deptoId"
+                                         >
+                            <f:selectItem itemLabel="Seleccione un departamento"
+                                          noSelectionOption="true">
+
+                            </f:selectItem>
+
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.departamentosMap}"/>
+
+                            <p:ajax event="change"
+                                    listener="#{actualizarEmpresaYEmpresaComercial.buscarCiudadesPorDepartamento}"
+                                    update="actualizarEmpresaId:ciudadId"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="deptoId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel 
+                            value="CIUDAD"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.empresa.emCiudad}"
+                                         style="width: 90%"
+                                         required="true"
+                                         requiredMessage="La ciudad es requerida"
+                                         id="ciudadId"
+                                         >
+                            <f:selectItem itemLabel="Seleccione una ciudad"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.ciudadesMap}"/>
+                            <br><p:messages for="ciudadId"/></br>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="TELEFONO 1" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:inputText id="teluno"
+                                     required="true"
+                                     requiredMessage="El teléfono es requerido"
+                                     value="#{actualizarEmpresaYEmpresaComercial.empresa.emTelefono1}"
+                                     style="width: 90%"
+                                     />
+                        <br><p:messages for="teluno"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="TELEFONO 2" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:inputText style="width: 95%"
+                                     value="#{actualizarEmpresaYEmpresaComercial.empresa.emTelefono2}"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="DIRECCIÓN" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:inputText id="txtDireccionId"
+                                     required="true"
+                                     requiredMessage="La direccion es requerida"
+                                     style="width: 90%"
+                                     value="#{actualizarEmpresaYEmpresaComercial.empresa.emDireccion}"
+                                     />
+                        <br>
+                            <p:messages for="txtDireccionId"/>
+                        </br>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <br>
+                <div align="center">
+                    <p:commandButton value="Actualizar Informacion General" icon="ui-icon-disk" iconPos="center" 
+                                     update="actualizarEmpresaId"
+                                     actionListener="#{actualizarEmpresaYEmpresaComercial.actualizarEmpresa()}"/>
+                </div>
+            </br>
+        </h:form>
+        <h:form id="actualizarEmpresaComercial" rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}">
+            <div align="center">
+                <h:panelGrid >
+                    <p:outputLabel value="LA EMPRESA NO TIENE INFORMACIÓN COMERCIAL ASIGNADA EN ESTE MOMENTO" 
+                                   style="font-size: 1.5em;width: 100%;color: grey"
+                                   rendered="#{actualizarEmpresaYEmpresaComercial.estadoEmpresaComercial == 2}"/>
+                </h:panelGrid>
+            </div>
+            <p:panelGrid style="width: 100%"
+                         rendered="#{actualizarEmpresaYEmpresaComercial.estadoEmpresaComercial == 1}">
+                <div align="center">
+                    <h1 style="font-size: 20px;color: #FF9966;">Actualizar Información Comercial de la Empresa. </h1>
+                </div>
+                <br></br>
+                <div align="center">
+                    <p:message for="messageId" id="messId" 
+                               style="width: 90%" class="ocultar"
+                                ></p:message>
+                    <h:inputHidden id="messageId"></h:inputHidden>
+                </div>
+                <br></br>
+
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;width: 15px">
+                        <p:outputLabel 
+                            value="EJECUTIVO"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;"> 
+                        <p:outputLabel 
+                            rendered='#{loginBean.tipoDeUsuario == 3}'
+                            value="#{actualizarEmpresaYEmpresaComercial.empresaComercialComponenteVista.ec_ejecutivo}"/>
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.ejecutivoAcualizacion}"
+                                         rendered='#{loginBean.tipoDeUsuario == 1}'
+                                         style="width: 90%"
+                                         required="true"
+                                         requiredMessage="El ejecutivo es requerido"
+                                         id="ejecutivoId">
+                            <f:selectItem itemLabel="Seleccione un Ejecutivo" noSelectionOption="true"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.ejecutivos}"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="ejecutivoId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;width: 15px">
+                        <p:outputLabel 
+                            value="LINEA DE NEGOCIO"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.empresaComercial.ecLineaNegocio}"
+                                         style="width: 85%"
+                                         id="lineaId"
+                                         required="true"
+                                         requiredMessage="La linea de negocio es requerida">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione una línea"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.lineaNegocio}"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="lineaId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel 
+                            value="CLASIFICACION"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;"> 
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.empresaComercial.ecClasificacion}"
+                                         style="width: 90%"
+                                         id="clasfId"
+                                         required="true"
+                                         requiredMessage="La clasificacion es requerida">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione una clasificacion"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.clasificacion}"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="clasfId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF; color: pink">
+                        <p:outputLabel 
+                            value="PROVEEDOR DE TECNOLOGÍA"
+                            style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:selectOneMenu value="#{actualizarEmpresaYEmpresaComercial.empresaComercial.ecProvTecn}"
+                                         id="provId"
+                                         style="width: 85%"
+                                         required="true"
+                                         requiredMessage="Seleccionar el tipo es requerido">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione una opción"/>
+                            <f:selectItems value="#{actualizarEmpresaYEmpresaComercial.proveedorTecnología}"/>
+                        </p:selectOneMenu>
+                        <br><p:messages for="provId"/></br>
+                    </p:column>
+                </p:row>
+            </p:panelGrid> 
+            <br>
+                <div align="center">
+                    <p:commandButton value="Actualizar Informacion Comercial" icon="ui-icon-disk" iconPos="center" 
+                                     update="actualizarEmpresaComercial"
+                                     rendered='#{actualizarEmpresaYEmpresaComercial.estadoEmpresaComercial == 1}'
+                                     actionListener="#{actualizarEmpresaYEmpresaComercial.actualizarEmpresaComercial()}"    
+                                     />
+                </div>
+            </br>
+
+        </h:form>
+    </ui:define>
+
+</ui:composition>
+
+

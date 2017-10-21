@@ -1,0 +1,201 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Crear nueva Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="actualizarContactoEmpresaId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>ACTUALIZACIÓN DEL CONTACTO</h1>
+                            </div>
+                            <div align="center"><p:message for="messageId" id="messId" style="font-size: 1.8em"
+                                                           class="ocultar"></p:message>
+                                <h:inputHidden id="messageId"></h:inputHidden>
+                            </div>
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+
+                                <p:column>
+                                    <p:outputLabel value="Empresa" class="labelsFormulario"/>
+                                    <br></br>
+                                    <p:outputLabel value="#{actualizarContacto.contactoActualizarComponente.nombre_empresa}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Nombres" class="labelsFormulario" for="txtActualizarNombreId"/>
+                                    <p:inputText value="#{actualizarContacto.contactoActualizarComponente.ce_nombres}"
+                                                 required="true"
+                                                 requiredMessage="Los nombres del contacto no puede estar vacío."
+                                                 id="txtActualizarNombreId"
+                                                 />
+                                    <p:messages for="txtActualizarNombreId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Apellidos" class="labelsFormulario" for="txtActualizarApellidoId"/>
+                                    <p:inputText value="#{actualizarContacto.contactoActualizarComponente.ce_apellidos}"
+                                                 required="true"
+                                                 requiredMessage="Los Apellidos del contacto no pueden estar vacíos."
+                                                 id="txtActualizarApellidoId"
+                                                 />
+                                    <p:messages for=" txtActualizarApellidoId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Área" class="labelsFormulario" for="areaContactoId"/>
+                                    <p:selectOneMenu value="#{actualizarContacto.contactoActualizarComponente.ce_area}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un área."
+                                                     id="areaContactoId"
+                                                     >
+                                        <f:selectItem itemLabel="Seleccione una área" noSelectionOption="true"/>
+                                        <f:selectItems value="#{listasComunes.areas}"/>
+                                    </p:selectOneMenu>
+                                    <p:messages for="areaContactoId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel  value="Cargo" for="cargoContactoId" class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{actualizarContacto.contactoActualizarComponente.ce_cargo}"
+                                                     required="true"
+                                                     style="width: 100%"
+                                                     requiredMessage="Seleccione un cargo."
+                                                     id="cargoContactoId">
+                                        <f:selectItem itemLabel="Seleccione un cargo" noSelectionOption="true"/>
+                                        <f:selectItems value="#{listasComunes.cargos}"/>
+
+                                    </p:selectOneMenu>
+                                    <p:messages for="cargoContactoId" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Descripción Función" for="descripcion" class="labelsFormulario"/>
+                                    <p:inputTextarea 
+                                        value="#{actualizarContacto.contactoActualizarComponente.ce_descripcion_funcion}"
+                                        required="true"
+                                        requiredMessage="La descripcion función es requerida."
+                                        placeholder="Escriba aquí la descripción de la función"
+                                        id="descripcion"
+                                        >
+                                    </p:inputTextarea>
+                                    <p:message for="descripcion" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Teléfono" class="labelsFormulario" for="telefono"/>
+                                    <p:inputText value="#{actualizarContacto.contactoActualizarComponente.ce_telefono}"
+                                                 id="telefono"
+                                                 placeholder="Ej: 2617191"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Extensión Telefónica" class="labelsFormulario" for=""/>
+                                    <p:keyboard keypadOnly="true"
+                                                backspaceLabel="Regresar"
+                                                closeLabel="Cerrar"
+                                                clearLabel="Limpiar"
+                                                value="#{actualizarContacto.contactoActualizarComponente.ce_ext_tel}"
+                                                placeholder="Ej: 312"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="País" class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{actualizarContacto.paisId}">
+                                        <f:selectItem itemLabel="Seleccione un País" noSelectionOption="true"/>
+                                        <f:selectItems value="#{actualizarContacto.paisesMap}"/>
+                                        <p:ajax event="change" listener="#{actualizarContacto.buscarDepartamentosPorPais()}"
+                                                update="actualizarContactoEmpresaId:departamentosId, actualizarContactoEmpresaId:ciudadesId"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Departamento" class="labelsFormulario"/>
+                                    <p:selectOneMenu  value="#{actualizarContacto.departamentoId}"
+                                                      id="departamentosId">
+                                        <f:selectItem itemLabel="Seleccione un departamento" noSelectionOption="true"/>
+                                        <f:selectItems value="#{actualizarContacto.departamentosMap}"/>
+                                        <p:ajax listener="#{actualizarContacto.buscarCiudadesPorDepartamento()}"
+                                                update="actualizarContactoEmpresaId:ciudadesId"/>
+                                    </p:selectOneMenu>
+                                </p:column>                        
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Ciudad" class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{actualizarContacto.ciudadId}"
+                                                     id="ciudadesId">
+                                        <f:selectItem itemLabel="Seleccione una ciudad" noSelectionOption="true"/>
+                                        <f:selectItems value="#{actualizarContacto.ciudadesMap}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Email Corporativo" class="labelsFormulario"/>
+                                    <p:inputText
+                                        value="#{actualizarContacto.contactoActualizarComponente.ce_email_corp}"
+                                        placeholder="Ej: comercial@dmssas.com"/>
+                                </p:column>                        
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Email Personal" class="labelsFormulario"/>
+                                    <p:inputText value="#{actualizarContacto.contactoActualizarComponente.ce_email_personal}"
+                                                 placeholder="Ej: sasalo77@gmail.com"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Estado" class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{actualizarContacto.contactoActualizarComponente.ce_estado}"> 
+                                        <f:selectItem itemLabel="Seleccione un Estado" noSelectionOption="true"/>
+                                        <f:selectItem itemLabel="ACTIVO" itemValue="A"/>
+                                        <f:selectItem itemLabel="INACTIVO" itemValue="I"/>
+                                    </p:selectOneMenu>
+                                </p:column>                        
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Celular" class="labelsFormulario"/>
+                                    <p:inputText value="#{actualizarContacto.contactoActualizarComponente.ce_celular}"
+                                                 placeholder="Ej: 3158130645"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel 
+                                        value="Sw Contacto" class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{actualizarContacto.contactoActualizarComponente.ce_sw_contacto}"> 
+                                        <f:selectItem itemLabel="NO IMPLEMENTADO" noSelectionOption="true"/>
+                                    </p:selectOneMenu>
+                                </p:column>                        
+                            </p:panelGrid>
+                            <p:commandButton value="Actualizar Contacto" 
+                                             icon="fa fa-save"
+                                             iconPos="center"
+                                             actionListener="#{actualizarContacto.modificarContactoEmpresa()}"
+                                             update="actualizarContactoEmpresaId"
+                                             styleClass="orange-btn raised-btn"
+                                             />
+                        </div>     
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,274 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Sample</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="buscarEmpresaId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>BÚSQUEDA DE EMPRESAS</h1>
+                            </div>
+                            <p:tooltip/>
+                            <p:panelGrid columns="4" columnClasses="ui-grid-col-2,ui-grid-col-4,ui-grid-col-2,ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank form-group" style="border:0px none; background-color:transparent;">
+                                <p:outputLabel  value="Nombre de la Empresa"/>
+                                <p:autoComplete id="empresaNombreId"                                            
+                                                value="#{buscarEmpresas.emNombre}"
+                                                completeMethod="#{buscarEmpresas.buscarEmpresasPorNombre}"
+                                                placeholder="Ejemplo: Datamarket Solutions S.A.S"
+                                                title="Realize su búsqueda por NOMBRE, 
+                                                mientras escribe el autocompletar le ayudará."
+                                                maxlength="200">
+                                    <p:ajax event="keyup"/>
+                                </p:autoComplete>
+
+                                <p:outputLabel  value="Sector"/>
+                                <p:selectOneMenu 
+                                    value="#{buscarEmpresas.emSector}">
+                                    <f:selectItem itemLabel="Seleccione un Sector" noSelectionOption="true"/>
+                                    <f:selectItems value="#{buscarEmpresas.sectores}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel  value="Nit"/>
+                                <p:autoComplete id="empresaNitId"
+                                                value="#{buscarEmpresas.emNit}"
+                                                completeMethod="#{buscarEmpresas.buscarEmpresasPorNit}"
+                                                title="Realize su búsqueda  por NIT, 
+                                                mientras escribe el autocompletar le ayudará."
+                                                placeholder="Ejemplo: 900435250 - 7"
+                                                maxlength="20">
+                                    <p:ajax event="keyup"/>
+                                </p:autoComplete>
+
+                                <p:outputLabel value="Subsector"/>
+                                <p:selectOneMenu 
+                                    title="Actualmente no implementado, espere a la próxima versión.">
+                                    <f:selectItem itemLabel="No Implementado" noSelectionOption="true"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel  value="País"/>
+                                <p:selectOneMenu value="#{buscarEmpresas.paisId}"
+                                                 title="Seleccione el país de la empresa a buscar."
+
+                                                 >
+                                    <f:selectItem itemLabel="Seleccione un País" noSelectionOption="true"/>
+                                    <f:selectItems value="#{buscarEmpresas.paisesMap}"/>
+                                    <p:ajax event="change" listener="#{buscarEmpresas.buscarDepartamentosPorPais()}"
+                                            update="buscarEmpresaId:departamentos, buscarEmpresaId:ciudades"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel  value="Departamento"/>
+                                <p:selectOneMenu value="#{buscarEmpresas.departamentoId}"
+                                                 id="departamentos"
+                                                 title="Seleccione el departamento de la empresa a buscar.">
+                                    <f:selectItem itemLabel="Seleccione un Departamento" 
+                                                  noSelectionOption="true" 
+                                                  />
+                                    <f:selectItems value="#{buscarEmpresas.departamentosMap}"/>
+                                    <p:ajax listener="#{buscarEmpresas.buscarCiudadesPorDepartamento()}"
+                                            update="buscarEmpresaId:ciudades"
+                                            event="change"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Ciudad"/>
+                                <p:selectOneMenu value="#{buscarEmpresas.ciudadId}"
+                                                 id="ciudades"
+                                                 title="Seleccione la ciudad de la empresa a buscar.">
+                                    <f:selectItem itemLabel="Seleccione una Ciudad" 
+                                                  noSelectionOption="true"
+                                                  />
+                                    <f:selectItems value="#{buscarEmpresas.ciudadesMap}"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel  value="Nombre/s del Contacto"/>
+                                <p:inputText
+                                    placeholder="Ejemplo: Santos"
+                                    title="Escriba aqui el nombre/s del contacto de la empresa a buscar."
+                                    />
+                                <p:outputLabel value="Apellido/s del Contacto"/>
+                                <p:inputText
+                                    placeholder="Ejemplo: Salazar López"
+                                    title="Escriba aqui el apellido/s del contacto de la empresa a buscar."
+                                    />
+
+                                <p:outputLabel  value="Teléfono 1"/>
+                                <p:inputText
+                                    title="Escriba aqui el teléfono primario de la empresa a buscar."
+                                    maxlength="25"
+                                    value="#{buscarEmpresas.emTelefono1}"
+                                    placeholder="Ejemplo: 2617191"
+                                    />
+
+
+                                <p:outputLabel  value="Teléfono 2"/>
+                                <p:inputText
+                                    title="Escriba aqui el teléfono secundario de la empresa a buscar."
+                                    maxlength="25"
+                                    value="#{buscarEmpresas.emTelefono2}"
+                                    placeholder="Ejemplo: 2616977"
+                                    />
+
+                                <p:outputLabel  value="Estado"/>
+                                <p:selectOneMenu>
+                                    <f:selectItem itemLabel="No Implementado" noSelectionOption="true"/>
+                                </p:selectOneMenu>
+
+                                <p:outputLabel value="Buscar Empresa"/>
+                                <p:commandButton id="btn" value="Buscar Empresa" 
+                                                 icon="ui-icon-search" 
+                                                 actionListener="#{buscarEmpresas.buscarEmpresasPorFiltros()}"
+                                                 update="buscarEmpresaId"
+                                                 />
+
+                                <p:outputLabel value="Limpiar Campos"
+                                               />
+                                <p:commandButton icon="ui-icon-battery-0"
+                                                 value="Limpiar Campos"
+                                                 actionListener="#{buscarEmpresas.vaciarCampos}" 
+                                                 update="buscarEmpresaId"
+                                                 />
+                            </p:panelGrid>
+
+
+
+                            <div class="card card-w-title">
+                                <div align="center"><p:message for="messageId" 
+                                                               id="messId"  
+                                                               class="ocultar"
+                                                               ></p:message>
+                                    <h:inputHidden id="messageId"></h:inputHidden>
+                                    <p:messages  showDetail="true" autoUpdate="true" closable="true"
+                                                 class="ocultar"/>
+                                </div>
+                                <br></br>
+                                <p:dataTable rowsPerPageTemplate="1,2,3"
+                                             emptyMessage="ACTUALMENTE NO HAY RESULTADOS EN SU BÚSQUEDA"
+                                             value="#{buscarEmpresas.empresasHalladasComponentes}"
+                                             paginator="true"
+                                             var="empresa"
+                                             reflow="true"
+                                             id="resultados"
+                                             paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters} {RowsPerPageDropdown}"
+                                             >
+                                    <f:facet name="{Exporters}">
+                                        <h:commandLink>
+                                            <img src="../resources/images/xls.png" 
+                                                 width="15px" 
+                                                 style="margin-left:10px;"/>
+                                            <p:dataExporter type="xls" 
+                                                            target="resultados" 
+                                                            fileName="#{buscarEmpresas.nombreReporte}" />
+                                        </h:commandLink>
+
+                                        <h:commandLink>
+                                            <img src="../resources/images/pdf.png" 
+                                                 width="15px" 
+                                                 style="margin-left:5px"/>
+                                            <p:dataExporter type="pdf" 
+                                                            target="resultados" 
+                                                            fileName="#{buscarEmpresas.nombreReporte}"/>
+                                        </h:commandLink>
+                                    </f:facet>
+                                    <p:column headerText="Nombre" 
+
+                                              >
+                                        <p:outputLabel value="#{empresa.em_nombre}"/>
+                                    </p:column>
+                                    <p:column headerText="Sector">
+                                        <p:outputLabel value="#{empresa.em_sector}"/>
+                                    </p:column>
+                                    <p:column headerText="Pais" 
+
+                                              >
+                                        <p:outputLabel value="#{empresa.em_pais}"/>
+                                    </p:column>
+                                    <p:column headerText="Departamento" 
+
+                                              >
+                                        <p:outputLabel value="#{empresa.em_depto}"/>
+                                    </p:column>
+                                    <p:column headerText="Ciudad" 
+
+                                              >
+                                        <p:outputLabel value="#{empresa.em_ciudad}"/>
+                                    </p:column>
+                                    <p:column headerText="Detalle" rendered="#{loginBean.tipoDeUsuario == 2}">
+                                        <p:commandButton
+                                            action="#{buscarEmpresas.irDetalleEmpresaGeneral(empresa)}"
+                                            immediate="true">
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="Detalle" 
+                                              rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 3}"
+                                              exportable="false"
+                                              >
+                                        <p:commandButton
+                                            action="#{buscarEmpresas.irDetalleEmpresa(empresa)}"
+                                            immediate="true"
+                                            styleClass="orange-btn raised-btn"
+                                            value="Detalle"
+                                            icon="ui-icon-document" 
+                                            iconPos="center">
+                                        </p:commandButton>
+                                    </p:column>
+                                    <p:column headerText="Eliminar" 
+                                              exportable="false"
+                                              >
+                                        <p:commandButton
+                                            onclick="PF('dialogEliminar').show()"
+                                            immediate="true"
+                                            action="#{buscarEmpresas.asignarEmpresaEliminar(empresa)}"
+                                            icon="ui-icon-closethick"
+                                            value="Eliminar"
+                                            styleClass="orange-btn raised-btn"/>
+                                    </p:column>
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <p:dialog header="¿Está seguro que desea eliminar la empresa?" 
+                  widgetVar="dialogEliminar" 
+                  resizable="false"
+                  draggable="false" 
+                  responsive="true" 
+                  hideEffect="scale">
+            <h:form>
+                <div align="center">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p style="font-weight: bold">
+                                    Recuerde que si elimina le empresa, y esta no tiene
+                                    <BR></BR>
+                                    información comercial esta acción no se podrá deshacer.
+                                </p>
+                                <p:commandButton value="Si " 
+                                                 update=":buscarEmpresaId" 
+                                                 actionListener="#{buscarEmpresas.eliminarEmpresa()}" 
+                                                 oncomplete="PF('dialogEliminar').hide()" 
+                                                 icon="ui-icon-trash" 
+                                                 />
+
+                                <p:commandButton value="No" 
+                                                 oncomplete="PF('dialogEliminar').hide()" 
+                                                 icon="ui-icon-circle-close"/>
+                            </div>
+                        </f:facet>  
+                    </h:panelGrid>
+                </div>
+            </h:form>
+        </p:dialog>   
+    </ui:define>
+</ui:composition>

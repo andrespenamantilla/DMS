@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Empresas por ejecutivo</ui:define>
+    </title>
+<ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formIdEmpresasEjecutivo">
+            <p:message for="messageId" id="messId"></p:message>
+            <h:inputHidden id="messageId"></h:inputHidden>
+            <p:panel id="panel" header="Selección de Ejecutivos" style="margin-bottom:10px; width: 40%;">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Ejecutivo" style="color:#1c94c4;font-weight: bold" />
+
+                    <p:selectOneMenu  value="#{tbEmpresasComercialVista.comercialIdVista}" 
+                                      style="font-weight: 200 ;color:#1c94c4; width: 115%">
+                        <f:selectItem itemLabel="Seleccione un ejecutivo" itemValue="" noSelectionOption="true" />
+                        <f:selectItems 
+                            
+                            value="#{tbEmpresasComercialVista.allEjecutivos}"  />
+                    </p:selectOneMenu>
+                </h:panelGrid>
+            </p:panel>
+            <br></br>
+            <p:dataTable id="tablaEmpresasEjecutivoId"  value="#{tbEmpresasComercialVista.empresasPorComecial}" rowIndexVar="rowVarIndex" var="tb_empresa_ejecutivo_var">
+                <p:column headerText="Nombre de la empresa" filterBy="#{tb_empresa_ejecutivo_var.tbEmpresas.emNombre}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.tbEmpresas.emNombre}"/>
+                </p:column>
+
+                <p:column headerText="Nit" filterBy="#{tb_empresa_ejecutivo_var.tbEmpresas.emNit}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.tbEmpresas.emNit}"/>
+                </p:column>
+
+                <p:column headerText="Telefono" filterBy="#{tb_empresa_ejecutivo_var.tbEmpresas.emTelefono1}">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.tbEmpresas.emTelefono1}"/>
+                </p:column>
+
+                <p:column headerText="Dirección">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.tbEmpresas.emDireccion}"/>
+                </p:column>
+
+                <p:column headerText="Ciudad">
+                    <h:outputText value="#{tb_empresa_ejecutivo_var.tbEmpresas.emCiudad}"/>
+                </p:column>
+
+                <p:column>
+                    <p:commandButton value="Detalle" action="#{tbEmpresasComercialVista.asignacionInforacionRegistroEmpresaComercialVista()}">                
+                        <f:setPropertyActionListener value="#{tb_empresa_ejecutivo_var}" target="#{tbEmpresasComercialVista.empresaSeleccionada}"/>
+                    </p:commandButton>
+                </p:column>
+
+
+            </p:dataTable>
+            <br></br>
+
+            <p:commandButton update="formIdEmpresasEjecutivo:tablaEmpresasEjecutivoId" value="Filtar Resultados" actionListener="#{tbEmpresasComercialVista.buscarEmpresasPorComercialVista()}"
+                             icon="ui-icon-circle-check"/>
+
+        </h:form>
+
+       
+        <br></br>
+        <br></br>
+    </ui:define>
+</ui:composition>

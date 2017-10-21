@@ -1,0 +1,218 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Detalle Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="listaCasosEmpresaId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>LISTA DE DE PROCESOS COMERCIALES <h:outputLabel value="#{nuevoCasoEmpresa.empresaSesion.emNombre}"/> </h1>
+                            </div>
+
+                            <p:message for="messageIdEliminar" id="messeId"></p:message>
+                            <h:inputHidden id="messageIdEliminar"></h:inputHidden>
+
+                            <p:dataTable id="tablaCasosEmpresaComercialList"  
+                                         value="#{nuevoCasoEmpresa.listaCasosEmpresasItems}" 
+                                         rowIndexVar="rowVarIndex" 
+                                         var="caso_por_empresa"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                                         rows="5"
+                                         paginator="true"
+                                         emptyMessage="NO EXISTEN CASOS EN CURSO EN ESTE MOMENTO."
+                                         >
+                                <f:facet name="{Exporters}">
+                                    <h:commandLink>
+                                        <!--<p:graphicImage name="../images/xls.png" width="24"/>-->
+                                        <img src="../resources/images/xls.png" width="15px"/>
+                                        <p:dataExporter type="xls" target="tablaCasosEmpresaComercialList" fileName="procesoComercial" />
+                                    </h:commandLink>
+
+                                    <h:commandLink>
+                                        <img src="../resources/images/pdf.png" width="15px"/>
+                                        <p:dataExporter type="pdf" target="tablaCasosEmpresaComercialList" fileName="procesoComercial"/>
+                                    </h:commandLink>
+                                </f:facet>
+                                <p:column headerText="Contacto" filterBy="#{caso_por_empresa.ce_contacto}">
+                                    <p:outputLabel value="#{caso_por_empresa.ce_contacto}"/>
+                                </p:column>
+                                <p:column headerText="Línea de Negocio" filterBy="#{caso_por_empresa.ce_linea_negocio}">
+                                    <p:outputLabel value="#{caso_por_empresa.ce_linea_negocio}"/>
+                                </p:column>
+                                <p:column headerText="Estado" filterBy="#{caso_por_empresa.ce_estado}">
+                                    <p:outputLabel value="#{caso_por_empresa.ce_estado}"/>
+                                </p:column>
+                                <p:column headerText="Etapa" filterBy="#{caso_por_empresa.ce_etapa}">
+                                    <p:outputLabel value="#{caso_por_empresa.ce_etapa}"/>
+                                </p:column>
+                                <p:column headerText="Eliminar">
+                                    <p:commandButton onclick="PF('dlg2').show()" 
+                                                     value="Eliminar Caso">
+                                        <f:setPropertyActionListener 
+                                            value="#{caso_por_empresa}"
+                                            target="#{nuevoCasoEmpresa.casoEmpresa}">
+                                        </f:setPropertyActionListener>
+                                    </p:commandButton>
+
+                                </p:column>
+                                <p:column headerText="Editar">
+                                    <p:commandButton action="#{nuevoCasoEmpresa.irDetalleCaso(caso_por_empresa)}"
+                                                     value="Editar Caso">
+                                    </p:commandButton>
+                                </p:column>
+                                <p:column headerText="Tarea" style="border-color: #FFFFFF">
+                                    <p:commandButton value="Nueva Tarea" icon="ui-icon-print"
+                                                     iconPos="center"
+                                                     action="#{nuevoCasoEmpresa.irNuevaTarea(caso_por_empresa)}"></p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <h:form id="nuevoCasoEmpresaId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>GENERAR NUEVO CASO</h1>
+                            </div>
+                            <p:message for="messageId" id="messId"></p:message>
+                            <h:inputHidden id="messageId"></h:inputHidden>
+
+                            <p:panelGrid id="panelNuevoCaso" columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+
+                                <p:column>
+                                    <p:outputLabel value="Secuencial" for="txtSecuencialCaso" class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevoCasoEmpresa.casoEmpresaComponente.ce_sec_caso}"
+                                                 id="txtSecuencialCaso"
+                                                 placeholder="Secuencial del caso"
+                                                 required="true"
+                                                 requiredMessage="El secuencial del caso es requerido."></p:inputText>
+                                    <p:message for="txtSecuencialCaso" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Nombre de la Empresa" class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{nuevoCasoEmpresa.empresaSesion.emNombre}" readonly="true"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Seleccione Contacto" for="contactosEmpresa" class="labelsFormulario"></p:outputLabel>
+                                    <p:selectOneMenu id="contactosEmpresa"
+                                                     value="#{nuevoCasoEmpresa.casoEmpresaComponente.ce_contacto}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un contacto por favor.">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar Contacto"/>
+                                        <f:selectItems
+                                            value="#{nuevoCasoEmpresa.contactosSelectItem}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="contactosEmpresa"
+                                               class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Línea de Negocio" for="lineaNegocioEmpresa" class="labelsFormulario"></p:outputLabel>
+                                    <p:selectOneMenu id="lineaNegocioEmpresa"
+                                                     value="#{nuevoCasoEmpresa.casoEmpresaComponente.ce_linea_negocio}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione una línea de negocio.">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar linea"/>
+                                        <f:selectItems
+                                            value="#{nuevoCasoEmpresa.lineasNegocio}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu><p:message for="lineaNegocioEmpresa"
+                                                                 class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Tipo de Contacto" for="tipoContactoEmpresa" class="labelsFormulario"></p:outputLabel>
+                                    <p:selectOneMenu id="tipoContactoEmpresa"
+                                                     value="#{nuevoCasoEmpresa.casoEmpresaComponente.ce_tipo_cont}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un tipo de contacto">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar tipo"/>
+                                        <f:selectItems
+                                            value="#{nuevoCasoEmpresa.tipoContacto}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="tipoContactoEmpresa"
+                                               class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Etapas del Proceso" class="labelsFormulario" for="etapasProceso"></p:outputLabel>
+                                    <p:selectOneMenu id="etapasProceso"
+                                                     required="true"
+                                                     requiredMessage="Seleccione una etapa."
+                                                     value="#{nuevoCasoEmpresa.casoEmpresaComponente.ce_etapa}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar etapa"/>
+                                        <f:selectItems
+                                            value="#{nuevoCasoEmpresa.etapasProceso}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="etapasProceso" class="ocultar"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Descripción del Caso"  for="txtDescripcionCasoId" class="labelsFormulario"></p:outputLabel>
+                                    <p:inputTextarea value="#{nuevoCasoEmpresa.casoEmpresaComponente.ce_descripcion}"
+                                                     id="txtDescripcionCasoId"
+                                                     placeholder="Escriba aquí los detalles del nuevo proceso comercial"
+                                                     required="true"
+                                                     requiredMessage="Escriba una descripcion del caso."
+                                                     maxlength="200"
+                                                     minQueryLength="15"></p:inputTextarea>
+                                    <p:message for="txtDescripcionCasoId" class="ocultar"/>
+                                </p:column>
+
+
+                            </p:panelGrid>
+                            <p:panelGrid columns="2" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Generar Nuevo Caso" icon="fa fa-plus" actionListener="#{nuevoCasoEmpresa.insertarNuevoCasoEmpresa}"
+                                                 update="listaCasosEmpresaId, nuevoCasoEmpresaId"
+                                                 styleClass="orange-btn raised-btn"/>
+                                <p:commandButton value="Vaciar Campos" icon="fa fa-paint-brush"
+                                                 update="nuevoCasoEmpresaId" immediate="true"/>
+                            </p:panelGrid>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+        <p:dialog header="¿Esta seguro que desea eliminar el proceso comercial?" widgetVar="dlg2" resizable="false">
+            <h:form>
+                <h:panelGrid columns="2" cellpadding="5">
+                    <f:facet name="footer">
+                        <div align="center">
+                            <p:commandButton value="Si " update="listaCasosEmpresaId:tablaCasosEmpresaComercialList , :listaCasosEmpresaId" 
+                                             actionListener="#{nuevoCasoEmpresa.eliminarCasoEmpresa}" oncomplete="PF('dlg2').hide()" icon="ui-icon-trash"/>
+                            <p:commandButton value="No" oncomplete="PF('dlg2').hide()" icon="ui-icon-circle-close"/>
+                        </div>
+                    </f:facet>  
+                </h:panelGrid>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>

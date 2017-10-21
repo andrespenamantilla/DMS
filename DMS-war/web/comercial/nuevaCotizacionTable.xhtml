@@ -1,0 +1,472 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Detalle Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <style type="text/css">
+            .cars-datalist .text-column p:last-child{
+                color:#757575;
+            }
+
+            .cars-datalist .car-item {
+                padding: 8px 14px;
+            }
+
+            .cars-datalist .car-item img, .cars-datalist .car-item .car-details {
+                display: inline-block;
+                vertical-align: middle;
+                margin-right: 14px;
+            }
+
+            .cars-datalist .car-item button {
+                float: right;
+            }
+
+            .cars-datalist ul {
+                margin: 0;
+                padding: 0;
+            }
+
+            .ui-car-display td:last-child {
+                font-weight: 700;
+            }
+
+            @media (max-width:640px) {
+                .cars-datalist .text-column {
+                    text-align: center;
+                }
+            }
+        </style>
+        <h:form id="nuevaCotizacion">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>NUEVA COTIZACIÓN <p:outputLabel value="#{nuevaCotizacion.nombreEmpresa}"/></h1>
+
+                            </div>
+                            <div align="center">
+                                <p class="sugerenciasFormulario">Los campos marcados con * son de carácter obligatorio.</p>
+                            </div>
+
+                            <div align="center" style="padding: 10px">
+                                <p:message for="messageId" id="messId" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId"></h:inputHidden>
+                            </div>
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="informacionProducto">
+
+
+                                <p:column>
+                                    <p:outputLabel value="Seleccione un Producto" 
+                                                   class="labelsFormulario"
+                                                   for="producto"/>
+                                    <p:selectOneMenu value="#{nuevaCotizacion.prCodigo}"
+                                                     required="true"
+                                                     requiredMessage="Para realizar la cotización tiene que seleccionar un producto"
+                                                     id="producto">
+                                        <f:selectItem itemLabel="Selecione un producto" noSelectionOption="true" />
+                                        <f:selectItems value="#{listasComunes.productosMap}"/> 
+                                        <p:ajax event="change" 
+                                                listener="#{nuevaCotizacion.buscarInformacionProducto}"
+                                                update="nuevaCotizacion"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="producto"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Código" class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaCotizacion.productoInformacion.prCategoria}"
+                                                 placeholder="Código del producto"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Nombre del Producto" class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaCotizacion.productoInformacion.prNombre}"
+                                                 placeholder="Nombre del producto"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Cantidad en Stock" class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaCotizacion.productoInformacion.prStock}"
+                                                 placeholder="Cantidad en existencia"
+                                                 readonly="true"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Precio" class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaCotizacion.productoInformacion.prPrecio}"
+                                                 readonly="true"
+                                                 placeholder="Precio del producto"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Categoría" class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaCotizacion.productoInformacion.prCategoria}"
+                                                 readonly="true"
+                                                 placeholder="Cateforía del producto"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Cantidad a Cotizar" 
+                                                   class="labelsFormulario"
+                                                   for="cantidadProducto"/>
+                                    <p:inputNumber id="cantidadProducto"
+                                                   required="true"
+                                                   value="#{nuevaCotizacion.dcCantidad}"
+                                                   requiredMessage="La cantidad a cotizar es requerida."
+                                                   placeholder="Ejemplo: 5"/>
+                                    <p:message for="cantidadProducto"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Opciones disponibles" 
+                                                   class="labelsFormulario"
+                                                   for="opciones"/>
+                                    <p:selectOneMenu value="#{nuevaCotizacion.dcOpcion}"
+                                                     required="true"
+                                                     id="opciones"
+                                                     requiredMessage="La  opcion no puede estar vacía">
+                                        <f:selectItem itemLabel="Selecione una opción" noSelectionOption="true" />
+                                        <f:selectItems value="#{listasComunes.opcionesMap}"/>                              
+                                    </p:selectOneMenu>
+                                    <p:message for="opciones"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Porcentaje de descuento" class="labelsFormulario"/>
+                                    <p:inputNumber value="#{nuevaCotizacion.dcPorcDescto}"
+                                                   placeholder="Escriba aquí el valor del porcentaje"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel value="Descripción del detalle" class="labelsFormulario"/>
+                                    <p:inputTextarea value="#{nuevaCotizacion.observacionComponente.dc_texto}"
+                                                     placeholder="Escriba aquí la descripción por producto/s"
+                                                     id="descripcion"
+                                                     counterTemplate="{0} Caracteres Restantes."
+                                                     counter="counterDetalle"
+                                                     maxlength="150"/>
+                                    <h:outputText id="counterDetalle" style="color: red"/>
+                                    <p:message for="descripcion"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Producto de cortesía" class="labelsFormulario"/>
+                                    <br></br>
+                                    <p:outputLabel value="Seleccionado como cortesía,si no es así déjelo vacío."/>
+                                    <br></br>
+                                    <p:selectBooleanCheckbox value="#{nuevaCotizacion.dcCortesia}"/>
+                                </p:column>
+
+
+                            </p:panelGrid>
+                            <div align="center">
+                                <p:panelGrid columns="4" 
+                                             layout="grid" 
+                                             styleClass="ui-panelgrid-blank form-group">
+
+                                    <p:commandButton value="Agregar a la Cotización"
+                                                     icon="fa fa-shopping-cart"
+                                                     styleClass="orange-btn raised-btn"
+                                                     actionListener="#{nuevaCotizacion.agregarProductosAOpciones()}"
+                                                     update="nuevaCotizacion">
+                                    </p:commandButton>
+                                    <p:commandButton value="Limpiar Campos" icon="fa fa-paint-brush"
+                                                     styleClass="pink-btn raised-btn"/>
+                                    <p:commandButton value="Habilitar / Deshabilitar" icon="fa fa-lock"
+                                                     styleClass="blue-btn raised-btn"/>
+                                    <p:commandButton value="Guardar Cotización" 
+                                                     icon="fa fa-save"
+                                                     actionListener="#{nuevaCotizacion.guardarCotizacion()}"
+                                                     update="nuevaCotizacion"/>
+                                </p:panelGrid>
+                            </div>
+                            <div align="center" style="padding: 10px">
+                                <p:message for="messageId2" id="messId2" class="ocultar"></p:message>
+                                <h:inputHidden id="messageId2"></h:inputHidden>
+                            </div>           
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ui-g">
+                <div class="ui-g-12">
+                    <div class="card card-w-title">
+                        <div align="center" style="padding: 10px">
+                            <p:message for="messageIdUno" id="messIdUno" class="ocultar"></p:message>
+                            <h:inputHidden id="messageIdUno"></h:inputHidden>
+                        </div>
+                        <div align="center" style="padding: 10px"></div>
+
+                        <p:dataTable value="#{nuevaCotizacion.opcionUno}" var="detalle" 
+                                     paginator="true" 
+                                     rows="7"
+                                     id="uno"
+                                     styleClass="cars-datalist"
+                                     rendered="#{nuevaCotizacion.renderedOpcionUno}">
+                            <f:facet name="header">
+                                PRIMERA OPCIÓN
+                            </f:facet>
+                            <p:column headerText="Observación">
+                                <p:outputLabel value="#{detalle.dc_observacion}"/>
+                            </p:column>
+
+                            <p:column headerText="Precio del Producto">
+                                <p:outputLabel value="#{detalle.dc_precio}"/>
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <p:outputLabel value="#{detalle.dc_cantidad}"/>
+                            </p:column>
+
+                            <p:column headerText="Cortesía">
+                                <p:outputLabel value="#{detalle.dc_cortesia}"/>
+                            </p:column>
+
+                            <p:column headerText="Descuento">
+                                <p:outputLabel value="#{detalle.dc_porc_descto}"/> 
+                            </p:column>
+                            <p:column headerText=" Monto Neto">
+                                <p:outputLabel value="#{detalle.dc_neto}"/>
+                            </p:column>
+                            <p:column headerText="Monto a Cancelar">
+                                <p:outputLabel value="#{detalle.dc_descuento}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                                  style="margin:24px 24px 0 0"
+                                                  actionListener="#{nuevaCotizacion.eliminarDetalleOpcionUno(detalle)}"
+                                                  update="nuevaCotizacion">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div align="center" style="padding: 10px"></div>
+
+                        <div align="center" style="padding: 10px">
+                            <p:message for="messageIdDos" id="messIdDos" class="ocultar"></p:message>
+                            <h:inputHidden id="messageIdDos"></h:inputHidden>
+                        </div>
+
+
+                        <p:dataTable value="#{nuevaCotizacion.opcionDos}" var="detalle" 
+                                     paginator="true" 
+                                     rows="7"
+                                     id="dos"
+                                     styleClass="cars-datalist"
+                                     rendered="#{nuevaCotizacion.renderedOpcionDos}">
+                            <f:facet name="header">
+                                SEGUNDA OPCIÓN
+                            </f:facet>
+                            <p:column headerText="Observación">
+                                <p:outputLabel value="#{detalle.dc_observacion}"/>
+                            </p:column>
+
+                            <p:column headerText="Precio del Producto">
+                                <p:outputLabel value="#{detalle.dc_precio}"/>
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <p:outputLabel value="#{detalle.dc_cantidad}"/>
+                            </p:column>
+
+                            <p:column headerText="Cortesía">
+                                <p:outputLabel value="#{detalle.dc_cortesia}"/>
+                            </p:column>
+
+                            <p:column headerText="Descuento">
+                                <p:outputLabel value="#{detalle.dc_porc_descto}"/> 
+                            </p:column>
+                            <p:column headerText=" Monto Neto">
+                                <p:outputLabel value="#{detalle.dc_neto}"/>
+                            </p:column>
+                            <p:column headerText="Monto a Cancelar">
+                                <p:outputLabel value="#{detalle.dc_descuento}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                                  style="margin:24px 24px 0 0"
+                                                  actionListener="#{nuevaCotizacion.eliminarDetalleOpcionDos(detalle)}"
+                                                  update="nuevaCotizacion">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div align="center" style="padding: 10px"></div>
+
+                        <div align="center" style="padding: 10px">
+                            <p:message for="messageIdTres" id="messIdTres" class="ocultar"></p:message>
+                            <h:inputHidden id="messageIdTres"></h:inputHidden>
+                        </div>
+
+
+
+                        <p:dataTable value="#{nuevaCotizacion.opcionTres}" var="detalle" 
+                                     paginator="true" 
+                                     rows="7"
+                                     id="tres"
+                                     styleClass="cars-datalist"
+                                     rendered="#{nuevaCotizacion.renderedOpcionTres}">
+                            <f:facet name="header">
+                                TERCERA OPCIÓN
+                            </f:facet>
+                            <p:column headerText="Observación">
+                                <p:outputLabel value="#{detalle.dc_observacion}"/>
+                            </p:column>
+
+                            <p:column headerText="Precio del Producto">
+                                <p:outputLabel value="#{detalle.dc_precio}"/>
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <p:outputLabel value="#{detalle.dc_cantidad}"/>
+                            </p:column>
+
+                            <p:column headerText="Cortesía">
+                                <p:outputLabel value="#{detalle.dc_cortesia}"/>
+                            </p:column>
+
+                            <p:column headerText="Descuento">
+                                <p:outputLabel value="#{detalle.dc_porc_descto}"/> 
+                            </p:column>
+                            <p:column headerText=" Monto Neto">
+                                <p:outputLabel value="#{detalle.dc_neto}"/>
+                            </p:column>
+                            <p:column headerText="Monto a Cancelar">
+                                <p:outputLabel value="#{detalle.dc_descuento}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                                  style="margin:24px 24px 0 0"
+                                                  actionListener="#{nuevaCotizacion.eliminarDetalleOpcionTres(detalle)}"
+                                                  update="nuevaCotizacion">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                        <div align="center" style="padding: 10px"></div>
+
+                        <div align="center" style="padding: 10px">
+                            <p:message for="messageIdCuatro" id="messIdCuatro" class="ocultar"></p:message>
+                            <h:inputHidden id="messageIdCuatro"></h:inputHidden>
+                        </div>
+
+                        <p:dataTable value="#{nuevaCotizacion.opcionCuatro}" var="detalle" 
+                                     paginator="true" 
+                                     rows="7"
+                                     id="cuatro"
+                                     styleClass="cars-datalist"
+                                     rendered="#{nuevaCotizacion.renderedOpcionCuatro}">
+                            <f:facet name="header">
+                                CUARTA OPCIÓN
+                            </f:facet>
+                            <p:column headerText="Observación">
+                                <p:outputLabel value="#{detalle.dc_observacion}"/>
+                            </p:column>
+
+                            <p:column headerText="Precio del Producto">
+                                <p:outputLabel value="#{detalle.dc_precio}"/>
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <p:outputLabel value="#{detalle.dc_cantidad}"/>
+                            </p:column>
+
+                            <p:column headerText="Cortesía">
+                                <p:outputLabel value="#{detalle.dc_cortesia}"/>
+                            </p:column>
+
+                            <p:column headerText="Descuento">
+                                <p:outputLabel value="#{detalle.dc_porc_descto}"/> 
+                            </p:column>
+                            <p:column headerText=" Monto Neto">
+                                <p:outputLabel value="#{detalle.dc_neto}"/>
+                            </p:column>
+                            <p:column headerText="Monto a Cancelar">
+                                <p:outputLabel value="#{detalle.dc_descuento}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                                  style="margin:24px 24px 0 0"
+                                                  actionListener="#{nuevaCotizacion.eliminarDetalleOpcionCuatro(detalle)}"
+                                                  update="nuevaCotizacion">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+
+
+
+                        <div align="center" style="padding: 10px"></div>
+
+
+                        <div align="center" style="padding: 10px">
+                            <p:message for="messageIdCinco" id="messIdCinco" class="ocultar"></p:message>
+                            <h:inputHidden id="messageIdCinco"></h:inputHidden>
+                        </div>
+
+                        <p:dataTable value="#{nuevaCotizacion.opcionCinco}" var="detalle" 
+                                     paginator="true" 
+                                     rows="7"
+                                     id="cinco"
+                                     styleClass="cars-datalist"
+                                     rendered="#{nuevaCotizacion.renderedOpcionCinco}">
+                            <f:facet name="header">
+                                QUINTA OPCIÓN
+                            </f:facet>
+                            <p:column headerText="Observación">
+                                <p:outputLabel value="#{detalle.dc_observacion}"/>
+                            </p:column>
+
+                            <p:column headerText="Precio del Producto">
+                                <p:outputLabel value="#{detalle.dc_precio}"/>
+                            </p:column>
+
+                            <p:column headerText="Cantidad">
+                                <p:outputLabel value="#{detalle.dc_cantidad}"/>
+                            </p:column>
+
+                            <p:column headerText="Cortesía">
+                                <p:outputLabel value="#{detalle.dc_cortesia}"/>
+                            </p:column>
+
+                            <p:column headerText="Descuento">
+                                <p:outputLabel value="#{detalle.dc_porc_descto}"/> 
+                            </p:column>
+                            <p:column headerText=" Monto Neto">
+                                <p:outputLabel value="#{detalle.dc_neto}"/>
+                            </p:column>
+                            <p:column headerText="Monto a Cancelar">
+                                <p:outputLabel value="#{detalle.dc_descuento}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                                  style="margin:24px 24px 0 0"
+                                                  actionListener="#{nuevaCotizacion.eliminarDetalleOpcionCinco(detalle)}"
+                                                  update="nuevaCotizacion">
+                                </p:commandButton>
+                            </p:column>
+                        </p:dataTable>
+
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

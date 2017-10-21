@@ -1,0 +1,330 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Prospecto de Empresa</ui:define>
+    </title>
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="nuevaEmpresaProspectoId">
+
+            <br>
+                <div align="center">
+                    <h1 style="font-size: 20px;color: #FF9966;">Actualizar Empresa Prospectada</h1>
+                </div>
+            </br>
+            <div align="center">
+                <p:message for="messageId" id="messId"></p:message>
+                <h:inputHidden id="messageId"></h:inputHidden>
+            </div>
+            <br></br>
+            <p:panelGrid style="width: 100%" >
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="LLAVE PRIMARIA" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_empresa}">
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NOMBRE DE LA EMPRESA" 
+                                       style="color:#1c94c4;font-weight: bold;"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_nombre}"
+                                     required="true"
+                                     requiredMessage="El  Nombre de la empresa es requerido."
+                                     id="txtNombreEmpresaId"
+                                     maxlength="200"
+                                     style="width: 90%"
+                                     placeholder="(Requerido) Ej: Datamarket Solutions S.A.S"
+                                     ></p:inputText>
+                        <br></br>
+                        <p:messages for="txtNombreEmpresaId"/>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NIT" 
+                                       style="color:#1c94c4;font-weight: bold;"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_numero_id}"
+                                     required="true"
+                                     requiredMessage="El NIT de la empresa es requerido"
+                                     style="width: 90%"
+                                     maxlength="20"
+                                     id="txtNitEmpresaId"
+                                     placeholder="(Requerido) Ej: 900435250 - 7"
+                                     ></p:inputText>
+                        <br></br>
+                        <p:messages for="txtNitEmpresaId"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DIRECCIÓN DE LA EMPRESA" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_direccion}"
+                                     id="txtDireccionId"
+                                     required="true"
+                                     requiredMessage="La dirección es requerida"
+                                     style="width: 90%"
+                                     placeholder="(Requerido) Ej: CL. 15 No. 56 - 47 Sur"
+                                     maxlength="150"></p:inputText>
+                        <br></br>
+                        <br><p:message for="txtDireccionId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="PAÍS" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_pais}"
+                                         id="listaPaisesId"
+                                         style="width: 85%"
+                                         required="true"
+                                         requiredMessage="Seleccione un país">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione un país"/>
+                            <f:selectItems value="#{editarEmpresaProspectada.paisesMap}"/>
+                            <p:ajax event="change"
+                                    listener="#{editarEmpresaProspectada.buscarDepartamentosPorPais}"
+                                    update="nuevaEmpresaProspectoId:listaDepartamentosId, nuevaEmpresaProspectoId:listaCiudadesId "/>
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="listaPaisesId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DEPARTAMENTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_departamento}"
+                                         id="listaDepartamentosId"
+                                         style="width: 85%"
+                                         required="true"
+                                         requiredMessage="Seleccione un departamento">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione un departamento"/>
+                            <f:selectItems value="#{editarEmpresaProspectada.departamentosMap}"/>
+                            <p:ajax event="change"
+                                    listener="#{editarEmpresaProspectada.buscarCiudadesPorDepartamento()}"
+                                    update="nuevaEmpresaProspectoId:listaCiudadesId"/>
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="listaDepartamentosId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CIUDAD" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_ciudad}" 
+                                         id="listaCiudadesId"
+                                         style="width: 85%"
+                                         required="true"
+                                         requiredMessage="Selecione una ciudad">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione una ciudad"/>
+                            <f:selectItems value="#{editarEmpresaProspectada.ciudadesMap}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="TELÉFONO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_telefono}"
+                                     style="width: 95%"
+                                     ></p:inputText>
+                    </p:column>
+                </p:row>
+                <p:row  style="border-color: #FFFFFF">
+                    <p:column>
+                        <p:outputLabel value="REFERENCIA" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column>
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_referencia}"
+                                         required="true"
+                                         requiredMessage="Seleccione un referido"
+                                         id="selectReferenciaId"
+                                         style="width: 85%"
+                                         >
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione un valor"/>
+                            <f:selectItems value="#{listasComunes.referidoProspectoEmpresa}"/>
+                        </p:selectOneMenu>
+                        <br><p:message for="selectReferenciaId"/></br>
+                    </p:column>
+                    <p:column>
+                        <p:outputLabel value="PRODUCTOS Y/O SERVICIOS" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column>
+                        <p:inputTextarea value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_productos}"
+                                         id="txtProductosServiciosId"
+                                         counterTemplate="{0} Caracteres Restantes."
+                                         maxlength="200"
+                                         style="width: 95%"
+                                         counter="txtProductosServiciosIdDisplay"
+                                         placeholder="(Requerido) Ej: Guía de soluciones Tic.">
+                        </p:inputTextarea>
+                        <br><h:outputText id="txtProductosServiciosIdDisplay" style="color: red"/></br>
+                        <br></br>
+                        <br><p:message for="txtProductosServiciosId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="EMAIL" 
+                                       style="color:#1c94c4;font-weight: bold"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_email}"
+                                     id="txtEmailId"
+                                     style="width: 90%"
+                                     placeholder="(Opcional) Ej:comercial@dmssas.com"
+                                     maxlength="100"
+                                     ></p:inputText>
+                        <br><p:message for="txtEmailId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SITIO WEB" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_sitio_web}"
+                                     id="txtSitioWebId"
+                                     style="width: 90%"
+                                     placeholder="(Opcional) Ej: www.datamarketsolutions.com"
+                                     maxlength="50"
+
+                                     ></p:inputText>
+                        <br><p:message for="txtSitioWebId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NOMBRE DEL CONTACTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_nombre_contacto}"
+                                     id="txtNombreContactoId"
+                                     style="width: 90%"
+                                     placeholder="(Opcional) Ej: Santos"
+                                     maxlength="60"
+                                     ></p:inputText>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="APELLIDO DEL CONTACTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_apellido_contacto}"
+                                     id="txtApellidoContactoId"
+                                     style="width: 90%"
+                                     placeholder="(Opcional) Ej: Salazar"
+                                     maxlength="60"
+                                     ></p:inputText>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CARGO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_cargo}"
+                                         id="selectCargoId"
+                                         required="true"
+                                         style="width: 85%"
+                                         requiredMessage="Seleccione un cargo">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione un cargo"/>
+                            <f:selectItems value="#{listasComunes.cargos}"/>
+                        </p:selectOneMenu>
+                        <br><p:message for="selectCargoId"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="AREA" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_area}"
+                                         id="selectAreaId"
+                                         required="true"
+                                         requiredMessage="Seleccione un área"
+                                         style="width: 85%">
+                            <f:selectItem noSelectionOption="true"  itemLabel="Seleccione un área"/>
+                            <f:selectItems value="#{listasComunes.areas}"/>
+                        </p:selectOneMenu>
+                        <br><p:message for="selectAreaId"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DESCRIPCIÓN FUNCIÓN" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputTextarea value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_descripcion_funcion}"
+                                         style="width: 90%"
+                                         counter="txtDescripcionIdDisplay"
+                                         counterTemplate="{0} Caracteres Restantes."
+                                         maxlength="255"></p:inputTextarea>                           
+                        <br><h:outputText id="txtDescripcionIdDisplay" style="color: red"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SECTOR" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{editarEmpresaProspectada.empresasProspectoEditarComponente.pe_sector}"
+                                         id="selectSectorId"
+                                         requiredMessage="El sector es requerido"
+                                         required="true"
+                                         style="width: 85%">
+                            <f:selectItem noSelectionOption="true" itemLabel="Seleccione un sector"/>
+                            <f:selectItems value="#{listasComunes.sectores}"/>
+                        </p:selectOneMenu>
+                        <br><p:message for="selectSectorId"/></br>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <br>
+                <div align="center">
+                    <p:commandButton value="Actualizar Prospecto" update="nuevaEmpresaProspectoId" 
+                                     iconPos="center" 
+                                     icon="ui-icon-bookmark"
+                                     actionListener="#{editarEmpresaProspectada.actualizarEmpresaProspectada()}"/>
+                </div>
+            </br>
+
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<faces-config version="2.0" xmlns="http://java.sun.com/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-facesconfig_2_0.xsd">
+    
+    <name>primefaces_poseidon</name>
+    
+    <component>
+        <component-type>org.primefaces.component.PoseidonMenu</component-type>
+        <component-class>org.primefaces.poseidon.component.menu.PoseidonMenu</component-class>
+    </component>
+    
+    <render-kit>
+        <renderer>
+            <component-family>org.primefaces.component</component-family>
+            <renderer-type>org.primefaces.component.PoseidonMenuRenderer</renderer-type>
+            <renderer-class>org.primefaces.poseidon.component.menu.PoseidonMenuRenderer</renderer-class>
+        </renderer>
+    </render-kit>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleComercial</from-outcome>
+            <to-view-id>/comun/detalleEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irNuevoCasoEmpresa</from-outcome>
+            <to-view-id>/comercial/nuevoCasoEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irNuevaTareaEmpresa</from-outcome>
+            <to-view-id>/comercial/nuevaTarea.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleEmpresaProspecto</from-outcome>
+            <to-view-id>/adminbd/detalleEmpresaProspecto.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleCasoEmpresa</from-outcome>
+            <to-view-id>/comercial/detalleCasoEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleHistorialComercial</from-outcome>
+            <to-view-id>/privado/detalleHistorial.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>  
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleContacto</from-outcome>
+            <to-view-id>/comun/actualizarContacto.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleTarea</from-outcome>
+            <to-view-id>/comercial/actualizarTarea.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irNuevaEmpresaProspecto</from-outcome>
+            <to-view-id>/comun/empresaProspecto.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+      
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irTodasEmpresasProspectadas</from-outcome>
+            <to-view-id>/comun/empresasProspectadas.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+    
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irEditarEmpresaProspecto</from-outcome>
+            <to-view-id>/comun/empresaProspectoActualizar.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+       
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>verEmpresasComercial</from-outcome>
+            <to-view-id>/comercial/verEmpresasComercial.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+       
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irActualizarEmpresa</from-outcome>
+            <to-view-id>/comun/actualizarEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+    
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleCasosEmpresa</from-outcome>
+            <to-view-id>/comercial/nuevoCasoEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irListaHistorial</from-outcome>
+            <to-view-id>/privado/historialesEjecutivos.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+     
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irCalendarioEventos</from-outcome>
+            <to-view-id>/comercial/calendarioEventos.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule> 
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irBuscarEmpresa</from-outcome>
+            <to-view-id>/comun/buscarEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>   
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleEmpresa</from-outcome>
+            <to-view-id>/comun/detalleEmpresa.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>   
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleEmpresaGeneral</from-outcome>
+            <to-view-id>/adminbd/detalleEmpresaGeneral.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>    
+   
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleUsuario</from-outcome>
+            <to-view-id>/privado/modificarUsuario.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>
+    
+         
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irBuscarCasos</from-outcome>
+            <to-view-id>/privado/consultarCasos.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>  
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irBuscarTareas</from-outcome>
+            <to-view-id>/privado/consultarTareas.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>  
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irNuevoProducto</from-outcome>
+            <to-view-id>/privado/crearProducto.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>  
+    
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irBusquedaListaProductos</from-outcome>
+            <to-view-id>/privado/buscarProducto.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>  
+          
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irNuevaCotizacion</from-outcome>
+            <to-view-id>/comercial/nuevaCotizacion.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>        
+            
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
+        <navigation-case>
+            <from-outcome>irDetalleCotizacion</from-outcome>
+            <to-view-id>/comercial/detalleCotizacion.xhtml</to-view-id>
+            <redirect>true</redirect>
+        </navigation-case>
+    </navigation-rule>           
+                              
+</faces-config>

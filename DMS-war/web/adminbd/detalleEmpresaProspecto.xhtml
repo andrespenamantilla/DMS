@@ -1,0 +1,233 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Prospecto de Empresa</ui:define>
+    </title>
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista para crear una nueva empresa -->
+                <p:commandButton style="height:30px; width:100%;" value="Nueva Empresa" icon="ui-icon-search"
+                                 action="/adminbd/empC.xhtml?faces-redirect=true"
+                                 rendered="#{loginBean.tipoDeUsuario == 1 or loginBean.tipoDeUsuario == 2}">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista de busqueda de empresas -->
+                <p:commandButton style="height:30px; width:100%;" value="Buscar Empresa" icon="ui-icon-search"
+                                 action="/faces/empB.xhtml?faces-redirect=true">
+                </p:commandButton>
+                <!-- Este redirecciona a la vista de buscar por empleados asignados -->
+                <p:commandButton style="height:60px; width:100%;" value="Buscar por empleados Asignados" icon="ui-icon-search"
+                                 action="/faces/privado/empPorEjec.xhtml?faces-redirect=true"
+                                 rendered="#{loginBean.tipoDeUsuario == 1}">
+                </p:commandButton>
+
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="nuevaEmpresaProspectoId">
+
+            <br>
+                <div align="center">
+                    <h1 style="font-size: 20px;color: #FF9966;">DETALLE DE LA EMPRESA PROSPECTADA</h1>
+                </div>
+            </br>
+            <div align="center">
+                <p:message for="messageId" id="messId" style="width: 20%"></p:message>
+                <h:inputHidden id="messageId"></h:inputHidden>
+            </div>
+            <p:panelGrid style="width: 100%">
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="LLAVE PRIMARIA" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peEmpresa}">
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NOMBRE DE LA EMPRESA" 
+                                       style="color:#1c94c4;font-weight: bold;"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peNombre}" 
+                                       ></p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NIT" 
+                                       style="color:#1c94c4;font-weight: bold;"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peNumeroId}"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DIRECCIÓN DE LA EMPRESA" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peDireccion}" 
+                                       ></p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF;">
+                        <p:outputLabel value="PAÍS" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombrePais}" 
+                                         >
+                        </p:outputLabel>
+                        <br></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DEPARTAMENTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombreDepto}" 
+                                         >
+                        </p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CIUDAD" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombreCiudad}" 
+                                        >
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="TELÉFONO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peTelefono}"
+                                       ></p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row  style="border-color: #FFFFFF">
+                    <p:column>
+                        <p:outputLabel value="REFERENCIA" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column>
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombreReferencia}" 
+                                         >
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column>
+                        <p:outputLabel value="PRODUCTOS Y/O SERVICIOS" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column>
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peProductos}" >
+                        </p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="EMAIL" 
+                                       style="color:#1c94c4;font-weight: bold"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peEmail}"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SITIO WEB" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peSitioWeb}"
+
+                                       ></p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NOMBRE DEL CONTACTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peNombreContacto}"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="APELLIDO DEL CONTACTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peApellidoContacto}"
+                                       ></p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CARGO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombreCargo}">
+                                         
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="AREA" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombreArea}">
+                                        
+                        </p:outputLabel>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="DESCRIPCIÓN FUNCIÓN" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.empresaProspectoDetalle.peDescripcionFuncion}"
+                                         >                           
+                        </p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SECTOR" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="#{detalleEmpresaProspecto.nombreSector}">
+                                         
+                        </p:outputLabel>
+                    </p:column>
+
+                </p:row>
+            </p:panelGrid>
+        </h:form>
+    </ui:define>
+</ui:composition>

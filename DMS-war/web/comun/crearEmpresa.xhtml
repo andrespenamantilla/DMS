@@ -1,0 +1,326 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Crear nueva Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="nuevaEmpresa">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>CREACIÓN DE EMPRESAS</h1>
+                            </div>
+                            <div align="center">
+                            </div>
+                            
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:column>
+                                    <p:outputLabel value="Nit" class="labelsFormulario"/>
+                                    <p:column>
+                                        <p:inputText value="#{nuevaEmpresa.empresaComponente.em_nit}"
+                                                     id="nit"
+                                                     placeholder="Ejemplo: 900435250 - 7"
+                                                     required="true"
+                                                     requiredMessage="El NIT es requerido"
+                                                     maxlength="20"
+                                                     ></p:inputText>
+
+                                        <p:message for="nit" class="ocultar" />
+                                    </p:column>
+                                </p:column>
+
+                                <p:column> 
+                                    <p:outputLabel  value="Nombre de la empresa"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText
+                                        value="#{nuevaEmpresa.empresaComponente.em_nombre}"
+                                        required="true"
+                                        requiredMessage="El Nombre de la empresa es requerido"
+                                        id="nombre"
+                                        maxlength="200"
+                                        placeholder="Ej: Datamarket Solutions S.A.S"/>
+                                    <p:message for="nombre" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Dirección" 
+                                                   class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_direccion}"
+                                                 placeholder="Ej: CL. 15 No. 56 - 47 Sur."
+                                                 id="direccion"
+                                                 required="true"
+                                                 requiredMessage="La dirección es requerida"
+                                                 maxlength="150"/>
+                                    <p:message for="direccion" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel value="Sector"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu id="sector"
+                                                     value="#{nuevaEmpresa.empresaComponente.em_sector_index}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un sector por favor."
+                                                     >
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccione un Sector"/>
+                                        <f:selectItems
+                                            value="#{nuevaEmpresa.sectores}">    
+                                        </f:selectItems>
+                                        <br></br>
+                                    </p:selectOneMenu>
+                                    <p:message for="sector" class="ocultar"/>
+                                </p:column>
+
+
+                                <p:column>
+                                    <p:outputLabel  value="Subsector"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu id="subsector">
+                                        <f:selectItem noSelectionOption="true" itemLabel="No implementado"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel  value="País"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu id="pais"
+                                                     value="#{nuevaEmpresa.paisId}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un País">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar País"/>
+                                        <f:selectItems
+                                            value="#{nuevaEmpresa.paisesMap}">    
+                                        </f:selectItems>
+                                        <p:ajax  event="change" 
+                                                 listener="#{nuevaEmpresa.buscarDepartamentosPorPais()}"
+                                                 update="nuevaEmpresa:departamentos, nuevaEmpresa:ciudades"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="pais" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel  value="Departamento"
+                                                    class="labelsFormulario"/>
+                                    <p:selectOneMenu id="departamentos"
+                                                     value="#{nuevaEmpresa.departamentoId}"
+                                                     required="true"
+                                                     requiredMessage="Seleccione un Departamento">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar Departamento"/>
+                                        <f:selectItems
+                                            value="#{nuevaEmpresa.departamentosMap}">    
+                                        </f:selectItems>
+                                        <p:ajax listener="#{nuevaEmpresa.buscarCiudadesPorDepartamento()}"
+                                                update="nuevaEmpresa:ciudades"
+                                                event="change"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="departamentos" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Ciudad"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu id="ciudades"
+                                                     required="true"
+                                                     requiredMessage="Seleccione una Ciudad."
+                                                     value="#{nuevaEmpresa.ciudadId}">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccionar una Ciudad"/>
+                                        <f:selectItems
+                                            value="#{nuevaEmpresa.ciudadesMap}">    
+                                        </f:selectItems>
+                                    </p:selectOneMenu>
+                                    <p:message for="ciudades" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel  value="Teléfono"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_telefono1}" 
+                                                 id="telefono"
+                                                 required="true"
+                                                 requiredMessage="Escriba un teléfono de la empresa."
+                                                 placeholder="Ejemplo: 2617191"
+                                                 maxlength="25"/>
+                                    <p:message for="telefono" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Teléfono 2"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_telefono2}" 
+                                                 id="telefono2"
+                                                 placeholder="Ejemplo: 2616977"
+                                                 maxlength="25"/>
+                                    <p:message for="telefono2" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Teléfono 3"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_telefono3}"
+                                                 placeholder="Ejemplo: 2617191"
+                                                 id="telefono3"
+                                                 maxlength="25"/>
+                                    <p:message for="telefono3" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Teléfono Celular"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_fax}" 
+                                                 placeholder="Ejemplo: 3158130645"/>
+                                </p:column>
+
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="E-mail"
+                                                   class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_email}" 
+                                                 placeholder="Ejemplo: comercial@dmssas.com"
+                                                 class="ocultar"
+                                                 id="email"/>
+                                    <p:message for="email"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel  value="Fax"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_fax}" 
+                                                 placeholder="Ejemplo: 2616977"
+                                                 id="fax"/>
+                                    <p:message for="fax" class="ocultar"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel  value="Web"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_web}" 
+                                                 id="web"
+                                                 placeholder="http://www.datamarketsolutions.com"/>
+                                    <p:message for="web" class="ocultar" />
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel  value="Año de Fundación"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_anio_fundacion}" 
+                                                 placeholder="Ej: 2012"/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Actividad Principal"
+                                                   class="labelsFormulario"/>
+                                    <p:inputTextarea value="#{nuevaEmpresa.empresaComponente.em_actividad_principal}"
+                                                     id="actividad"
+                                                     counter="actividad_counter"
+                                                     counterTemplate="{0} Caracteres Restantes."
+                                                     maxlength="200"
+                                                     placeholder="Ejemplo: Bases de Datos, E-mailing, Mailing,Publicidad Web.">
+                                    </p:inputTextarea>
+                                    <h:outputText id="actividad_counter" style="color: red"/>
+                                </p:column>
+
+                                
+                                
+                                    <p:column>
+                                        <p:outputLabel value="Número de Empleados"
+                                                       class="labelsFormulario"/>
+                                        <p:inputText value="#{nuevaEmpresa.empresaComponente.em_num_empleados}" 
+                                                     placeholder="Ejemplo: 5000"/>
+                                    </p:column>
+                                
+
+                                <p:column>
+                                    <p:outputLabel  value="Origen"
+                                                    class="labelsFormulario"/>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_origen}" 
+                                                 placeholder="Ejemplo: Preguntar a la señora olga."/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Estado"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu value="#{nuevaEmpresa.empresaComponente.em_estado}" 
+                                                     id="estado">
+                                        <f:selectItem noSelectionOption="true" itemLabel="Seleccione un estado"/>
+                                        <f:selectItems value="#{listasComunes.estadoEmpresa}"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="Tipo per"
+                                                   class="labelsFormulario"/>
+                                    <p:selectOneMenu>
+                                        <f:selectItem noSelectionOption="true" 
+                                                      itemLabel="No implementado"/>
+                                    </p:selectOneMenu>
+                                </p:column>
+
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="CIIU1"
+                                                   class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_ciiu1}" 
+                                                 placeholder="Ejemplo: Preguntar a la señora olga."/>
+                                </p:column>
+
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="CIIU2"
+                                                   class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_ciiu2}"
+                                                 placeholder="Ejemplo: Preguntar a la señora olga."/>
+                                </p:column>
+
+                                
+                                <p:column>
+                                    <p:outputLabel value="CIIU3"
+                                                   class="labelsFormulario"></p:outputLabel>
+                                    <p:inputText value="#{nuevaEmpresa.empresaComponente.em_ciiu3}"
+                                                 placeholder="Ejemplo: Preguntar a la señora olga."/>
+                                </p:column>
+                            </p:panelGrid>
+                            <p:panelGrid columns="2"
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group">
+                                <p:commandButton value="Guardar Nueva Empresa" icon="ui-icon-disk" 
+                                         update="nuevaEmpresa"
+                                         actionListener="#{nuevaEmpresa.crearEmpresa()}"
+                                         />
+                                <p:commandButton value="Limpiar Campos" icon="ui-icon-disk"/>
+                            </p:panelGrid>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Administración de Roles</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h2>Menú</h2>
+        <div>
+             <!-- Este botón redirecciona al método que cierra la sesión-->
+            <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                             actionListener="#{loginBean.logout()}"/> 
+            <!-- Este botón muestra las notificaciones -->
+            <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+            </p:commandButton>
+            <!-- Este botón oculta las notificaciones -->
+            <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+            </p:commandButton>
+            <!--Botón que redirecciona a la lista de roles del sistema-->
+            <p:commandButton style="height:30px; width:100%;" value="Lista de Roles" icon="ui-icon-folder-open"
+                             action="rolL.xhtml?faces-redirect=true">
+            </p:commandButton>
+        </div>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formIdRoles">
+            <p:message for="messageId" id="messId"></p:message>
+            <h:inputHidden id="messageId"></h:inputHidden>
+            <p:panel id="panel" header="Administración de Roles del Sistema" style="margin-bottom:10px; width: 40%;">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value=" Código del Rol" style="color:#1c94c4;font-weight: bold" />
+                    <p:outputLabel value="#{tbAdmRolesVista.ro_codigo_vista}"/>
+                    <p:outputLabel value=" Descripción del Rol" style="color:  #417cab"/>
+                    <p:inputTextarea value="#{tbAdmRolesVista.ro_descripcion_vista}" style="color:  #417cab"/>
+                    <p:commandButton update="@all"  value="Modificar Rol" actionListener="#{tbAdmRolesVista.modificarTbAdmRolesVista()}"
+                                     icon="ui-icon-circle-check"
+                                     />
+                </h:panelGrid>
+            </p:panel>
+        </h:form>
+        <br></br>
+        <br></br>
+    </ui:define>
+</ui:composition>

@@ -1,0 +1,63 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+    <title><ui:define name="title">Administración de ejecutivos</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h2>Menú</h2>
+        <div>
+            <!-- Este botón redirecciona al método que cierra la sesión-->
+            <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                             actionListener="#{loginBean.logout()}"/> 
+            <!-- Este botón muestra las notificaciones -->
+            <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+            </p:commandButton>
+            <!-- Este botón oculta las notificaciones -->
+            <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+            </p:commandButton>
+            <!--Este botón redirecciona a la lista de ejecutivos-->
+            <p:commandButton style="height:50px; width:100%;" value="Lista de Ejecutivos" icon="ui-icon-folder-open"
+                             action="ejeL.xhtml?faces-redirect=true">
+            </p:commandButton>
+        </div>
+    </ui:define>
+    <ui:define name="content"> 
+        <h:form id="formIdEjecutivo">
+            <p:message for="messageId" id="messId"></p:message>
+            <h:inputHidden id="messageId"></h:inputHidden>
+            <p:panel id="panel" header="Administración de Ejecutivos del Sistema" style="margin-bottom:10px; width: 40%;">
+                <p:panelGrid columns="2" columnClasses="ui-grid-col-2,ui-grid-col-10"  styleClass="ui-panelgrid-blank">
+                    <p:outputLabel value=" Código del Ejecutivo" style="color:  #417cab"/>
+                    
+                    <p:selectOneMenu  value="#{tbEjecutivoVista.ej_codigo_vista}" 
+                                      style="font-weight: 200 ;color:#1c94c4; width: 115%">
+                        <f:selectItem itemLabel="Seleccione un usuario" itemValue="" noSelectionOption="true" />
+                        <f:selectItems 
+                            
+                            value="#{tbEjecutivoVista.allUsuarios}"  />
+                    </p:selectOneMenu>
+                    
+                    
+                    <p:outputLabel value="Seleccione el estado"/>
+                    <p:selectOneMenu id="oneMenuEstado" value="#{tbEjecutivoVista.ej_estado_vista}" required="true">
+                        <f:selectItem itemLabel="Activo" itemValue="1" />
+                        <f:selectItem itemLabel="Inactivo" itemValue="0" />
+                    </p:selectOneMenu>
+
+                    <p:commandButton update="@all"  value="Insertar Ejecutivo" 
+                                     actionListener="#{tbEjecutivoVista.insertarTbEjecutivosVista()}"
+                                     icon="ui-icon-circle-check"/>
+                </p:panelGrid>
+            </p:panel>
+        </h:form>
+        <br></br>
+        <br></br>
+    </ui:define>
+</ui:composition>

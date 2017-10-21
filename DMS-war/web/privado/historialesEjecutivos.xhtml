@@ -1,0 +1,65 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Detalle Empresa</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form id="formListarHistorialId">
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>CONSULTA DE HISTORIALES POR EJECUTIVO</h1>
+                            </div>
+
+                            <p:selectOneMenu value="#{historialEjecutivo.idEjecutivo}" id="selectEjecutivoHistorialId">
+                                <f:selectItem  itemLabel="Seleccione un ejecutivo" noSelectionOption="true"/>
+                                <f:selectItems value="#{historialEjecutivo.ejecutivosMap}"/>
+                                <p:ajax listener="#{historialEjecutivo.buscarHistorialPorEjecutivo}"
+                                        update="formListarHistorialId:historialesEjecutivosId"/>
+                            </p:selectOneMenu>
+                            <br></br>
+                            <p:dataTable id="historialesEjecutivosId" 
+                                         value="#{historialEjecutivo.historialPorEjecutivoView}"
+                                         var="historial_row"
+                                         emptyMessage="El  historial de registro está vacío."
+                                         paginator="true"
+                                         rows="10"
+                                         reflow="true">
+                                <p:column headerText="Fecha de Registro">
+                                    <p:outputLabel value="#{historial_row.hc_fecha}">
+                                        <f:convertDateTime pattern="dd/MM/yyyy"></f:convertDateTime>
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Nombre de la Empresa">
+                                    <p:outputLabel value="#{historial_row.hc_cod_empresa.emNombre}">
+                                    </p:outputLabel>
+                                </p:column>
+                                <p:column headerText="Etapa">
+                                    <p:outputLabel value="#{historial_row.hc_cod_etapa}"/>                    
+                                </p:column>
+                                <p:column headerText="Evento">
+                                    <p:outputLabel value="#{historial_row.hc_evento}"/>                    
+                                </p:column>
+                                <p:column headerText="Detalle">
+                                    <p:commandButton action="#{historialEjecutivo.irDetalleHistorialComercial(historial_row)}"
+                                                     icon="fa fa-list-ol"
+                                                     styleClass="orange-btn raised-btn"
+                                                     value="Detalle del Historial"
+                                                     />
+                                </p:column>                  
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+</ui:composition>

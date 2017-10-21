@@ -1,0 +1,265 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <title><ui:define name="title">Menú de Administración</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h:form>
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+            </div>
+        </h:form>
+    </ui:define>
+
+    <ui:define name="content">
+        <h:form id="consultarCasosId">
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Consulta General de casos</h1>
+            </div>
+            <br></br>
+            <p:panelGrid id="panelConsultaCasoId" style="width: 100%">
+                <p:row>
+                    <p:column style="width:10px; border-color: #FFFFFF" >
+                        <p:outputLabel value="TIPO DE CONTACTO"  
+                                       style="color:#1c94c4;font-weight: bold"
+                                       />
+                    </p:column>
+                    <p:column style="width:10px; border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{consultarCasos.ceTipoCont}">
+                            <f:selectItem itemLabel="Selccione un tipo de contacto"/>
+                            <f:selectItems value="#{listasComunes.tipoContacto}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="LÍNEA DE NEGOCIO"  style="color:#1c94c4;font-weight: bold;"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu style="width: 90%"
+                                         value="#{consultarCasos.ceLineaNegocio}">
+                            <f:selectItem itemLabel="Selccione una línea"/>
+                            <f:selectItems value="#{listasComunes.lineaNegocio}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="ETAPAS DEL PROCESO"  style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu style="width: 85%"
+                                         value="#{consultarCasos.ceEtapa}">
+                            <f:selectItem itemLabel="Selccione una etapa"/>
+                            <f:selectItems value="#{listasComunes.etapasProceso}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="ESTADO"  style="color:#1c94c4;font-weight: bold"
+                                       ></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu style="width: 90%"
+                                         value="#{consultarCasos.ceEstado}">
+                            <f:selectItem itemLabel="Selccione un estado"/>
+                            <f:selectItems value="#{listasComunes.estadoProceso}" />
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel  value="EJECUTIVO" style="color:#1c94c4;font-weight: bold"/>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu value="#{consultarCasos.ecEjecutivo}" style="width: 85%">
+                            <f:selectItem itemLabel="Seleccione un ejecutivo" noSelectionOption="true"/>
+                            <f:selectItems value="#{consultarCasos.ejecutivos}"/>
+                        </p:selectOneMenu>
+                    </p:column>
+                </p:row>
+            </p:panelGrid>
+            <br></br>
+            <div align="center">
+                <p:commandButton value="Filtrar Resultados" 
+                                 icon="ui-icon-search"
+                                 iconPos="center"
+                                 actionListener="#{consultarCasos.consultarCasosEmpresasPorCriterios}"
+                                 update="consultarCasosId:tablaCasosEmpresaComercialList, consultarCasosId:panelNombreId"/>
+            </div>
+            <br></br>
+            <div align="center">
+                <h:panelGrid id="panelNombreId">
+                    <p:outputLabel value="#{consultarCasos.nombreEjecutivo}" 
+                                   style="font-size: 3em;width: 100%;color: grey"/>
+                </h:panelGrid>
+            </div>
+            <br></br>
+            <p:dataTable id="tablaCasosEmpresaComercialList"  
+                         value="#{consultarCasos.listaCasosEmpresasVista}" 
+                         rowIndexVar="rowVarIndex" 
+                         var="caso_por_empresa"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters}"
+                         rows="5"
+                         paginator="true"
+                         emptyMessage="SU BUSQUEDA NO ARROJÓ NINGÚN RESULTADO.">
+                <f:facet name="{Exporters}">
+                    <h:commandLink>
+                        <!--<p:graphicImage name="../images/xls.png" width="24"/>-->
+                        <img src="../resources/images/xls.png" width="15px" style="margin-left:10px;"/>
+                        <p:dataExporter type="xls" target="tablaCasosEmpresaComercialList" fileName="Búsqueda de Casos" />
+                    </h:commandLink>
+
+                    <h:commandLink>
+                        <img src="../resources/images/pdf.png" width="15px" style="margin-left:5px"/>
+                        <p:dataExporter type="pdf" 
+                                        target="tablaCasosEmpresaComercialList" 
+                                        fileName="Búsqueda de Casos"/>
+                    </h:commandLink>
+                </f:facet>
+                <p:column headerText="CONTACTO" filterBy="#{caso_por_empresa.ce_contacto}" style="border-color: #FFFFFF;width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_contacto}"/>
+                </p:column>
+                <p:column headerText="LINEA DE NEGOCIO" filterBy="#{caso_por_empresa.ce_linea_negocio}" 
+                          style="border-color: #FFFFFF; width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_linea_negocio}"/>
+                </p:column>
+                <p:column headerText="ESTADO" filterBy="#{caso_por_empresa.ce_estado}" style="border-color: #FFFFFF; width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_estado}"/>
+                </p:column>
+                <p:column headerText="ETAPA" filterBy="#{caso_por_empresa.ce_etapa}" style="border-color: #FFFFFF;width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_etapa}"/>
+                </p:column>
+                <p:column headerText="DETALLE" style="border-color: #FFFFFF; width: 14%" 
+                          exportable="false">
+                    <p:commandButton  value="Infomación General" icon="ui-icon-notice">
+                        <p:ajax  
+                            listener="#{consultarCasos.casoSeleccionado(caso_por_empresa)}"
+                            update="consultarCasosId"
+                            oncomplete="PF('cajaDetalleCasoId').show();"/>
+                    </p:commandButton>
+                </p:column>
+            </p:dataTable>
+            <p:dataTable rendered="false"
+                         value="#{consultarCasos.listaCasosEmpresasVista}"
+                         id="tablaCasosEmpresaComercialList2">
+                <p:column headerText="CONTACTO" filterBy="#{caso_por_empresa.ce_contacto}" style="border-color: #FFFFFF;width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_contacto}"/>
+                </p:column>
+                <p:column headerText="LINEA DE NEGOCIO" filterBy="#{caso_por_empresa.ce_linea_negocio}" 
+                          style="border-color: #FFFFFF; width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_linea_negocio}"/>
+                </p:column>
+                <p:column headerText="ESTADO" filterBy="#{caso_por_empresa.ce_estado}" style="border-color: #FFFFFF; width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_estado}"/>
+                </p:column>
+                <p:column headerText="ETAPA" filterBy="#{caso_por_empresa.ce_etapa}" style="border-color: #FFFFFF;width: 17%">
+                    <p:outputLabel value="#{caso_por_empresa.ce_etapa}"/>
+                </p:column>
+            </p:dataTable>
+
+            <br></br>
+
+            <p:dialog resizable="false" 
+                      widgetVar="cajaDetalleCasoId" 
+                      header="CARACTERÍSTICAS DE LA TAREA"
+                      modal="true"
+                      showEffect="clip"
+                      style="width: 80%">
+                <p:outputPanel id="casoDetalleId">
+                    <div align="center">
+                        <h1 style="font-size: 20px;color: #FF9966;">Detalles del Caso</h1>
+                    </div>
+                    <p:panelGrid style="width: 100%" >
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="EMPRESA"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresa.ceEmpresa.tbEmpresas.emNombre}" 
+                                               />
+                            </p:column> 
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="ESTADO DEL CASO" 
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column> 
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresaComponente.ce_estado}"/>
+                            </p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="LINEA DE NEGOCIO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresaComponente.ce_linea_negocio}" 
+                                               />
+                            </p:column> 
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="CONTACTO DE LA EMPRESA" 
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column> 
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresaComponente.ce_contacto}"
+                                               />
+                            </p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="CAUSAL DEL CASO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresaComponente.ce_causal}" 
+                                               />
+                            </p:column> 
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="TIPO DE CONTACTO" 
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column> 
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresaComponente.ce_tipo_cont}"
+                                               />
+                            </p:column> 
+                        </p:row>
+                        <p:row>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="ETAPA DEL CASO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresaComponente.ce_etapa}" 
+                                               />
+                            </p:column>
+                            <p:column style="border-color: #FFFFFF">
+                                <p:outputLabel value="EJECUTIVO"
+                                               style="color:#1c94c4;font-weight: bold"/>
+                            </p:column>
+                            <p:column  style="border-color: #FFFFFF">
+                                <p:outputLabel value="#{consultarCasos.casoEmpresa.ceEmpresa.ecEjecutivo.tbAdmUsuarios.usNombre}"/>
+                            </p:column> 
+                        </p:row>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+    </ui:define>
+</ui:composition>
+

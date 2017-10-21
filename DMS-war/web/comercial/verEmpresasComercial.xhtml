@@ -1,0 +1,73 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                template="/WEB-INF/template.xhtml">
+
+    <ui:define name="title">Empresas a cargo</ui:define>
+
+    <ui:define name="viewname">Sample Page</ui:define>
+
+    <ui:define name="content">
+        <h:form>
+            <div class="ui-fluid">
+                <div class="ui-g">
+                    <div class="ui-g-12">
+
+                        <div class="card card-w-title">
+                            <div align="center" class="titulo">
+                                <h1>LISTA DE EMPRESAS A CARGO</h1>
+                            </div>
+                            <p:dataTable 
+                                var="empresa_comercial_componente_row" 
+                                value="#{tbEmpresasComercialVista.empresasComercialComponente}"          
+                                reflow="true"
+                                paginator="true"
+                                rows="10"
+                                emptyMessage="No tiene empresas asignadas, o no se encuentra por su criterio de búsqueda."
+                                >
+                                
+                                <p:column headerText="NOMBRE DE LA EMPRESA"
+                                          filterBy="#{empresa_comercial_componente_row.em_nombre}"
+                                          style="width: 30%">
+                                    <p:outputLabel value="#{empresa_comercial_componente_row.em_nombre}"/>
+                                </p:column>
+                                <p:column headerText="NIT"
+                                          filterBy="#{empresa_comercial_componente_row.em_nit}">
+                                    <p:outputLabel value="#{empresa_comercial_componente_row.em_nit}"/>
+                                </p:column>
+                                <p:column headerText="TELÉFONO"
+                                          filterBy="#{empresa_comercial_componente_row.em_telefono1}">
+                                    <p:outputLabel value="#{empresa_comercial_componente_row.em_telefono1}"/>
+                                </p:column>
+                                <p:column headerText="DETALLE">
+                                    <p:commandButton  
+                                        action="#{tbEmpresasComercialVista.verDetalleEmpresaComercial(empresa_comercial_componente_row)}"
+                                        icon="ui-icon-search"
+                                        value="Detalle de Empresa"
+                                        iconPos="center"
+                                        styleClass="orange-btn raised-btn"
+                                        style="height: 50px"
+                                        />
+                                </p:column>
+                                <p:column headerText="CASOS">
+                                    <p:commandButton value="Lista de Casos" 
+                                                     icon="ui-icon-document" 
+                                                     iconPos="center"
+                                                     action="#{tbEmpresasComercialVista.irListaDeCasosEmpresa}"
+                                                     style="height: 50px"
+                                                     styleClass="orange-btn raised-btn"
+                                                     >
+                                        <f:setPropertyActionListener value="#{empresa_comercial_componente_row}" target="#{tbEmpresasComercialVista.empresaConsultar}"/>
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </h:form>
+    </ui:define>
+
+</ui:composition>

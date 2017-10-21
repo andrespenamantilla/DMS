@@ -1,0 +1,319 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition template="/WEB-INF/template/BasicTemplate.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://java.sun.com/jsf/core">
+
+    <title><ui:define name="title">Administración de Usuarios</ui:define>
+    </title>
+
+    <ui:define name="menu-left">
+        <h:form>      
+            <h2>Menú</h2>
+            <div>
+                <!-- Este botón redirecciona al método que cierra la sesión-->
+                <p:commandButton style="height:30px; width:100%;" value="Cerrar Sesión" icon="ui-icon-close" 
+                                 actionListener="#{loginBean.logout()}"/> 
+                <!-- Este botón muestra las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Ver Notificaciones" onclick="PF('bar').show()" type="button" icon="ui-icon-arrow-1-s">
+                </p:commandButton>
+                <!-- Este botón oculta las notificaciones -->
+                <p:commandButton style="height:50px; width:100%;" value="Cerrar Notificaciones" onclick="PF('bar').hide()" type="button" icon="ui-icon-arrow-1-n">
+                </p:commandButton>
+                <!-- Este botón redirecciona a la vista de creacion de un nuevo  usuario dentro del sistema-->
+                <p:commandButton style="height:30px; width:100%;" value="Lista de Usuarios" icon="ui-icon-folder-open" id="btnTbAdmRolesNuevoRolId"
+                                 action="usuL.xhtml?faces-redirect=true"/>
+            </div>
+        </h:form>
+    </ui:define>
+    <ui:define name="content">
+        <h:form id="formIdUsuarios" >
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Listado de Usuarios</h1>
+            </div>
+            <br></br>
+            <p:dataTable value="#{crearUsuario.usuariosExistentesComponente}"
+                         paginator="true"
+                         emptyMessage="NO EXISTEN USUARIOS ACORDES A SUS CRITERIOS DE BÚSQUEDA"
+                         var="usuario"
+                         id="usuariosId"
+                         rowsPerPageTemplate="5,10,15"
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {Exporters} {RowsPerPageDropdown}"
+                         >
+                <p:column headerText="NOMBRES Y APELLIDOS"
+                          filterBy="#{usuario.us_nombre}" >
+                    <p:outputLabel value="#{usuario.us_nombre}"/>
+                </p:column>
+                <p:column headerText="IDENTIFICACIÓN"
+                          filterBy="#{usuario.us_id}" >
+                    <p:outputLabel value="#{usuario.us_id}"/>
+                </p:column>
+                <p:column headerText="ÁREA" 
+                          filterBy="#{usuario.us_area_descripcion}"  
+                          >
+                    <p:outputLabel value="#{usuario.us_area_descripcion}"/>
+                </p:column>
+                <p:column headerText="CARGO"
+                          filterBy="#{usuario.us_cargo}" >
+                    <p:outputLabel value="#{usuario.us_cargo_descripcion}"/>
+                </p:column>
+                <p:column headerText="EDITAR"
+                          exportable="false">
+                    <p:commandLink
+                        immediate="true"
+                        action="#{crearUsuario.irDetalleUsuario(usuario)}">
+                        <img style="width: 30px; height: 30px; margin-left: 5em" src="../resources/images/edit.png"/>
+                    </p:commandLink>
+                </p:column>
+                <p:column headerText="ELIMINAR"
+                          exportable="false">
+                    <p:commandLink
+                        immediate="true"
+                        action="#{crearUsuario.asignarUsuarioEliminacion(usuario)}"
+                        onclick="PF('dialogEliminar').show()">
+                        <img style="width: 30px; height: 30px; margin-left: 5em" src="../resources/images/Recycle.png"/>
+                    </p:commandLink>
+                </p:column>
+            </p:dataTable>
+            <br></br>
+            <div align="center">
+                <h1 style="font-size: 20px;color: #FF9966;">Creación de Usuarios</h1>
+            </div>
+            <div align="center">
+                <p:message for="messageId" id="messId" class="ocultar" 
+                           style="font-size:2em" 
+                           ></p:message>
+            </div>
+            <h:inputHidden id="messageId"></h:inputHidden>
+            <br></br>
+            <p:panelGrid style="width: 100%">
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NOMBRES Y APELLIDOS" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText required="true"
+                                     requiredMessage="El Nombre/s y Apellido/s son requeridos"
+                                     value="#{crearUsuario.usuarioComponente.us_nombre}"
+                                     placeholder="Ej: Santos Salazar López"
+                                     style="width: 95%"
+                                     id="nombresApellidos"/>
+                        <br></br>
+                        <br><p:message for="nombresApellidos" class="ocultar"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="TIPO DE DOCUMENTO" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu 
+                            value="#{crearUsuario.usuarioComponente.us_tipo_id}"
+                            required="true"
+                            requiredMessage="El tipo de documento es requerido."
+                            id="tipo"
+                            style="width: 90%">
+                            <f:selectItem itemLabel="Seleccione un tipo de Documento" noSelectionOption="true"/>
+                            <f:selectItem itemLabel="CÉDULA DE CIUDADANÍA" itemValue="1" />
+                            <f:selectItem itemLabel="TARJETA DE IDENTIDAD" itemValue="2" />
+                            <f:selectItem itemLabel="REGISTRO CIVIL" itemValue="3" />
+                            <f:selectItem itemLabel="CÉDULA DE EXTRANJERÍA" itemValue="4" /> 
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="tipo" class="ocultar"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="NÚMERO DE DOCUMENTO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText
+                            value="#{crearUsuario.usuarioComponente.us_id}"
+                            required="true"
+                            requiredMessage="El número del documento es requerido"
+                            placeholder="Ej: 11310986"
+                            style="width: 95%"
+                            id="numeroDocumento"/>
+                        <br></br>
+                        <br><p:message for="numeroDocumento" class="ocultar"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="ESTADO DEL USUARIO" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu id="estado"
+                                         style="width: 87%"
+                                         required="true"
+                                         requiredMessage="El estado es requerido"
+                                         value="#{crearUsuario.usuarioComponente.us_estado}">
+                            <f:selectItem itemLabel="Seleccione un Estado" noSelectionOption="true"/>
+                            <f:selectItems value="#{listasComunes.estadoUsuario}"/>
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="estado" class="ocultar"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="ÁREA DEL EJECUTIVO" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu id="area"
+                                         style="width: 90%"
+                                         required="true"
+                                         requiredMessage="El Área del usuario es requerida"
+                                         value="#{crearUsuario.usuarioComponente.us_area}">
+                            <f:selectItem itemLabel="Seleccione un Área" noSelectionOption="true"/>
+                            <f:selectItems value="#{listasComunes.areas}"/>
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="area" class="ocultar"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CARGO DEL EJECUTIVO" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu id="cargo"
+                                         style="width: 87%"
+                                         required="true"
+                                         requiredMessage="El cargo del usuario es requerido"
+                                         value="#{crearUsuario.usuarioComponente.us_cargo}">
+                            <f:selectItem itemLabel="Seleccione un cargo" noSelectionOption="true"/>
+                            <f:selectItems value="#{listasComunes.cargos}"/>
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="cargo" class="ocultar"/></br>
+                    </p:column>
+                </p:row>
+
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="SELECCIONE EL ROL" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:selectOneMenu id="rol"
+                                         style="width: 90%"
+                                         required="true"
+                                         requiredMessage="El rol del usuario es requerido"
+                                         value="#{crearUsuario.usuarioComponente.us_rol}">
+                            <f:selectItem itemLabel="Seleccione un Rol" noSelectionOption="true"/>
+                            <f:selectItems value="#{listasComunes.rolesMap}"/>
+                        </p:selectOneMenu>
+                        <br></br>
+                        <br><p:message for="rol" class="ocultar"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="EMAIL" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText id="email"
+                                     style="width: 95%"
+                                     required="true"
+                                     requiredMessage="El e-mail del usuario es requerido"
+                                     placeholder="Ej: comercial@dmssas.com"
+                                     value="#{crearUsuario.usuarioComponente.us_email}"/>
+
+                        <br></br>
+                        <br><p:message for="email" class="ocultar"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CONTRASEÑA" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:password id="password"
+                                    style="width: 95%"
+                                    required="true"
+                                    requiredMessage="El password del usuario es requerido"
+                                    placeholder="Mímino seis(6) caracteres"
+                                    maxlength="20"
+                                    value="#{crearUsuario.usuarioComponente.us_password}"/>
+
+                        <br></br>
+                        <br><p:message for="password" class="ocultar"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CONFIRMAR CONTRASEÑA" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:password id="passwordConfirmacion"
+                                    style="width: 95%"
+                                    required="true"
+                                    requiredMessage="la confirmaciondel  password del usuario es requerida"
+                                    placeholder="Mímino seis(6) caracteres"
+                                    maxlength="20"
+                                    value="#{crearUsuario.confirmarPassword}"/>
+
+                        <br></br>
+                        <br><p:message for="passwordConfirmacion" class="ocultar"/></br>
+                    </p:column>
+                </p:row>
+                <p:row>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="LOGIN" 
+                                       style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:inputText value="#{crearUsuario.usuarioComponente.us_login}"
+                                     id="login"
+                                     required="true"
+                                     requiredMessage="El login es requerido"
+                                     maxlength="10"
+                                     placeholder="Ej: sasalo"
+                                     style="width: 95%"/>
+                        <br></br>
+                        <br><p:message for="login" class="ocultar"/></br>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:outputLabel value="CONFIRMAR ACCIÓN" style="color:#1c94c4;font-weight: bold"></p:outputLabel>
+                    </p:column>
+                    <p:column style="border-color: #FFFFFF">
+                        <p:commandButton value="GUARDAR USUARIO"
+                                         update="formIdUsuarios"
+                                         actionListener="#{crearUsuario.crearNuevoUsuario()}"
+                                         icon="ui-icon-bookmark"
+                                         iconPos="center"/>
+
+                    </p:column>
+                </p:row>
+
+            </p:panelGrid>
+        </h:form>
+        <br></br>
+        <p:dialog header="¿ESTA SEGURO QUE DESEA ELIMINAR EL USUARIO?" widgetVar="dialogEliminar" resizable="false">
+            <h:form>
+                <div align="center">
+                    <h:panelGrid columns="2" cellpadding="5">
+                        <f:facet name="footer">
+                            <div align="center">
+                                <p style="font-weight: bold">
+                                    RECUERDE QUE SI ELIMINA EL USUARIO, Y  ESTE NO TIENE
+                                    <BR></BR>
+                                    UN EJECUTIVO ASIGNADO SE PODRÁ ELIMINAR Y ESTA OPERACIÓN
+                                    <BR></BR>
+                                    NO SE PODRÁ DESHACER.
+                                </p>
+                                <p:commandButton value="Si " 
+                                                 update=":formIdUsuarios" 
+                                                 actionListener="#{crearUsuario.eliminarUsuario()}" 
+                                                 oncomplete="PF('dialogEliminar').hide()" 
+                                                 icon="ui-icon-trash" 
+                                                 />
+
+                                <p:commandButton value="No" 
+                                                 oncomplete="PF('dialogEliminar').hide()" 
+                                                 icon="ui-icon-circle-close"/>
+                            </div>
+                        </f:facet>  
+                    </h:panelGrid>
+                </div>
+            </h:form>
+        </p:dialog>
+    </ui:define>
+</ui:composition>
