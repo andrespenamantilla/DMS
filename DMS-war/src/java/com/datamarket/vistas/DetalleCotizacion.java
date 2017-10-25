@@ -17,7 +17,6 @@ import com.datamarket.entidades.TbDetalleCotizacion;
 import com.datamarket.entidades.TbDetalleCotizacionPK;
 import com.datamarket.entidades.TbObservaciones;
 import com.datamarket.entidades.TbProductos;
-import com.sun.org.apache.bcel.internal.generic.AALOAD;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +113,7 @@ public class DetalleCotizacion implements Serializable {
         precargarVizualizacionOpciones();
         observacionComponente = new TbObservacionesComponente();
         inicializarPonderadosOpciones();
+        inicializarValoresPorOpcionDeCotizacion();
 
     }
 
@@ -241,6 +241,29 @@ public class DetalleCotizacion implements Serializable {
 
     }
 
+    public void inicializarValoresPorOpcionDeCotizacion() {
+        if (opcionUnoComponente.size() > 0) {
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
+        }
+
+        if (opcionDosComponente.size() > 0) {
+            ponderadoDos = calcularPonderadosPorOpcion(opcionDosComponente);
+        }
+
+        if (opcionTresComponente.size() > 0) {
+            ponderadoTres = calcularPonderadosPorOpcion(opcionTresComponente);
+        }
+
+        if (opcionCuatroComponente.size() > 0) {
+            ponderadoCuatro = calcularPonderadosPorOpcion(opcionCuatroComponente);
+        }
+
+        if (opcionCincoComponente.size() > 0) {
+            ponderadoCinco = calcularPonderadosPorOpcion(opcionCincoComponente);
+        }
+
+    }
+
     public void inicializarListaComponentes() {
         opcionUnoComponente = new ArrayList<>();
         opcionDosComponente = new ArrayList<>();
@@ -278,90 +301,110 @@ public class DetalleCotizacion implements Serializable {
 
         if (size == 1 && (opcionDosComponente.size() > 0 || opcionTresComponente.size() > 0 || opcionCuatroComponente.size() > 0 || opcionCincoComponente.size() > 0)) {
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdUno", new FacesMessage(FacesMessage.SEVERITY_WARN, "", "ERROR , No puede ofrecer opciones alternativas sin una opción primaria."));
+
         }
 
         if ((opcionDosComponente.isEmpty() && opcionTresComponente.isEmpty() && opcionCuatroComponente.isEmpty() && opcionCincoComponente.isEmpty())) {
             opcionUnoComponente.remove(detalleOpcionUno);
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdUno", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la primera opción."));
 
         }
 
         if ((opcionDosComponente.isEmpty() && opcionTresComponente.isEmpty() && opcionCuatroComponente.isEmpty())) {
             opcionUnoComponente.remove(detalleOpcionUno);
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdUno", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la primera opción."));
 
         }
 
         if ((opcionDosComponente.isEmpty() && opcionTresComponente.isEmpty())) {
             opcionUnoComponente.remove(detalleOpcionUno);
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdUno", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la primera opción."));
 
         }
 
         if ((opcionDosComponente.isEmpty())) {
             opcionUnoComponente.remove(detalleOpcionUno);
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdUno", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la primera opción."));
 
         }
 
         if (size > 1 && (opcionDosComponente.size() > 0 || opcionTresComponente.size() > 0 || opcionCuatroComponente.size() > 0 || opcionCincoComponente.size() > 0)) {
             opcionUnoComponente.remove(detalleOpcionUno);
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdUno", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la primera opción."));
         }
 
         if (opcionUnoComponente.isEmpty()) {
             renderedOpcionUno = false;
 
-
         }
 
     }
 
+    /*Este método calcula todos los valores acumulados de una opción de la cotización*/
     public PonderadoTotalOpcion calcularPonderadosPorOpcion(List<TbDetalleCotizacionComponente> opcionDetalleComponente) {
-        
+
         Double totalPonderadoDescuento = 0.0;
         Double totalPonderadoNeto = 0.0;
-        
+        Double netoDescontado = 0.0;
+
         PonderadoTotalOpcion ponderadoTotal = new PonderadoTotalOpcion();
 
-        for(TbDetalleCotizacionComponente  aux : opcionDetalleComponente )
-        {
-        totalPonderadoDescuento = totalPonderadoDescuento + calcularPonderadoPorDetalleConDescuento(aux);
-        totalPonderadoNeto = totalPonderadoNeto + calcularPonderadoPorDetalleSinDescuento(aux);
+        for (TbDetalleCotizacionComponente aux : opcionDetalleComponente) {
+            totalPonderadoDescuento = totalPonderadoDescuento + calcularPonderadoPorDetalleConDescuento(aux);
+            totalPonderadoNeto = totalPonderadoNeto + calcularPonderadoPorDetalleSinDescuento(aux);
+            netoDescontado = netoDescontado + calcularMontoDescuento(aux);
         }
-        
-        
-        
-        
+        ponderadoTotal.setSinDescuento(totalPonderadoNeto.toString());
+        ponderadoTotal.setDescuento(netoDescontado.toString());
+        ponderadoTotal.setTotalAntesDeIva(totalPonderadoDescuento.toString());
+
         return ponderadoTotal;
     }
 
+    /*Este  método calcula el valor a pagar  del neto descontando el porcentaje de descuento*/
     public Double calcularPonderadoPorDetalleConDescuento(TbDetalleCotizacionComponente opcionDetalleComponente) {
         Double porcentaje = 0.0;
-        
+
+        Integer cantidad = opcionDetalleComponente.getDc_cantidad_num();
+        Double precioUnidad = opcionDetalleComponente.getDc_precio();
+        Double total = 0.0;
+        if (opcionDetalleComponente.getDc_porc_descto_num() == 0) {
+            porcentaje = 1.0;
+            total = porcentaje * cantidad * precioUnidad;
+        }
+        if (opcionDetalleComponente.getDc_porc_descto_num() > 0) {
+            porcentaje = 1 - opcionDetalleComponente.getDc_descuento() / 100;
+            total = porcentaje * cantidad * precioUnidad;
+        }
+
+        return total;
+    }
+
+    public Double calcularMontoDescuento(TbDetalleCotizacionComponente opcionDetalleComponente) {
+        Double montoADescontar = null;
+        if (opcionDetalleComponente.getDc_porc_descto_num() == 0) {
+
+            montoADescontar = 0.0;
+
+        }
+        if (opcionDetalleComponente.getDc_porc_descto_num() > 0) {
+            montoADescontar = (opcionDetalleComponente.getDc_porc_descto_num()/ 100) * opcionDetalleComponente.getDc_cantidad_num() * opcionDetalleComponente.getDc_precio();
+            
+        }
+        return montoADescontar;
+    }
+
+    public Double calcularPonderadoPorDetalleSinDescuento(TbDetalleCotizacionComponente opcionDetalleComponente) {
         Integer cantidad = opcionDetalleComponente.getDc_cantidad_num();
         Double precioUnidad = opcionDetalleComponente.getDc_precio();
 
-        if (opcionDetalleComponente.getDc_porc_descto_double() == 0) {
-            porcentaje = 1.0;
-        }
-        if (opcionDetalleComponente.getDc_porc_descto_double() > 0) {
-            porcentaje = 1 - opcionDetalleComponente.getDc_descuento() / 100;
-        }
-
-        Double total = porcentaje * cantidad * precioUnidad;
-        Double netoDescuento = (cantidad * precioUnidad) - total;
+        Double total = cantidad * precioUnidad;
         return total;
-    }
-    
-    
-    public Double calcularPonderadoPorDetalleSinDescuento(TbDetalleCotizacionComponente opcionDetalleComponente)
-    {
-    Integer cantidad = opcionDetalleComponente.getDc_cantidad_num();
-    Double precioUnidad = opcionDetalleComponente.getDc_precio();    
-        
-    Double total = cantidad * precioUnidad;
-    return  total;
     }
 
     public void agregarProductosAOpciones() {
@@ -369,6 +412,8 @@ public class DetalleCotizacion implements Serializable {
             renderedOpcionUno = true;
 
             opcionUnoComponente.add(detalleCotizacionConverter.convertirEntidadAComponente(agregarProductoAlDetalle()));
+            System.out.println(opcionUnoComponente.size());
+            ponderadoUno = calcularPonderadosPorOpcion(opcionUnoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageId", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "CORRECTO , El detalle fue adicionado a la primera opción."));
 
         }
@@ -377,6 +422,7 @@ public class DetalleCotizacion implements Serializable {
 
             renderedOpcionDos = true;
             opcionDosComponente.add(detalleCotizacionConverter.convertirEntidadAComponente(agregarProductoAlDetalle()));
+            ponderadoDos = calcularPonderadosPorOpcion(opcionDosComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageId", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "CORRECTO , El detalle fue adicionado a la segunda opción."));
 
         }
@@ -389,6 +435,7 @@ public class DetalleCotizacion implements Serializable {
         if (detalleCotizacionSeleccionado.getDcOpcion() == 3 && renderedOpcionUno == true && renderedOpcionDos == true && opcionDos.size() > 0) {
             renderedOpcionTres = true;
             opcionTresComponente.add(detalleCotizacionConverter.convertirEntidadAComponente(agregarProductoAlDetalle()));
+            ponderadoTres = calcularPonderadosPorOpcion(opcionTresComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageId", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "CORRECTO , El detalle fue adicionado a la tercera opción."));
 
         }
@@ -401,6 +448,8 @@ public class DetalleCotizacion implements Serializable {
         if (detalleCotizacionSeleccionado.getDcOpcion() == 4 && renderedOpcionUno == true && renderedOpcionDos == true && renderedOpcionTres == true && opcionTres.size() > 0) {
             renderedOpcionCuatro = true;
             opcionCuatroComponente.add(detalleCotizacionConverter.convertirEntidadAComponente(agregarProductoAlDetalle()));
+            ponderadoCuatro = calcularPonderadosPorOpcion(opcionCuatroComponente);
+
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageId", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "CORRECTO , El detalle fue adicionado a la cuarta opción."));
 
         }
@@ -413,6 +462,8 @@ public class DetalleCotizacion implements Serializable {
         if (detalleCotizacionSeleccionado.getDcOpcion() == 5 && renderedOpcionUno == true && renderedOpcionDos == true && renderedOpcionTres == true && renderedOpcionCuatro == true && opcionCuatro.size() > 0) {
             renderedOpcionCinco = true;
             opcionCincoComponente.add(detalleCotizacionConverter.convertirEntidadAComponente(agregarProductoAlDetalle()));
+            ponderadoCinco = calcularPonderadosPorOpcion(opcionCincoComponente);
+
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageId", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "CORRECTO , El detalle fue adicionado a la quinta opción."));
 
         }
@@ -451,12 +502,12 @@ public class DetalleCotizacion implements Serializable {
             detalle.setDcCortesia("S".charAt(0));
         }
 
-        if (dcPorcDescto == null) {
+        if (detalleCotizacionSeleccionado.getDcPorcDescto() == 0) {
             detalle.setDcPorcDescto(0);
         }
 
-        if (dcPorcDescto != null) {
-            detalle.setDcPorcDescto(dcPorcDescto);
+        if (detalleCotizacionSeleccionado.getDcPorcDescto() >0) {
+            detalle.setDcPorcDescto(detalleCotizacionSeleccionado.getDcPorcDescto());
         }
 
         return detalle;
@@ -472,33 +523,35 @@ public class DetalleCotizacion implements Serializable {
 
         if ((opcionTresComponente.isEmpty() && opcionCuatroComponente.isEmpty() && opcionCincoComponente.isEmpty())) {
             opcionDosComponente.remove(detalleOpcionDos);
+            ponderadoDos = calcularPonderadosPorOpcion(opcionDosComponente);
+
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdDos", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la segunda opción."));
 
         }
 
         if ((opcionTresComponente.isEmpty() && opcionCuatroComponente.isEmpty())) {
             opcionDosComponente.remove(detalleOpcionDos);
+            ponderadoDos = calcularPonderadosPorOpcion(opcionDosComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdDos", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la segunda opción."));
 
         }
 
         if ((opcionTresComponente.isEmpty())) {
             opcionDosComponente.remove(detalleOpcionDos);
+            ponderadoDos = calcularPonderadosPorOpcion(opcionDosComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdDos", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la segunda opción."));
 
         }
 
         if (size > 1 && (opcionTresComponente.size() > 0 || opcionCuatroComponente.size() > 0 || opcionCincoComponente.size() > 0)) {
             opcionDosComponente.remove(detalleOpcionDos);
+            ponderadoDos = calcularPonderadosPorOpcion(opcionDosComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdDos", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la segunda opción."));
         }
 
         if (opcionDosComponente.isEmpty()) {
             renderedOpcionDos = false;
         }
-
-        System.out.println("El tamaño de la lista es" + opcionUnoComponente.size());
-
     }
 
     public void eliminarDetalleOpcionTres(TbDetalleCotizacionComponente detalleOpcionTres) {
@@ -506,6 +559,7 @@ public class DetalleCotizacion implements Serializable {
 
         if (size > 1 && (opcionCuatroComponente.size() > 0 || opcionCincoComponente.size() > 0)) {
             opcionTresComponente.remove(detalleOpcionTres);
+            ponderadoTres = calcularPonderadosPorOpcion(opcionTresComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdTres", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la tercera opción."));
         }
 
@@ -515,12 +569,14 @@ public class DetalleCotizacion implements Serializable {
 
         if ((opcionCuatroComponente.isEmpty() && opcionCincoComponente.isEmpty())) {
             opcionTresComponente.remove(detalleOpcionTres);
+            ponderadoTres = calcularPonderadosPorOpcion(opcionTresComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdTres", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la tercera opción."));
 
         }
 
         if ((opcionCuatroComponente.isEmpty())) {
             opcionTresComponente.remove(detalleOpcionTres);
+            ponderadoTres = calcularPonderadosPorOpcion(opcionTresComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdTres", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la tercera opción."));
 
         }
@@ -535,6 +591,7 @@ public class DetalleCotizacion implements Serializable {
 
         if (size > 1 && (opcionCinco.size() > 0)) {
             opcionCuatroComponente.remove(detalleOpcionCuatro);
+            ponderadoCuatro = calcularPonderadosPorOpcion(opcionCuatroComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdCuatro", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la cuarta opción."));
         }
 
@@ -544,6 +601,7 @@ public class DetalleCotizacion implements Serializable {
 
         if (opcionCincoComponente.isEmpty()) {
             opcionCuatroComponente.remove(detalleOpcionCuatro);
+            ponderadoCuatro = calcularPonderadosPorOpcion(opcionCuatroComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdCuatro", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la cuarta opción."));
 
         }
@@ -559,6 +617,7 @@ public class DetalleCotizacion implements Serializable {
 
         if (size >= 1) {
             opcionCincoComponente.remove(detalleOpcionCinco);
+            ponderadoCinco = calcularPonderadosPorOpcion(opcionCincoComponente);
             FacesContext.getCurrentInstance().addMessage("editarCotizacion:messageIdCinco", new FacesMessage(FacesMessage.SEVERITY_INFO, "", "NOTIFICACIÓN , Su detalle fue eliminado de la quinta opción."));
         }
 
@@ -792,4 +851,45 @@ public class DetalleCotizacion implements Serializable {
     public void setObservacionComponente(TbObservacionesComponente observacionComponente) {
         this.observacionComponente = observacionComponente;
     }
+
+    public PonderadoTotalOpcion getPonderadoUno() {
+        return ponderadoUno;
+    }
+
+    public void setPonderadoUno(PonderadoTotalOpcion ponderadoUno) {
+        this.ponderadoUno = ponderadoUno;
+    }
+
+    public PonderadoTotalOpcion getPonderadoDos() {
+        return ponderadoDos;
+    }
+
+    public void setPonderadoDos(PonderadoTotalOpcion ponderadoDos) {
+        this.ponderadoDos = ponderadoDos;
+    }
+
+    public PonderadoTotalOpcion getPonderadoTres() {
+        return ponderadoTres;
+    }
+
+    public void setPonderadoTres(PonderadoTotalOpcion ponderadoTres) {
+        this.ponderadoTres = ponderadoTres;
+    }
+
+    public PonderadoTotalOpcion getPonderadoCuatro() {
+        return ponderadoCuatro;
+    }
+
+    public void setPonderadoCuatro(PonderadoTotalOpcion ponderadoCuatro) {
+        this.ponderadoCuatro = ponderadoCuatro;
+    }
+
+    public PonderadoTotalOpcion getPonderadoCinco() {
+        return ponderadoCinco;
+    }
+
+    public void setPonderadoCinco(PonderadoTotalOpcion ponderadoCinco) {
+        this.ponderadoCinco = ponderadoCinco;
+    }
+
 }

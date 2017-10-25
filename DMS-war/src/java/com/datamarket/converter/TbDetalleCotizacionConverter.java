@@ -56,7 +56,9 @@ public class TbDetalleCotizacionConverter {
         }
         
         detalleCotizacionComponente.setDc_porc_descto(detalleCotizacion.getDcPorcDescto() + "% de descuento");
+        
         detalleCotizacionComponente.setDc_porc_descto_num(detalleCotizacion.getDcPorcDescto());
+       
         
         detalleCotizacionComponente.setDc_opcion(detalleCotizacion.getDcOpcion());
         

@@ -48,7 +48,7 @@
                                                      required="true"
                                                      requiredMessage="Para realizar la cotización tiene que seleccionar un producto"
                                                      id="producto"
-                                                      disabled="#{detalleCotizacion.habilitarCampos}">
+                                                     disabled="#{detalleCotizacion.habilitarCampos}">
                                         <f:selectItem itemLabel="Selecione un producto" noSelectionOption="true" />
                                         <f:selectItems value="#{listasComunes.productosMap}"/> 
                                         <p:ajax event="change" 
@@ -130,7 +130,7 @@
                                 <p:column>
                                     <p:outputLabel value="Porcentaje de descuento" class="labelsFormulario"/>
                                     <p:inputNumber
-                                        value="#{detalleCotizacion.detalleCotizacionSeleccionado.dcPorcDescto}"
+                                            value="#{detalleCotizacion.detalleCotizacionSeleccionado.dcPorcDescto}"
                                         disabled="#{detalleCotizacion.habilitarCampos}"
                                         placeholder="Escriba aquí el valor del porcentaje"/>
                                 </p:column>
@@ -249,6 +249,27 @@
                                 </p:column>
                             </p:dataTable>
                             <div style="padding: 10px"></div>
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="ponderadoUno"
+                                         rendered="#{detalleCotizacion.renderedOpcionUno}">
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total Neto:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoUno.sinDescuento}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Descuento Especial:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoUno.descuento}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total antes de IVA:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoUno.totalAntesDeIva}"/>
+                                </p:column>
+
+                            </p:panelGrid>
+
 
                             <div align="center" style="padding: 10px">
                                 <p:message for="messageIdDos" id="messIdDos" class="ocultar"></p:message>
@@ -306,6 +327,27 @@
                                 </p:column>
                             </p:dataTable>
                             <div style="padding: 10px"></div>
+
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="ponderadoDos"
+                                         rendered="#{detalleCotizacion.renderedOpcionDos}">
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total Neto:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoDos.sinDescuento}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Descuento Especial:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoDos.descuento}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total antes de IVA:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoDos.totalAntesDeIva}"/>
+                                </p:column>
+
+                            </p:panelGrid>
 
                             <div align="center" style="padding: 10px">
                                 <p:message for="messageIdTres" id="messIdTres" class="ocultar"></p:message>
@@ -365,6 +407,29 @@
                             </p:dataTable>
                             <div style="padding: 10px"></div>
 
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="ponderadoTres"
+                                         rendered="#{detalleCotizacion.renderedOpcionTres}">
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total Neto:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoTres.sinDescuento}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Descuento Especial:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoTres.descuento}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total antes de IVA:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoTres.totalAntesDeIva}"/>
+                                </p:column>
+
+                            </p:panelGrid>
+
+
+
                             <div align="center" style="padding: 10px">
                                 <p:message for="messageIdCuatro" id="messIdCuatro" class="ocultar"></p:message>
                                 <h:inputHidden id="messageIdCuatro"></h:inputHidden>
@@ -422,6 +487,30 @@
                             </p:dataTable>
                             <div style="padding: 10px"></div>
 
+
+
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="ponderadoCuatro"
+                                         rendered="#{detalleCotizacion.renderedOpcionCuatro}">
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total Neto:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoCuatro.sinDescuento}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Descuento Especial:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoCuatro.descuento}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total antes de IVA:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoCuatro.totalAntesDeIva}"/>
+                                </p:column>
+
+                            </p:panelGrid>
+
+
                             <div align="center" style="padding: 10px">
                                 <p:message for="messageIdCinco" id="messIdCinco" class="ocultar"></p:message>
                                 <h:inputHidden id="messageIdCinco"></h:inputHidden>
@@ -478,6 +567,27 @@
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
+                            <div style="padding: 10px"></div>
+                            <p:panelGrid columns="3" 
+                                         layout="grid" 
+                                         styleClass="ui-panelgrid-blank form-group"
+                                         id="ponderadoCinco"
+                                         rendered="#{detalleCotizacion.renderedOpcionCinco}">
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total Neto:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoCinco.sinDescuento}"/>
+                                </p:column>
+
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Descuento Especial:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoCinco.descuento}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:outputLabel class="labelsFormulario" value="Total antes de IVA:"/>
+                                    <p:outputLabel  value="#{detalleCotizacion.ponderadoCinco.totalAntesDeIva}"/>
+                                </p:column>
+
+                            </p:panelGrid>
                         </div>
                     </div>
                 </div>
