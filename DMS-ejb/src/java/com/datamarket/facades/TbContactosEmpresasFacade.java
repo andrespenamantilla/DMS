@@ -89,21 +89,28 @@ public class TbContactosEmpresasFacade extends ManejadorPersistencia<TbContactos
         return nombreApellidos;
     }
 
+    public TbContactosEmpresas buscarPorIdYEmpresa(Integer ceSecuencial, Integer ceCodigoEmpresa) {
+        Query q = em.createQuery("SELECT t FROM TbContactosEmpresas t WHERE t.ceSecuencial = :ceSecuencial AND t.ceCodigoEmpresa.emIdEmpresas = :ceCodigoEmpresa");
+        q.setParameter("ceSecuencial", ceSecuencial);
+        q.setParameter("ceCodigoEmpresa", ceCodigoEmpresa);
+        TbContactosEmpresas contacto = (TbContactosEmpresas) q.getSingleResult();
+
+        return contacto;
+    }
+
     public TbContactosEmpresas findById(Integer ce_secuencial) {
         TbContactosEmpresas contacto;
         return contacto = em.find(TbContactosEmpresas.class, ce_secuencial);
     }
 
-    
-    public void actualizarContacto(TbContactosEmpresas contacto)
-    {
-    em.merge(contacto);
+    public void actualizarContacto(TbContactosEmpresas contacto) {
+        em.merge(contacto);
     }
-    
-      public void eliminarContactosEmpresas(TbContactosEmpresas contactoEmpresa) {
+
+    public void eliminarContactosEmpresas(TbContactosEmpresas contactoEmpresa) {
         Query q = em.createQuery("DELETE FROM TbContactosEmpresas t WHERE t.ceSecuencial =:ceSecuencial");
         q.setParameter("ceSecuencial", contactoEmpresa.getCeSecuencial());
         q.executeUpdate();
     }
-    
+
 }

@@ -5,21 +5,48 @@
  */
 package com.datamarket.vistas;
 
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRExporterParameter;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperRunManager;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.export.JRXlsExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRDocxExporter;
+import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter;
+
+import javax.faces.context.FacesContext;
+import javax.faces.event.ActionEvent;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+import javax.faces.context.FacesContext;
+import com.datamarket.IServicios.ITbContactosEmpresasServicioLocal;
 import com.datamarket.Ifacades.ITbDetalleCotizacionFacadeLocal;
 import com.datamarket.Ifacades.ITbProductosFacadeLocal;
 import com.datamarket.components.PonderadoTotalOpcion;
 import com.datamarket.components.TbDetalleCotizacionComponente;
 import com.datamarket.components.TbObservacionesComponente;
+import com.datamarket.converter.FechaConverter;
 import com.datamarket.converter.TbDetalleCotizacionConverter;
 import com.datamarket.converter.TbObservacionesConverter;
+import com.datamarket.entidades.TbContactosEmpresas;
 import com.datamarket.entidades.TbCotizaciones;
 import com.datamarket.entidades.TbDetalleCotizacion;
 import com.datamarket.entidades.TbDetalleCotizacionPK;
+import com.datamarket.entidades.TbEmpresas;
 import com.datamarket.entidades.TbObservaciones;
 import com.datamarket.entidades.TbProductos;
+import com.datamarket.facades.TbContactosEmpresasFacade;
+import com.datamarket.facades.TbDetalleCatalogoFacade;
+import com.datamarket.facades.TbEmpresasFacade;
+import java.io.File;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
@@ -27,6 +54,7 @@ import javax.faces.context.FacesContext;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import net.sf.jasperreports.engine.JREmptyDataSource;
 
 /**
  *
@@ -46,12 +74,30 @@ public class DetalleCotizacion implements Serializable {
     ITbProductosFacadeLocal productoFacade;
     @Inject
     TbObservacionesConverter observacionesConverter;
+    @Inject
+    ITbContactosEmpresasServicioLocal TbContactosEmpresasServicioLocal;
+    @Inject
+    TbEmpresasFacade empresasFacade;
+    @Inject
+    FechaConverter fechaConverter;
+    @Inject
+    TbContactosEmpresasFacade contactosEmpresasFacade;
+    @Inject
+    TbDetalleCatalogoFacade detalleCatalogoFacade;
 
     private TbDetalleCotizacionComponente detalleCotizacionComponenteSeleccionado;
     private TbDetalleCotizacion detalleCotizacionSeleccionado;
     private TbProductos productoDetalle;
     private TbCotizaciones cotizacion;
     private TbObservacionesComponente observacionComponente;
+    private Map<String, Integer> contactosEmpresa;
+    private TbEmpresas empresaCotizacion;
+    private String fecha;
+    private String nombreApellidos;
+    private TbContactosEmpresas contactoSeleccionado;
+    private String cargo;
+    private String area;
+    private String anio;
 
 
     /**/
@@ -61,6 +107,7 @@ public class DetalleCotizacion implements Serializable {
     private List<TbDetalleCotizacion> opcionTres;
     private List<TbDetalleCotizacion> opcionCuatro;
     private List<TbDetalleCotizacion> opcionCinco;
+    private String nombreContacto;
     /**/
     private List<TbDetalleCotizacionComponente> opcionUnoComponente;
     private List<TbDetalleCotizacionComponente> opcionDosComponente;
@@ -88,6 +135,7 @@ public class DetalleCotizacion implements Serializable {
     private boolean dcCortesia;
     private Float dcPorcDescto;
     private Short dcOpcion;
+    private Integer ceSecuencial;
 
     /*Ponderados*/
     private PonderadoTotalOpcion ponderadoUno;
@@ -114,11 +162,14 @@ public class DetalleCotizacion implements Serializable {
         observacionComponente = new TbObservacionesComponente();
         inicializarPonderadosOpciones();
         inicializarValoresPorOpcionDeCotizacion();
-
+        empresaCotizacion = empresasFacade.buscarPorId(cotizacion.getCoEmpresa());
+        contactosEmpresa = TbContactosEmpresasServicioLocal.retornarListaDeContactos(empresaCotizacion);
+        fecha = fechaConverter.parsearFecha();
+        anio = fechaConverter.anio();
     }
 
     public void verificarTipoDeAccion() {
-        System.out.println("Entró");
+
         if (verificarAccionDetalle == true) {
             disabledAgregarDetalle = true;
             disabledGuardarCambios = false;
@@ -137,6 +188,18 @@ public class DetalleCotizacion implements Serializable {
         ponderadoTres = new PonderadoTotalOpcion();
         ponderadoCuatro = new PonderadoTotalOpcion();
         ponderadoCinco = new PonderadoTotalOpcion();
+
+    }
+
+    public void buscarNombreYCargo() {
+
+        contactoSeleccionado = contactosEmpresasFacade.buscarPorIdYEmpresa(ceSecuencial, empresaCotizacion.getEmIdEmpresas());
+        area = detalleCatalogoFacade.nombreCatalogoArea(contactoSeleccionado.getCeArea());
+        cargo = detalleCatalogoFacade.nombreCatalogoCargo(contactoSeleccionado.getCeCargo());
+
+        System.out.println("El nombre es " + contactoSeleccionado.getCeNombres() + " " + contactoSeleccionado.getCeApellidos());
+        System.out.println("El Cargo es " + cargo);
+        System.out.println("El área es " + area);
 
     }
 
@@ -203,7 +266,92 @@ public class DetalleCotizacion implements Serializable {
     }
 
     public void guardarCambios() {
+        System.out.println("La nueva cantidad que desea cotizar es" + detalleCotizacionSeleccionado.getDcCantidad());
+        TbObservaciones observacionAux = observacionesConverter.convertirComponenteAEntidad(observacionComponente);
+        detalleCotizacionSeleccionado.setDcObservacion(observacionAux);
+        TbDetalleCotizacionComponente aux = detalleCotizacionConverter.convertirEntidadAComponente(detalleCotizacionSeleccionado);
 
+        TbDetalleCotizacionComponente itemToAdd = new TbDetalleCotizacionComponente();
+
+        List<TbDetalleCotizacionComponente> opcionComponenteClone = opcionUnoComponente;
+
+        /* http://www.javamexico.org/foros/groovy/javautilconcurrentmodificationexception_como_se_hace_%C2%BF*/
+ /*java.util.ConcurrentModificationException]*/
+        if (detalleCotizacionSeleccionado.getDcOpcion() == 1) {
+            opcionComponenteClone = opcionUnoComponente;
+
+            for (TbDetalleCotizacionComponente iterator : opcionComponenteClone) {
+                if (iterator.getDc_num_detalle() == aux.getDc_num_detalle()) {
+                    opcionComponenteClone.remove(iterator);
+                    itemToAdd = aux;
+                }
+            }
+            opcionUnoComponente = opcionComponenteClone;
+            opcionUnoComponente.add(itemToAdd);
+        }
+
+        if (detalleCotizacionSeleccionado.getDcOpcion() == 2) {
+            opcionComponenteClone = opcionDosComponente;
+            for (TbDetalleCotizacionComponente iterator : opcionComponenteClone) {
+                if (iterator.getDc_num_detalle() == aux.getDc_num_detalle()) {
+                    opcionComponenteClone.remove(iterator);
+                    itemToAdd = aux;
+                }
+            }
+            opcionDosComponente = opcionComponenteClone;
+            opcionDosComponente.add(itemToAdd);
+        }
+
+        if (detalleCotizacionSeleccionado.getDcOpcion() == 3) {
+            opcionComponenteClone = opcionTresComponente;
+            for (TbDetalleCotizacionComponente iterator : opcionComponenteClone) {
+                if (iterator.getDc_num_detalle() == aux.getDc_num_detalle()) {
+                    opcionComponenteClone.remove(iterator);
+                    itemToAdd = aux;
+                }
+            }
+            opcionTresComponente = opcionComponenteClone;
+            opcionTresComponente.add(itemToAdd);
+        }
+
+        if (detalleCotizacionSeleccionado.getDcOpcion() == 4) {
+            opcionComponenteClone = opcionCuatroComponente;
+            for (TbDetalleCotizacionComponente iterator : opcionComponenteClone) {
+                if (iterator.getDc_num_detalle() == aux.getDc_num_detalle()) {
+                    opcionComponenteClone.remove(iterator);
+                    itemToAdd = aux;
+                }
+            }
+            opcionCuatroComponente = opcionComponenteClone;
+            opcionCuatroComponente.add(itemToAdd);
+        }
+
+        if (detalleCotizacionSeleccionado.getDcOpcion() == 5) {
+            opcionComponenteClone = opcionCincoComponente;
+            for (TbDetalleCotizacionComponente iterator : opcionComponenteClone) {
+                if (iterator.getDc_num_detalle() == aux.getDc_num_detalle()) {
+                    opcionComponenteClone.remove(iterator);
+                    itemToAdd = aux;
+                }
+            }
+            opcionCincoComponente = opcionComponenteClone;
+            opcionCincoComponente.add(itemToAdd);
+        }
+
+    }
+
+    public void seleccionarElementoDetalle() {
+        detalleCotizacionSeleccionado = detalleCotizacionConverter.convertirComponenteAEntidad(detalleCotizacionComponenteSeleccionado);
+        observacionComponente = observacionesConverter.convertirEntidadAComponente(detalleCotizacionSeleccionado.getDcObservacion());
+        productoDetalle = productoFacade.findById(detalleCotizacionSeleccionado.getDcIdProducto());
+        prCodigo = productoDetalle.getPrCodigo();
+        if (Objects.equals(detalleCotizacionSeleccionado.getDcCortesia(), "N")) {
+            productoCortesía = true;
+        } else {
+            productoCortesía = false;
+        }
+
+        System.out.println("La opción seleccionada es la opción " + detalleCotizacionSeleccionado.getDcOpcion());
     }
 
     public void converirListadosAListadosDeComponentes() {
@@ -273,18 +421,12 @@ public class DetalleCotizacion implements Serializable {
 
     }
 
-    public void seleccionarElementoDetalle() {
-        System.out.println("Usted Seleccionó un elemento de ");
-        detalleCotizacionSeleccionado = detalleCotizacionConverter.convertirComponenteAEntidad(detalleCotizacionComponenteSeleccionado);
-        observacionComponente = observacionesConverter.convertirEntidadAComponente(detalleCotizacionSeleccionado.getDcObservacion());
-        productoDetalle = productoFacade.findById(detalleCotizacionSeleccionado.getDcIdProducto());
-        prCodigo = productoDetalle.getPrCodigo();
-        if (Objects.equals(detalleCotizacionSeleccionado.getDcCortesia(), "N")) {
-            productoCortesía = false;
-        } else {
-            productoCortesía = true;
-        }
-
+    public void vaciarCampos() {
+        productoCortesía = false;
+        prCodigo = null;
+        productoDetalle = new TbProductos();
+        detalleCotizacionSeleccionado = new TbDetalleCotizacion();
+        observacionComponente = new TbObservacionesComponente();
     }
 
     public void habilitarCamposFormulario() {
@@ -368,17 +510,18 @@ public class DetalleCotizacion implements Serializable {
 
     /*Este  método calcula el valor a pagar  del neto descontando el porcentaje de descuento*/
     public Double calcularPonderadoPorDetalleConDescuento(TbDetalleCotizacionComponente opcionDetalleComponente) {
-        Double porcentaje = 0.0;
+        Float porcentaje = 0f;
 
         Integer cantidad = opcionDetalleComponente.getDc_cantidad_num();
         Double precioUnidad = opcionDetalleComponente.getDc_precio();
         Double total = 0.0;
         if (opcionDetalleComponente.getDc_porc_descto_num() == 0) {
-            porcentaje = 1.0;
+            porcentaje = 1f;
             total = porcentaje * cantidad * precioUnidad;
         }
         if (opcionDetalleComponente.getDc_porc_descto_num() > 0) {
-            porcentaje = 1 - opcionDetalleComponente.getDc_descuento() / 100;
+            Float descuento = (opcionDetalleComponente.getDc_porc_descto_num());
+            porcentaje = descuento / 100;
             total = porcentaje * cantidad * precioUnidad;
         }
 
@@ -393,8 +536,8 @@ public class DetalleCotizacion implements Serializable {
 
         }
         if (opcionDetalleComponente.getDc_porc_descto_num() > 0) {
-            montoADescontar = (opcionDetalleComponente.getDc_porc_descto_num()/ 100) * opcionDetalleComponente.getDc_cantidad_num() * opcionDetalleComponente.getDc_precio();
-            
+            montoADescontar = (opcionDetalleComponente.getDc_porc_descto_num() / 100) * opcionDetalleComponente.getDc_cantidad_num() * opcionDetalleComponente.getDc_precio();
+
         }
         return montoADescontar;
     }
@@ -506,7 +649,7 @@ public class DetalleCotizacion implements Serializable {
             detalle.setDcPorcDescto(0);
         }
 
-        if (detalleCotizacionSeleccionado.getDcPorcDescto() >0) {
+        if (detalleCotizacionSeleccionado.getDcPorcDescto() > 0) {
             detalle.setDcPorcDescto(detalleCotizacionSeleccionado.getDcPorcDescto());
         }
 
@@ -626,6 +769,36 @@ public class DetalleCotizacion implements Serializable {
         }
 
     }
+
+     public void exportarPDF(ActionEvent actionEvent) throws JRException, IOException {
+        System.out.println("Ingresó a la función");
+        Map<String, Object> parametros = new HashMap<String, Object>();
+        
+
+        File cotizacionPath = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/report_1.jasper"));
+
+
+        parametros.put("contacto", contactoSeleccionado.getCeNombres()+" "+contactoSeleccionado.getCeApellidos());
+        parametros.put("fecha", fecha);
+        parametros.put("cargo", cargo);
+        parametros.put("empresaNombre", empresaCotizacion.getEmNombre());
+        parametros.put("anio", anio);
+        parametros.put("nombres",contactoSeleccionado.getCeNombres());
+        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente)); 
+        JasperPrint cotizacion =  JasperFillManager.fillReport((cotizacionPath.getPath()), parametros, new JREmptyDataSource());
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment; filename=cotizacion.pdf");
+        ServletOutputStream stream = response.getOutputStream();
+
+        JasperExportManager.exportReportToPdfStream(cotizacion, stream);
+
+        stream.flush();
+        stream.close();
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+
 
     /*Getters & Setters*/
     public List<TbDetalleCotizacion> getOpcionUno() {
@@ -890,6 +1063,70 @@ public class DetalleCotizacion implements Serializable {
 
     public void setPonderadoCinco(PonderadoTotalOpcion ponderadoCinco) {
         this.ponderadoCinco = ponderadoCinco;
+    }
+
+    public Map<String, Integer> getContactosEmpresa() {
+        return contactosEmpresa;
+    }
+
+    public void setContactosEmpresa(Map<String, Integer> contactosEmpresa) {
+        this.contactosEmpresa = contactosEmpresa;
+    }
+
+    public String getNombreContacto() {
+        return nombreContacto;
+    }
+
+    public void setNombreContacto(String nombreContacto) {
+        this.nombreContacto = nombreContacto;
+    }
+
+    public TbEmpresas getEmpresaCotizacion() {
+        return empresaCotizacion;
+    }
+
+    public void setEmpresaCotizacion(TbEmpresas empresaCotizacion) {
+        this.empresaCotizacion = empresaCotizacion;
+    }
+
+    public Integer getCeSecuencial() {
+        return ceSecuencial;
+    }
+
+    public void setCeSecuencial(Integer ceSecuencial) {
+        this.ceSecuencial = ceSecuencial;
+    }
+
+    public String getFecha() {
+        return fecha;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public String getNombreApellidos() {
+        return nombreApellidos;
+    }
+
+    public void setNombreApellidos(String nombreApellidos) {
+        this.nombreApellidos = nombreApellidos;
+    }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
     }
 
 }

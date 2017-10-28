@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="cotizacion" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="173b7d56-69a8-47e9-87b5-065b3fda6a80">
+	<property name="ireport.zoom" value="1.1000000000000023"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="fecha" class="java.lang.String"/>
+	<parameter name="contacto" class="java.lang.String"/>
+	<parameter name="cargo" class="java.lang.String"/>
+	<parameter name="empresaNombre" class="java.lang.String"/>
+	<parameter name="anio" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["D:\\ProyectoDatamarket\\DMS\\DMS-war\\web\\imagesReports\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="opcionUno" class="java.util.List"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<image>
+				<reportElement x="109" y="15" width="391" height="49" uuid="3b89fb7f-1853-43c9-9c48-6178bb3dab7a"/>
+				<imageExpression><![CDATA["D:\\ProyectoDatamarket\\DMS\\DMS-war\\web\\imagesReports\\encabezado.jpeg"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="132" splitType="Stretch">
+			<staticText>
+				<reportElement x="295" y="0" width="70" height="20" uuid="063a3e4e-099a-4817-9a47-27676cfd40a5"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Bogotá D.C]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="109" y="25" width="25" height="16" uuid="e3ba33e3-2d3c-4863-9cbe-7b76360746fb"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Atn. ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="365" y="0" width="112" height="20" uuid="594060e9-e1b3-47da-aada-ed343d3cb693"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{fecha}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="186" y="25" width="159" height="16" uuid="29faf7d5-d514-43aa-8c05-e4e5c2cc1811"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{contacto}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="138" y="41" width="184" height="17" uuid="973e796d-807f-4c48-9c98-d719e2a1fb3b"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{cargo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="143" y="58" width="222" height="16" uuid="c2afb357-9129-4c34-a5bb-d5b878cb1b13"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empresaNombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="86" y="58" width="65" height="16" uuid="79a87b4b-37b1-4b47-9ece-966592ad3d08"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="false"/>
+				</textElement>
+				<text><![CDATA[Me permito ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="165" y="74" width="59" height="16" uuid="54344d18-086c-4231-bad3-87a07acc1f10"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cotizarle]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="265" y="74" width="100" height="16" uuid="9c93a397-9435-4cd0-a97d-b30f0e546922"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[la participación de ]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="338" y="74" width="180" height="16" uuid="4e56b384-742c-4556-8b75-433eba969a2d"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{empresaNombre}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="107" y="100" width="36" height="16" uuid="f2ed9d7a-cdca-4a13-b4b5-7631cc8dca1c"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[en el ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="109" y="100" width="42" height="16" uuid="6e6b7d9b-c378-4fd3-bfe8-3f57d25594d1"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[portal]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="151" y="100" width="144" height="16" uuid="7d10ab34-6bad-4af3-bc12-79a86e75f6d0"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Guía de Soluciones TIC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="295" y="100" width="70" height="16" uuid="934e403c-f3ec-462b-9226-15c7fbc340c3"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[para el año]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="365" y="100" width="54" height="16" uuid="0662d41d-ca77-4a5e-ba1b-8df0b13c650f"/>
+				<textElement>
+					<font fontName="SansSerif" size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{anio}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="419" y="100" width="58" height="16" uuid="582ed6f2-66bc-468e-b308-a24acadec0cb"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[así]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<subreport>
+				<reportElement x="73" y="13" width="404" height="100" uuid="5550b222-7709-405f-9df6-8fc9aa3d5888"/>
+				<dataSourceExpression><![CDATA[$P{opcionUno}]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "opcionUno.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

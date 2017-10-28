@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="opcionUno" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1f963a02-70e6-4021-b208-cd0f1ae903df">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="dc_observacion" class="java.lang.String"/>
+	<field name="dc_cantidad" class="java.lang.String"/>
+	<field name="dc_precio" class="java.lang.Double"/>
+	<field name="dc_neto" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="50"/>
+	</title>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement mode="Opaque" x="80" y="0" width="187" height="20" forecolor="#FFFFFF" backcolor="#00CCCC" uuid="f191d5c1-2bf9-4a0d-b1ab-131b91147ed9"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Descripción]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="267" y="0" width="65" height="20" forecolor="#FFFFFF" backcolor="#00CCCC" uuid="cf7b4501-1a46-4da8-85be-61ea7fcf6d6e"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Cantidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="332" y="0" width="74" height="20" forecolor="#FFFFFF" backcolor="#00CCCC" uuid="15d9df44-3067-49d7-bf7a-7a9a9f43525a"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Valor Unidad]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="406" y="0" width="73" height="20" forecolor="#FFFFFF" backcolor="#00CCCC" uuid="ff0de9d3-46c9-4a83-b6c0-63997ee74d3f"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<text><![CDATA[Valor Total]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="80" y="0" width="187" height="20" uuid="cc3785ca-bb23-4933-aee4-74da27e9813a"/>
+				<textElement>
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dc_observacion}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="267" y="0" width="65" height="20" uuid="7e183323-aa45-44ab-af19-531cb0d306cf"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dc_cantidad}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="332" y="0" width="74" height="20" uuid="6ab3e1f7-cd60-472e-9d10-cc4e4f54a20a"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dc_precio}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="406" y="0" width="73" height="20" uuid="25acb371-1ad4-486b-93cd-66b87fca1cae"/>
+				<textElement textAlignment="Center">
+					<font fontName="SansSerif" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{dc_neto}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="50"/>
+	</columnFooter>
+</jasperReport>

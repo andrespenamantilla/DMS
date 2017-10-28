@@ -57,6 +57,7 @@ public class ObjetosSesion implements Serializable {
     private TbDetalleCotizacion detalleCotizaciones;
     private TbDetalleCotizacionComponente detalleCotizacionesComponente;
     private TbCotizacionesComponente cotizacionComponente;
+    
 
     /*
      GETTERS Y SETTERS

@@ -23,7 +23,7 @@
                                 <h:inputHidden id="messageId"></h:inputHidden>
                             </div>
 
-                            <p:panelGrid columns="2" 
+                            <p:panelGrid columns="3" 
                                          styleClass="ui-panelgrid-blank form-group">
                                 <p:outputLabel for="console" value="Seleccione la acción que desea realizar"  class="labelsFormulario"/>
                                 <p:selectOneRadio id="console" value="#{detalleCotizacion.verificarAccionDetalle}">
@@ -33,6 +33,20 @@
                                             process="@this"
                                             listener="#{detalleCotizacion.verificarTipoDeAccion()}"/>
                                 </p:selectOneRadio>
+                                <p:commandButton value="Revertir Cambios" icon="fa fa-undo"/>
+
+                                <p:column>
+                                    <p:outputLabel value="Seleccione el contacto de la empresa"/>
+                                    <p:selectOneMenu required="true" 
+                                                     requiredMessage="Seleccione un contacto"
+                                                     id="contactos"
+                                                     value="#{detalleCotizacion.ceSecuencial}">
+                                        <f:selectItem itemLabel="Seleccione un contacto" noSelectionOption="true"/>
+                                        <f:selectItems value="#{detalleCotizacion.contactosEmpresa}"/>
+                                        <p:ajax listener="#{detalleCotizacion.buscarNombreYCargo()}" event="change"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="contactos" class="ocultar"/>
+                                </p:column>
                             </p:panelGrid>
 
                             <p:panelGrid columns="3" 
@@ -130,7 +144,7 @@
                                 <p:column>
                                     <p:outputLabel value="Porcentaje de descuento" class="labelsFormulario"/>
                                     <p:inputNumber
-                                            value="#{detalleCotizacion.detalleCotizacionSeleccionado.dcPorcDescto}"
+                                        value="#{detalleCotizacion.detalleCotizacionSeleccionado.dcPorcDescto}"
                                         disabled="#{detalleCotizacion.habilitarCampos}"
                                         placeholder="Escriba aquí el valor del porcentaje"/>
                                 </p:column>
@@ -176,6 +190,7 @@
                                                  disabled="#{detalleCotizacion.disabledGuardarCambios}"
                                                  update="editarCotizacion"
                                                  styleClass="pink-btn raised-btn"
+                                                 actionListener="#{detalleCotizacion.guardarCambios()}"
                                                  />
 
                                 <p:commandButton value="Vaciar Campos" 
@@ -183,6 +198,8 @@
                                                  styleClass="deep-purple-btn raised-btn"
                                                  update="editarCotizacion:informacionProducto"
                                                  disabled="#{detalleCotizacion.disabledAgregarDetalle}"
+                                                 actionListener="#{detalleCotizacion.vaciarCampos()}"
+                                                 immediate="true"
                                                  />
                                 <p:commandButton value="Agregar Detalle"
                                                  icon=" fa fa-table"
@@ -239,12 +256,15 @@
                                 <p:column headerText="Monto a Cancelar">
                                     <p:outputLabel value="#{detalle.dc_descuento}"/>
                                 </p:column>
-                                <p:column>
-                                    <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
-                                                      style="margin:24px 24px 0 0"
-                                                      actionListener="#{detalleCotizacion.eliminarDetalleOpcionUno(detalle)}"
-                                                      immediate="true"
-                                                      update="editarCotizacion">
+                                <p:column headerText="Remover Detalle">
+                                    <p:commandButton  
+                                        icon="fa fa-trash"
+                                        value="Remover"
+                                        style="margin:24px 24px 0 0"
+                                        actionListener="#{detalleCotizacion.eliminarDetalleOpcionUno(detalle)}"
+                                        immediate="true"
+                                        update="editarCotizacion"
+                                        styleClass="orange-btn raised-btn">
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -317,12 +337,14 @@
                                 <p:column headerText="Monto a Cancelar">
                                     <p:outputLabel value="#{detalle.dc_descuento}"/>
                                 </p:column>
-                                <p:column>
-                                    <p:commandButton  value="Remover" icon="fa fa-remove" 
+                                <p:column headerText="Remover Detalle">
+                                    <p:commandButton  icon="fa fa-trash" 
                                                       style="margin:24px 24px 0 0"
                                                       immediate="true"
                                                       actionListener="#{detalleCotizacion.eliminarDetalleOpcionDos(detalle)}"
-                                                      update="editarCotizacion">
+                                                      update="editarCotizacion"
+                                                      styleClass="orange-btn raised-btn"
+                                                      value="Remover">
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -396,12 +418,14 @@
                                 <p:column headerText="Monto a Cancelar">
                                     <p:outputLabel value="#{detalle.dc_descuento}"/>
                                 </p:column>
-                                <p:column>
-                                    <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                <p:column headerText="Remover Detalle">
+                                    <p:commandButton  value="Remover" icon="fa fa-trash" 
                                                       style="margin:24px 24px 0 0"
                                                       immediate="true"
                                                       actionListener="#{detalleCotizacion.eliminarDetalleOpcionTres(detalle)}"
-                                                      update="editarCotizacion">
+                                                      update="editarCotizacion"
+                                                      styleClass="orange-btn raised-btn"
+                                                      >
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -476,12 +500,14 @@
                                 <p:column headerText="Monto a Cancelar">
                                     <p:outputLabel value="#{detalle.dc_descuento}"/>
                                 </p:column>
-                                <p:column>
-                                    <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
+                                <p:column headerText="Remover Detalle">
+                                    <p:commandButton  icon="fa fa-trash" 
                                                       style="margin:24px 24px 0 0"
                                                       immediate="true"
                                                       actionListener="#{detalleCotizacion.eliminarDetalleOpcionCuatro(detalle)}"
-                                                      update="editarCotizacion">
+                                                      update="editarCotizacion"
+                                                      styleClass="orange-btn raised-btn"
+                                                      value="Remover">
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -558,12 +584,14 @@
                                 <p:column headerText="Monto a Cancelar">
                                     <p:outputLabel value="#{detalle.dc_descuento}"/>
                                 </p:column>
-                                <p:column>
-                                    <p:commandButton  value="Remover Detalle" icon="fa fa-remove" 
-                                                      style="margin:24px 24px 0 0"
-                                                      actionListener="#{detalleCotizacion.eliminarDetalleOpcionCinco(detalle)}"
-                                                      immediate="true"
-                                                      update="editarCotizacion">
+                                <p:column headerText="Remover Detalle">
+                                    <p:commandButton   icon="fa fa-trash" 
+                                                       style="margin:24px 24px 0 0"
+                                                       actionListener="#{detalleCotizacion.eliminarDetalleOpcionCinco(detalle)}"
+                                                       immediate="true"
+                                                       styleClass="orange-btn raised-btn"
+                                                       update="editarCotizacion"
+                                                       value="Remover">
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
@@ -588,9 +616,11 @@
                                 </p:column>
 
                             </p:panelGrid>
+                            <h:commandButton value="Exportar PDF" actionListener="#{detalleCotizacion.exportarPDF}"/>
                         </div>
                     </div>
                 </div>
+
             </div>
         </h:form>
     </ui:define>
