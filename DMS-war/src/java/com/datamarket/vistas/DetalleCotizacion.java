@@ -276,7 +276,7 @@ public class DetalleCotizacion implements Serializable {
         List<TbDetalleCotizacionComponente> opcionComponenteClone = opcionUnoComponente;
 
         /* http://www.javamexico.org/foros/groovy/javautilconcurrentmodificationexception_como_se_hace_%C2%BF*/
- /*java.util.ConcurrentModificationException]*/
+        /*java.util.ConcurrentModificationException]*/
         if (detalleCotizacionSeleccionado.getDcOpcion() == 1) {
             opcionComponenteClone = opcionUnoComponente;
 
@@ -770,22 +770,44 @@ public class DetalleCotizacion implements Serializable {
 
     }
 
-     public void exportarPDF(ActionEvent actionEvent) throws JRException, IOException {
+    public void exportarPDF(ActionEvent actionEvent) throws JRException, IOException {
         System.out.println("Ingresó a la función");
         Map<String, Object> parametros = new HashMap<String, Object>();
-        
 
         File cotizacionPath = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/report_1.jasper"));
 
-
-        parametros.put("contacto", contactoSeleccionado.getCeNombres()+" "+contactoSeleccionado.getCeApellidos());
+        parametros.put("contacto", contactoSeleccionado.getCeNombres() + " " + contactoSeleccionado.getCeApellidos());
         parametros.put("fecha", fecha);
         parametros.put("cargo", cargo);
         parametros.put("empresaNombre", empresaCotizacion.getEmNombre());
         parametros.put("anio", anio);
-        parametros.put("nombres",contactoSeleccionado.getCeNombres());
-        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente)); 
-        JasperPrint cotizacion =  JasperFillManager.fillReport((cotizacionPath.getPath()), parametros, new JREmptyDataSource());
+        parametros.put("nombres", contactoSeleccionado.getCeNombres());
+        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente));
+        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente));
+        parametros.put("opcionDos", new JRBeanCollectionDataSource(opcionDosComponente));
+        parametros.put("opcionTres", new JRBeanCollectionDataSource(opcionTresComponente));
+        parametros.put("opcionCuatro", new JRBeanCollectionDataSource(opcionCuatroComponente));
+        parametros.put("opcionCinco", new JRBeanCollectionDataSource(opcionCincoComponente));
+        parametros.put("antesDeIvaUno", ponderadoUno.getTotalAntesDeIva());
+        parametros.put("antesDeIvaDos", ponderadoDos.getTotalAntesDeIva());
+        parametros.put("antesDeIvaTres", ponderadoTres.getTotalAntesDeIva());
+        parametros.put("antesDeIvaCuatro", ponderadoCuatro.getTotalAntesDeIva());
+        parametros.put("antesDeIvaCinco", ponderadoCinco.getTotalAntesDeIva());
+        parametros.put("totalNetoUno", ponderadoUno.getSinDescuento());
+        parametros.put("totalNetoDos", ponderadoDos.getSinDescuento());
+        parametros.put("totalNetoTres", ponderadoTres.getSinDescuento());
+        parametros.put("totalNetoCuatro", ponderadoCuatro.getSinDescuento());
+        parametros.put("totalNetoCinco", ponderadoCinco.getSinDescuento());
+        parametros.put("totalDescuentoUno", ponderadoUno.getDescuento());
+        parametros.put("totalDescuentoDos", ponderadoDos.getDescuento());
+        parametros.put("totalDescuentoTres", ponderadoTres.getDescuento());
+        parametros.put("totalDescuentoCuatro", ponderadoCuatro.getDescuento());
+        parametros.put("totalDescuentoCinco", ponderadoCinco.getDescuento());
+        
+        
+        
+        
+        JasperPrint cotizacion = JasperFillManager.fillReport((cotizacionPath.getPath()), parametros, new JREmptyDataSource());
 
         HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
         response.addHeader("Content-disposition", "attachment; filename=cotizacion.pdf");
@@ -798,7 +820,96 @@ public class DetalleCotizacion implements Serializable {
         FacesContext.getCurrentInstance().responseComplete();
     }
 
+    public void exportarExcel(ActionEvent actionEvent) throws JRException, IOException {
+        System.out.println("Ingresó a la función");
+        Map<String, Object> parametros = new HashMap<String, Object>();
 
+        File cotizacionPath = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/report_1.jasper"));
+
+        parametros.put("contacto", contactoSeleccionado.getCeNombres() + " " + contactoSeleccionado.getCeApellidos());
+        parametros.put("fecha", fecha);
+        parametros.put("cargo", cargo);
+        parametros.put("empresaNombre", empresaCotizacion.getEmNombre());
+        parametros.put("anio", anio);
+        parametros.put("nombres", contactoSeleccionado.getCeNombres());
+        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente));
+        JasperPrint cotizacion = JasperFillManager.fillReport((cotizacionPath.getPath()), parametros, new JREmptyDataSource());
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment; filename=cotizacion.xls");
+        ServletOutputStream stream = response.getOutputStream();
+
+        JRXlsExporter exporter = new JRXlsExporter();
+        exporter.setParameter(JRExporterParameter.JASPER_PRINT, cotizacion);
+        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+        exporter.exportReport();
+
+        stream.flush();
+        stream.close();
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+    public void exportarPPT(ActionEvent actionEvent) throws JRException, IOException {
+        System.out.println("Ingresó a la función");
+        Map<String, Object> parametros = new HashMap<String, Object>();
+
+        File cotizacionPath = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/report_1.jasper"));
+
+        parametros.put("contacto", contactoSeleccionado.getCeNombres() + " " + contactoSeleccionado.getCeApellidos());
+        parametros.put("fecha", fecha);
+        parametros.put("cargo", cargo);
+        parametros.put("empresaNombre", empresaCotizacion.getEmNombre());
+        parametros.put("anio", anio);
+        parametros.put("nombres", contactoSeleccionado.getCeNombres());
+        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente));
+        parametros.put("opcionDos", new JRBeanCollectionDataSource(opcionDosComponente));
+        parametros.put("opcionTres", new JRBeanCollectionDataSource(opcionTresComponente));
+        parametros.put("opcionCuatro", new JRBeanCollectionDataSource(opcionCuatroComponente));
+        parametros.put("opcionCinco", new JRBeanCollectionDataSource(opcionCincoComponente));
+        JasperPrint cotizacion = JasperFillManager.fillReport((cotizacionPath.getPath()), parametros, new JREmptyDataSource());
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment; filename=cotizacion.ppt");
+        ServletOutputStream stream = response.getOutputStream();
+
+        JRPptxExporter exporter = new JRPptxExporter();
+        exporter.setParameter(JRExporterParameter.JASPER_PRINT, cotizacion);
+        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+        exporter.exportReport();
+
+        stream.flush();
+        stream.close();
+        FacesContext.getCurrentInstance().responseComplete();
+    }
+
+    public void exportarDOC(ActionEvent actionEvent) throws JRException, IOException {
+        System.out.println("Ingresó a la función");
+        Map<String, Object> parametros = new HashMap<String, Object>();
+
+        File cotizacionPath = new File(FacesContext.getCurrentInstance().getExternalContext().getRealPath("/report_1.jasper"));
+
+        parametros.put("contacto", contactoSeleccionado.getCeNombres() + " " + contactoSeleccionado.getCeApellidos());
+        parametros.put("fecha", fecha);
+        parametros.put("cargo", cargo);
+        parametros.put("empresaNombre", empresaCotizacion.getEmNombre());
+        parametros.put("anio", anio);
+        parametros.put("nombres", contactoSeleccionado.getCeNombres());
+        parametros.put("opcionUno", new JRBeanCollectionDataSource(opcionUnoComponente));
+        JasperPrint cotizacion = JasperFillManager.fillReport((cotizacionPath.getPath()), parametros, new JREmptyDataSource());
+
+        HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
+        response.addHeader("Content-disposition", "attachment; filename=cotizacion.doc");
+        ServletOutputStream stream = response.getOutputStream();
+
+        JRDocxExporter exporter = new JRDocxExporter();
+        exporter.setParameter(JRExporterParameter.JASPER_PRINT, cotizacion);
+        exporter.setParameter(JRExporterParameter.OUTPUT_STREAM, stream);
+        exporter.exportReport();
+
+        stream.flush();
+        stream.close();
+        FacesContext.getCurrentInstance().responseComplete();
+    }
 
     /*Getters & Setters*/
     public List<TbDetalleCotizacion> getOpcionUno() {

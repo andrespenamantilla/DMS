@@ -75,7 +75,7 @@ public class FechaConverter {
         }
 
         if (mes == 11) {
-            month = "Nomviembre";
+            month = "Noviembre";
         }
 
         if (mes == 12) {

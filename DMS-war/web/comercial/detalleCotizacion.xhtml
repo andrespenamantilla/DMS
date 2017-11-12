@@ -616,7 +616,15 @@
                                 </p:column>
 
                             </p:panelGrid>
-                            <h:commandButton value="Exportar PDF" actionListener="#{detalleCotizacion.exportarPDF}"/>
+                     
+
+                            <p:splitButton value="Exportar Reporte Como" icon="fa fa-file">
+                                <p:menuitem value="PDF"  icon="fa fa-file-pdf-o" actionListener="#{detalleCotizacion.exportarPDF}" ajax="false"/>
+                                <p:menuitem value="WORD"  icon="fa fa-file-word-o" actionListener="#{detalleCotizacion.exportarDOC}" ajax="false"/>
+                                <p:menuitem value="EXCEL" icon="fa fa-file-excel-o" actionListener="#{detalleCotizacion.exportarExcel}" ajax="false"/>
+                                <p:menuitem value="POWER POINT" icon="fa fa-file-powerpoint-o" actionListener="#{detalleCotizacion.exportarPPT}" ajax="false"/>
+                                
+                            </p:splitButton>
                         </div>
                     </div>
                 </div>
